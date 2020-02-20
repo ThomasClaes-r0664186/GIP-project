@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Gip1.Models;
 
-namespace Gip1.Controllers
+namespace Gip.Controllers
 {
     public class HomeController : Controller
     {
