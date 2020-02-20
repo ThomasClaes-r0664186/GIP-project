@@ -1,6 +1,6 @@
 using System;
 
-namespace Gip1.Models
+namespace Gip.Models
 {
     public class ErrorViewModel
     {
