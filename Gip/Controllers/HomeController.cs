@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Gip.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Gip.Models;
 
 namespace Gip.Controllers
 {
