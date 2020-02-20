@@ -22,5 +22,6 @@ namespace Gip
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+//test
     }
 }
