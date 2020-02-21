@@ -11,7 +11,7 @@ namespace Gip.Models.Model
         private bool _whiteboard, _projector, _wifi;
         private string _type, _building;
 
-        public Room(int num, int capacity, int floor, bool white, bool proj, bool wifi, string type, string build) {
+        public Room(int num, int capacity, int floor, bool white, bool proj, bool wifi, string type, string building) {
             Number = num;
             Capacity = capacity;
             Floor = floor;
@@ -19,7 +19,7 @@ namespace Gip.Models.Model
             Projector = proj;
             Wifi = wifi;
             Type = type;
-            Build = build;
+            Building = building;
         }
 
         //voorwaarden aan toevoegen.
@@ -72,9 +72,31 @@ namespace Gip.Models.Model
         public bool Projector { get; set; }
         
         public bool Wifi { get; set; }
-        
-        public string Type { get; set; }
-        
-        public string Build { get; set; }
+
+        public string Type
+        {
+            get => _type;
+            set
+            {
+                if (value.Trim().Equals(""))
+                {
+                    throw new ArgumentException("Het type kan niet leeg zijn");
+                }
+
+                _type = value;
+            }
+        }
+
+        public string Building { get => _building;
+            set
+            {
+                if (value.Trim().Equals(""))
+                {
+                    throw new ArgumentException("Het gebouw kan niet leeg zijn");
+                }
+
+                _type = value;
+            }
+        }
     }
 }
