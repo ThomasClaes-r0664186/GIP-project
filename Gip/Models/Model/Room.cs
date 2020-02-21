@@ -23,13 +23,58 @@ namespace Gip.Models.Model
         }
 
         //voorwaarden aan toevoegen.
-        public int Number { get; set; }
-        public int Capacity { get; set; }
-        public int Floor { get; set; }
+        public int Number 
+        { 
+            get =>_number;
+            set {
+                if (value < 0)
+                {
+                    throw new ArgumentException("Lokaal nummer mag niet negatief zijn.");
+                }
+                else {
+                    _number = value;
+                }
+            } 
+        }
+
+        public int Capacity 
+        { 
+            get => _capacity;
+            set 
+            {
+                if (value < 0) {
+                    throw new ArgumentException("Lokaal capaciteit kan niet negtief zijn.");
+                }
+                else
+                {
+                    _capacity = value;
+                }
+            }
+        }
+
+        public int Floor 
+        { 
+            get => _floor;
+            set 
+            {
+                if (value < 0) {
+                    throw new ArgumentException("Het verdiep mag niet negatief zijn.");
+                }
+                else
+                {
+                    _floor = value;
+                }
+            } 
+        }
+
         public bool Whiteboard { get; set; }
+
         public bool Projector { get; set; }
+        
         public bool Wifi { get; set; }
+        
         public string Type { get; set; }
+        
         public string Build { get; set; }
     }
 }
