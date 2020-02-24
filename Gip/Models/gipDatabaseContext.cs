@@ -135,7 +135,7 @@ namespace Gip.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                //entity.Property(e => e.Middelen).IsUnicode(false);
+                entity.Property(e => e.Middelen).IsUnicode(false);
 
                 entity.Property(e => e.Type)
                     .IsRequired()
