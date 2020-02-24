@@ -17,6 +17,5 @@ namespace Gip.Models
         public virtual Schedule Schedule { get; set; }
         public virtual User User { get; set; }
         public virtual Course VakcodeNavigation { get; set; }
-        ///yoo test
     }
 }
