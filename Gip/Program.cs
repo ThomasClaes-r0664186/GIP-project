@@ -13,6 +13,7 @@ namespace Gip
     {
         public static void Main(string[] args)
         {
+        //main
             CreateHostBuilder(args).Build().Run();
         }
 
