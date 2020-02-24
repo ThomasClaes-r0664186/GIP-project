@@ -11,11 +11,10 @@ namespace Gip.Controllers
         [HttpGet]
         public IActionResult Lokaal()
         {
-            
             return View();
         }
 
-        // POST /add /vak
+        // POST /add/vak
         [HttpPost]
         public IActionResult Vak(string vakcode, string titel, int studiepunten)
         { 
@@ -27,5 +26,22 @@ namespace Gip.Controllers
             db.SaveChanges();
             return RedirectToAction("Index", "Home");
         }
+        
+        // POST /add/lokaal
+        [HttpPost]
+        public IActionResult Lokaal(string gebouw, int verdiep, string nummer, string type, int capaciteit, string middelen )
+        {
+            Room room = new Room();
+            room.Gebouw = gebouw;
+            room.Verdiep = verdiep;
+            room.Nummer = nummer;
+            room.Type = type;
+            room.Capaciteit = capaciteit;
+            room.Middelen = middelen;
+            db.Room.Add(room);
+            db.SaveChanges();
+            return RedirectToAction("Index", "Home");
+        }
+        
     }
 }
