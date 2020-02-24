@@ -4,9 +4,11 @@ namespace Gip.Controllers
 {
     public class EditController : Controller
     {
-        // GET
-        public IActionResult Index()
+        // GET /edit/lokaal
+        [Route("edit/lokaal")]
+        public IActionResult Lokaal()
         {
+            
             return View();
         }
     }
