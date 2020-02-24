@@ -22,6 +22,5 @@ namespace Gip
                 {
                     webBuilder.UseStartup<Startup>();
                 });
-//test
-    }
+    } // test 123 jaimie
 }
