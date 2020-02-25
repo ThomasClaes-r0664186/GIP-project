@@ -1,43 +1,174 @@
 ﻿@model IEnumerable<Gip.Models.Room>
-</Gip.Models.Room> @{
-    ViewData["Title"] = "Index";
-}
+    <Gip.Models.Room>
+        @{
+            ViewData["Title"] = "Index";
+        }
+        <h1>Overzicht van de lokalen</h1>
 
-<h1>Overzicht van de lokalen</h1>
-<table>
-    <tr>
-        <th>Lokaal</th>
-        <th> &emsp; Type</th>
-        <th>Capaciteit</th>
-        <th> &emsp; &emsp; &emsp; Middelen</th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-    </tr>
-    @foreach (var lokaal in Model)
-    {
-        <tr>
-            <td>@lokaal.Gebouw@lokaal.Verdiep@lokaal.Nummer </td>
-            <td>@lokaal.Type</td>
-            <td>@lokaal.Capaciteit</td>
-            <td>@lokaal.Middelen</td>   
-            <td></td>
-            <td></td>
-            <td>
-                <form action="/lokaal/delete" method="post">
-                    <input type="text" name="lokaalId" style="display: none" value="@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer">
-                    <button type="submit" class="btn-danger">Delete</button>
-                </form>
-            </td>
-            <td>
-                <form action" /lokaal/edit" method="post">
-                   
-                </form>
-            </td>
-        </tr>
-    }
-</table>
+
+
+
+
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModalLong" style="float:right">Lokaal toevoegen</button>
+
+        <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Een lokaal toevoegen?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/lokaal/add" method="post">
+                            <div class="form-group">
+                                <label for="gebouw" class="col-form-label">Gebouw:</label>
+                                <input type="text" class="form-control" id="gebouw" placeholder="Bv. A,B..." name="gebouw">
+                            </div>
+                            <div class="form-group">
+                                <label for="verdiep" class="col-form-label">Verdieping:</label>
+                                <input type="number" class="form-control" id="verdiep" placeholder="Bv. 1,2,3.." name="verdiep">
+                            </div>
+                            <div class="form-group">
+                                <label for="nummer" class="col-form-label">Nummer:</label>
+                                <input type="text" class="form-control" id="nummer" placeholder="Bv. K01,25.." name="nummer">
+                            </div>
+                            <div class="form-group">
+                                <label for="type" class="col-form-label">Type:</label>
+                                <input type="text" class="form-control" id="type" placeholder="Bv. Aula,Vergaderruimte..." name="type">
+                            </div>
+                            <div class="form-group">
+                                <label for="capaciteit" class="col-form-label">Capaciteit:</label>
+                                <input type="number" class="form-control" id="capaciteit" placeholder="Bv. 100..." name="">
+                            </div>
+                            <div class="form-group">
+                                <label for="middelen" class="col-form-label">Middelen?</label>
+                                <select id="middelen" class="form-control" name="middelen">
+                                    <option value="1">Wifi/Projectorsetup/Scherm</option>
+                                    <option value="2">Wifi/Schermen</option>
+                                    <option value="3">Wifi/Projectorsetup</option>
+                                    <option value="4">Projectorsetup/Scherm</option>
+                                    <option value="5">Projectorsetup/Schermen</option>
+                                    <option value="6">Wifi/Scherm</option>
+                                    <option value="7">Wifi/Projectorsetup</option>
+                                    <option value="8">Wifi</option>
+                                    <option value="9">Projectorsetup</option>
+                                    <option value="10">Scherm</option>
+                                    <option value="11">Schermen</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Voeg lokaal toe</button>
+                        </form>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+        <table class="table table-bordered table-hover table-striped">
+            <tr>
+
+                <th>Lokaal</th>
+                <th>Type</th>
+                <th>Capaciteit</th>
+                <th>Middelen</th>
+                <th>Delete</th>
+                <th>Edit</th>
+            </tr>
+            @foreach (var lokaal in Model)
+            {
+                <tr>
+                    <td>@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer </td>
+                    <td>@lokaal.Type</td>
+                    <td>@lokaal.Capaciteit</td>
+                    <td>@lokaal.Middelen</td>
+
+
+
+                    <td>
+                        <form action="/lokaal/delete" method="post">
+                            <input type="text" name="lokaalId" style="display: none" value="@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer">
+                            <button onclick="return confirm('Ben je zeker dat je lokaal @lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer wilt verwijderen?')" type="submit" class="btn-danger">Delete</button>
+
+                        </form>
+                    </td>
+
+                    <td>
+                        <button type="button" class="btn-dark" data-toggle="modal" data-target="#exampleModal">Edit</button>
+                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Gegevens wijzigen?</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="/lokaal/edit" method="post">
+                                            <div class="form-group">
+                                                <label for="gebouw" class="col-form-label">Gebouw:</label>
+                                                <input type="text" class="form-control" id="gebouw" placeholder="Bv. A,B..." name="gebouw">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="verdiep" class="col-form-label">Verdieping:</label>
+                                                <input type="number" class="form-control" id="verdiep" placeholder="Bv. 1,2,3.." name="verdiep">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="nummer" class="col-form-label">Nummer:</label>
+                                                <input type="text" class="form-control" id="nummer" placeholder="Bv. K01,25.." name="nummer">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="type" class="col-form-label">Type:</label>
+                                                <input type="text" class="form-control" id="type" placeholder="Bv. Aula,Vergaderruimte..." name="type">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="capaciteit" class="col-form-label">Capaciteit:</label>
+                                                <input type="number" class="form-control" id="capaciteit" placeholder="Bv. 100..." name="capaciteit">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="middelen" class="col-form-label">Middelen?</label>
+                                                <select id="middelen" class="form-control" name="middelen">
+                                                    <option value="1">Wifi/Projectorsetup/Scherm</option>
+                                                    <option value="2">Wifi/Schermen</option>
+                                                    <option value="3">Wifi/Projectorsetup</option>
+                                                    <option value="4">Projectorsetup/Scherm</option>
+                                                    <option value="5">Projectorsetup/Schermen</option>
+                                                    <option value="6">Wifi/Scherm</option>
+                                                    <option value="7">Wifi/Projectorsetup</option>
+                                                    <option value="8">Wifi</option>
+                                                    <option value="9">Projectorsetup</option>
+                                                    <option value="10">Scherm</option>
+                                                    <option value="11">Schermen</option>
+                                                </select>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn-danger" onclick="return confirm('Ben je zeker dat je de gegevens van lokaal @lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer wilt wijzigen?')">Verander lokaal</button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </table>
+
+
+
+
+
+
+        <script src="~/js/site.js" |></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
 
 
 

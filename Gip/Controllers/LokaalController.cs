@@ -140,7 +140,7 @@ namespace Gip.Controllers
                 db.SaveChanges();
             }
             ViewBag.error = false;
-            return View();
+            return RedirectToAction("Index", "Lokaal");
         }
     }
 }
