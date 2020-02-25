@@ -19,6 +19,8 @@ namespace Gip.Controllers
         }
 
         // GET /
+        [HttpGet]
+        [Route("")]
         public IActionResult Index()
         {
             return View();

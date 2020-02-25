@@ -9,6 +9,7 @@ namespace Gip.Controllers
 
         // GET /add/lokaal
         [HttpGet]
+        [Route("add/lokaal")]
         public IActionResult Lokaal()
         {
             return View();
@@ -16,6 +17,7 @@ namespace Gip.Controllers
 
         // POST /add/vak
         [HttpPost]
+        [Route("add/vak")]
         public IActionResult Vak(string vakcode, string titel, int studiepunten)
         { 
             Course course = new Course();
@@ -29,6 +31,7 @@ namespace Gip.Controllers
         
         // POST /add/lokaal
         [HttpPost]
+        [Route("add/lokaal")]
         public IActionResult Lokaal(string gebouw, int verdiep, string nummer, string type, int capaciteit, string middelen )
         {
             Room room = new Room();
