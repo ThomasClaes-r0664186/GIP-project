@@ -3,38 +3,48 @@
     ViewData["Title"] = "Index";
 }
 <h1>Overzicht van de lokalen</h1>
-<table>
-    <tr>
-        <th>Lokaal</th>
-        <th> &emsp; Type</th>
-        <th>Capaciteit</th>
-        <th> &emsp; &emsp; &emsp; Middelen</th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-    </tr>
-    @foreach (var lokaal in Model)
-    {
-        <tr>
-            <td>@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer </td>
-            <td>@lokaal.Type</td>
-            <td>@lokaal.Capaciteit</td>
-            <td>@lokaal.Middelen</td>   
-            <td></td>
-            <td></td>
-            <td>
-                <form action="/lokaal/delete" method="post">
-                    <input type="text" name="lokaalId" style="display: none" value="@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer">
-                    <button onclick="return confirm('Ben je zeker dat je dit lokaal wilt verwijderen?')" type="submit" class="btn-danger" data-toggle="modal" data-target="#exampleModal" >Delete</button>
 
-                </form>
-            </td>
-            <td>
-                <button type="submit" class="btn-dark">Edit</button>
-            </td>
+
+<div class="container-fluid">
+    <table>
+        <tr>
+            <th>Lokaal</th>
+            <th> &emsp; Type</th>
+            <th>Capaciteit</th>
+            <th> &emsp; &emsp;  Middelen</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
         </tr>
-    }
-</table>
+        @foreach (var lokaal in Model)
+        {
+            <tr>
+                <td>@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer </td>
+                <td>@lokaal.Type</td>
+                <td>@lokaal.Capaciteit</td>
+                <td>@lokaal.Middelen</td>
+                <td></td>
+                <td></td>
+                <td>
+                    <form action="/lokaal/delete" method="post">
+                        <input type="text" name="lokaalId" style="display: none" value="@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer">
+                        <button onclick="return confirm('Ben je zeker dat je dit lokaal wilt verwijderen?')" type="submit" class="btn-danger" data-toggle="modal" data-target="#exampleModal">Delete</button>
+
+                    </form>
+                </td>
+                <td>
+                    <button type="button"  class="btn-dark">Edit</button>
+                </td>
+            </tr>
+        }
+    </table>
+
+
+
+</div>
+
+<script src="~/js/site.js"|></script>
+
 
 
