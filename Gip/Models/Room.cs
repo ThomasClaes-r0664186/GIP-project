@@ -20,7 +20,7 @@ namespace Gip.Models
        // public int Capaciteit { get; set; }
         
         private String middelen;
-        public Object Middelen
+        public Utils Middelen
         {
             get
             {
