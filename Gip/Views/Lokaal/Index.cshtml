@@ -2,7 +2,6 @@
 </Gip.Models.Room> @{
     ViewData["Title"] = "Index";
 }
-
 <h1>Overzicht van de lokalen</h1>
 <table>
     <tr>
@@ -18,7 +17,7 @@
     @foreach (var lokaal in Model)
     {
         <tr>
-            <td>@lokaal.Gebouw@lokaal.Verdiep@lokaal.Nummer </td>
+            <td>@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer </td>
             <td>@lokaal.Type</td>
             <td>@lokaal.Capaciteit</td>
             <td>@lokaal.Middelen</td>   
@@ -27,17 +26,15 @@
             <td>
                 <form action="/lokaal/delete" method="post">
                     <input type="text" name="lokaalId" style="display: none" value="@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer">
-                    <button type="submit" class="btn-danger">Delete</button>
+                    <button onclick="return confirm('Ben je zeker dat je dit lokaal wilt verwijderen?')" type="submit" class="btn-danger" data-toggle="modal" data-target="#exampleModal" >Delete</button>
+
                 </form>
             </td>
             <td>
-                <form action" /lokaal/edit" method="post">
-                   
-                </form>
+                <button type="submit" class="btn-dark">Edit</button>
             </td>
         </tr>
     }
 </table>
-
 
 
