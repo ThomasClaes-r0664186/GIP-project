@@ -1,8 +1,11 @@
 ﻿@model IEnumerable<Gip.Models.Room>
-</Gip.Models.Room> @{
+<Gip.Models.Room> @{
     ViewData["Title"] = "Index";
 }
 <h1>Overzicht van de lokalen</h1>
+
+
+
 
 
 <div class="container-fluid">
@@ -29,22 +32,82 @@
                 <td>
                     <form action="/lokaal/delete" method="post">
                         <input type="text" name="lokaalId" style="display: none" value="@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer">
-                        <button onclick="return confirm('Ben je zeker dat je dit lokaal wilt verwijderen?')" type="submit" class="btn-danger" data-toggle="modal" data-target="#exampleModal">Delete</button>
+                        <button onclick="return confirm('Ben je zeker dat je lokaal @lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer wilt verwijderen?')" type="submit" class="btn-danger" >Delete</button>
 
                     </form>
                 </td>
+
                 <td>
-                    <button type="button"  class="btn-dark">Edit</button>
+                    <button type="button" class="btn-dark" data-toggle="modal" data-target="#exampleModal">Edit</button>
+                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Gegevens wijzigen?</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="/lokaal/edit" method="post">
+                                        <div class="form-group">
+                                            <label for="gebouw" class="col-form-label">Gebouw:</label>
+                                            <input type="text" class="form-control" id="gebouw">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="verdiep" class="col-form-label">Verdieping:</label>
+                                            <input type="number" class="form-control" id="verdiep"></input>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="nummer" class="col-form-label">Nummer:</label>
+                                            <input type="number" class="form-control" id="nummer"></input>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="type" class="col-form-label">Type:</label>
+                                            <input type="text" class="form-control" id="type"></input>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="capaciteit" class="col-form-label">Capaciteit:</label>
+                                            <input type="number" class="form-control" id="capaciteit"></input>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="middelen" class="col-form-label">Middelen?</label>
+                                            <select id="middelen" class="form-control" name="middelen">
+                                                <option value="1">Wifi/Projectorsetup/Scherm</option>
+                                                <option value="2">Wifi/Schermen</option>
+                                                <option value="3">Wifi/Projectorsetup</option>
+                                                <option value="4">Projectorsetup/Scherm</option>
+                                                <option value="5">Projectorsetup/Schermen</option>
+                                                <option value="6">Wifi/Scherm</option>
+                                                <option value="7">Wifi/Projectorsetup</option>
+                                                <option value="8">Wifi</option>
+                                                <option value="9">Projectorsetup</option>
+                                                <option value="10">Scherm</option>
+                                                <option value="11">Schermen</option>
+                                            </select>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn-danger">Submit changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </td>
-            </tr>
+           </tr>
         }
     </table>
 
 
 
+
 </div>
 
-<script src="~/js/site.js"|></script>
+<script src="~/js/site.js" |></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
 
 
 
