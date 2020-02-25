@@ -3,7 +3,6 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Gip.Controllers
 {
@@ -46,34 +45,40 @@ namespace Gip.Controllers
         {
             return View();
         }
-        
-        [HttpPost]
-        [Route("lokaal/delete")]
-        public ActionResult Delete(string lokaalId)
-        {
-            //
-        }
 
-        [HttpGet]
+        [HttpPost]
         [Route("lokaal/delete")]
         public ActionResult Delete(string lokaalId)
         {
             if (lokaalId == null || lokaalId.Trim().Equals(""))
             {
-                return "iets";
+                return NotFound();
             }
-            Room room = db.Room.Find(lokaalId);
+            lokaalId += " ";
+            string gebouw = lokaalId.Substring(0, 1);
+            int verdieping = int.Parse(lokaalId.Substring(1,1));
+            string nummer = lokaalId.Substring(2, (lokaalId.Length-2));
+            
+            Room room = db.Room.Find(gebouw,verdieping,nummer);
+
             if (room == null)
             {
-                return "iets anders";
+                return NotFound();
             }
-            return View(room);
+
+            db.Room.Remove(room);
+            db.SaveChanges();
+            return RedirectToAction("Index", "Lokaal");
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("lokaal/edit")]
-        public ActionResult Edit()
+        public ActionResult Edit(string lokaalId)
         {
+            if (lokaalId == null || lokaalId.Trim().Equals(""))
+            {
+                return NotFound();
+            }
             return View();
         }
     }
