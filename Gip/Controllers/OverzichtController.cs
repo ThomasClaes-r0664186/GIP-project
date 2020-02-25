@@ -19,7 +19,7 @@ namespace Gip.Controllers
         [Route("overzicht/lokalen")]
         public ActionResult Lokalen()
         {
-            return view();
+            return View();
         }
 
         // GET /overzicht/vakken
