@@ -1,9 +1,11 @@
+using Gip.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gip.Controllers
 {
     public class VakController : Controller
     {
+        private gipDatabaseContext db = new gipDatabaseContext();
         // GET
         public IActionResult Index()
         {
@@ -26,7 +28,6 @@ namespace Gip.Controllers
         [Route("vak/delete")]
         public IActionResult Vak()
         {
-            
             
             return View();
         }
