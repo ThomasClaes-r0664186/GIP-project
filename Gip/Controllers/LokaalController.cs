@@ -1,9 +1,11 @@
+using Gip.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gip.Controllers
 {
     public class LokaalController : Controller
     {
+        private gipDatabaseContext db = new gipDatabaseContext();
         // GET
         public IActionResult Index()
         {
@@ -12,7 +14,7 @@ namespace Gip.Controllers
         // POST /add/lokaal
         [HttpPost]
         [Route("lokaal/add")]
-        public IActionResult Lokaal(string gebouw, int verdiep, string nummer, string type, int capaciteit, string middelen )
+        public IActionResult Add(string gebouw, int verdiep, string nummer, string type, int capaciteit, string middelen )
         {
             Room room = new Room();
             room.Gebouw = gebouw;
@@ -28,21 +30,21 @@ namespace Gip.Controllers
         
         [HttpGet]
         [Route("lokaal/add")]
-        public IActionResult Lokaal()
+        public IActionResult Add()
         {
             return View();
         }
         
         [HttpGet]
         [Route("lokaal/delete")]
-        public IActionResult Lokaal()
+        public IActionResult Delete()
         {
             return View();
         }
         
         [HttpGet]
         [Route("lokaal/edit")]
-        public IActionResult Lokaal()
+        public IActionResult Edit()
         {
             return View();
         }

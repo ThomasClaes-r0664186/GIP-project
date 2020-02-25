@@ -13,7 +13,7 @@ namespace Gip.Controllers
         }
         [HttpPost]
         [Route("vak/add")]
-        public IActionResult Vak(string vakcode, string titel, int studiepunten)
+        public IActionResult Add(string vakcode, string titel, int studiepunten)
         { 
             Course course = new Course();
             course.Vakcode = vakcode;
@@ -26,7 +26,7 @@ namespace Gip.Controllers
         
         [HttpGet]
         [Route("vak/delete")]
-        public IActionResult Vak()
+        public IActionResult Delete()
         {
             
             return View();
@@ -34,10 +34,9 @@ namespace Gip.Controllers
         
         [HttpGet]
         [Route("vak/edit")]
-        public ActionResult Vak()
+        public ActionResult Edit()
         {
             return View();
         }
     }
     }
-}
