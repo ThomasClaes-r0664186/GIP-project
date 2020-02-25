@@ -18,39 +18,21 @@
     @foreach (var lokaal in Model)
     {
         <tr>
-            <td>@lokaal.Gebouw  @lokaal.Verdiep  @lokaal.Nummer </td>
+            <td>@lokaal.Gebouw@lokaal.Verdiep@lokaal.Nummer </td>
             <td>@lokaal.Type</td>
             <td>@lokaal.Capaciteit</td>
-            <td>@lokaal.Middelen</td>
+            <td>@lokaal.Middelen</td>   
             <td></td>
             <td></td>
             <td>
                 <form action="/lokaal/delete" method="post">
-                    <input type="text" name="lokaalId"  value="@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer">
+                    <input type="text" name="lokaalId" style="display: none" value="@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer">
                     <button type="submit" class="btn-danger">Delete</button>
                 </form>
             </td>
             <td>
                 <form action" /lokaal/edit" method="post">
-                    <input type="text" name="lokaalId" value="@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer">
-                    <label for="gebouw">Gebouw: </label><input type="text" id="gebouw" name="gebouw" /> <br><br>
-                    <label for="verdiep">Verdieping: </label><input type="text" id="verdiep" name="verdiep" /> <br><br>
-                    <label for="nummer">Nummer: </label><input type="text" id="nummer" name="nummer" /> <br><br>
-                    <label for="type">Type: </label><input type="text" id="type" name="type" /> <br><br>
-                    <label for="capaciteit">Capaciteit: </label><input type="text" id="capaciteit" name="capaciteit" /> <br><br>
-                    <label for="middelen">Middelen:</label>
-                    <select id="middelen" name="middelen">
-                        <option value="1">Wifi</option>
-                        <option value="2">Wifi/Scherm</option>
-                        <option value="3">Wifi/Scherm/Projectorsetup</option>
-                        <option value="4">Wifi/Schermen/Projectorsetup</option>
-                        <option value="5">Scherm</option>
-                        <option value="6">Schermen</option>
-                        <option value="7">Scherm/Projectorsetup</option>
-                        <option value="8">Schermen/Projectorsetup</option>
-                        <option value="9">Projectorsetup</option>
-                    </select>
-                    <button type="submit" class="btn-dark">Edit</button>
+                   
                 </form>
             </td>
         </tr>
