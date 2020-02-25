@@ -85,7 +85,6 @@ namespace Gip.Controllers
             gebouw = gebouw.ToUpper();
             if (lokaalId == null || lokaalId.Trim().Equals(""))
             {
-
                 ViewBag.error = true;
                 return NotFound();
             }
