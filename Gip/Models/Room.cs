@@ -24,39 +24,42 @@ namespace Gip.Models
         {
             get
             {
-
                 return middelen;
             }
             set
             {
                 string middelen1 = value.ToLower();
-                int aantal = middelen1.Split('/').Length;
+                int aantal = 1;
+                if (middelen1.Contains('/'))
+                {
+                    aantal = middelen1.Split('/').Length;
+                }
                 if (aantal > 3)
                 {
-                    throw new RoomException("");
+                    throw new DatabaseException("The amount of resources for a single room is to high!" + Environment.NewLine + "Please try again!");
                 }
                 int gevonden = 0;
                 if (!middelen1.Trim().Equals(""))
                 {
-                    if (middelen1.Contains("Projectorsetup"))
+                    if (middelen1.Contains("projectorsetup"))
                     {
                         gevonden++;
                     }
-                    if (middelen1.Contains("Scherm"))
+                    if (middelen1.Contains("scherm"))
                     {
                         gevonden++;
                     }
-                    else if (middelen1.Contains("Schermen"))
+                    else if (middelen1.Contains("schermen"))
                     {
                         gevonden++;
                     }
-                    if (middelen1.Contains("Wifi"))
+                    if (middelen1.Contains("wifi"))
                     {
                         gevonden++;
                     }
                     if (gevonden != aantal)
                     {
-                        throw new RoomException("The resources you selected are not available!" + Environment.NewLine + "Please try again!");
+                        throw new DatabaseException("The resources you selected are not available!" + Environment.NewLine + "Please try again!");
                     }
                 }
                 
@@ -74,7 +77,7 @@ namespace Gip.Models
             {
                 if (value.Trim().Length <= 0 || value.Trim().Length > 3)
                 {
-                    throw new RoomException("The building you wish selected does not exist!" + Environment.NewLine + "Please try again.");
+                    throw new DatabaseException("The building you wish selected does not exist!" + Environment.NewLine + "Please try again.");
                 }
                 else
                 {
@@ -91,7 +94,7 @@ namespace Gip.Models
             {
                 if (value < 0 || value > 3)
                 {
-                    throw new RoomException("The floor you wish to select does not exist!" + Environment.NewLine + "Please try again.");
+                    throw new DatabaseException("The floor you wish to select does not exist!" + Environment.NewLine + "Please try again.");
                 }
                 else
                 {
@@ -108,7 +111,7 @@ namespace Gip.Models
             {
                 if (value.Trim().Length > 3 || value.Trim().Length < 0)
                 {
-                    throw new RoomException("The number you wish to select does not exist!" + Environment.NewLine + "Please try again.");
+                    throw new DatabaseException("The number you wish to select does not exist!" + Environment.NewLine + "Please try again.");
                 }
                 else
                 {
@@ -129,7 +132,7 @@ namespace Gip.Models
                 }
                 else
                 {
-                    throw new RoomException("the type of room you wish to select does not exist!" + Environment.NewLine + "Please try again.");
+                    throw new DatabaseException("the type of room you wish to select does not exist!" + Environment.NewLine + "Please try again.");
                 }
             }
         }
@@ -143,11 +146,11 @@ namespace Gip.Models
             {
                 if (value > 400)
                 {
-                    throw new RoomException("The chosen capacity was to high!" + Environment.NewLine + "Please try again.");
+                    throw new DatabaseException("The chosen capacity was to high!" + Environment.NewLine + "Please try again.");
                 }
                 else if (value < 0)
                 {
-                    throw new RoomException("The chosen capacity was to low!" + Environment.NewLine + "Please try again.");
+                    throw new DatabaseException("The chosen capacity was to low!" + Environment.NewLine + "Please try again.");
                 }
                 else
                 {
