@@ -1,7 +1,8 @@
 using Gip.Models;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+using System.Net;
+using System.Web.Mvc;
 
 namespace Gip.Controllers
 {
@@ -27,6 +28,7 @@ namespace Gip.Controllers
 
             return View(qry);
         }
+
         // POST /add/lokaal
         [HttpPost]
         [Route("lokaal/add")]
@@ -51,13 +53,29 @@ namespace Gip.Controllers
             return View();
         }
         
+        [HttpPost]
+        [Route("lokaal/delete")]
+        public ActionResult Delete(string lokaalId)
+        {
+            //
+        }
+
         [HttpGet]
         [Route("lokaal/delete")]
-        public ActionResult Delete()
+        public ActionResult Delete(string lokaalId)
         {
-            return View();
+            if (lokaalId == null || lokaalId.Trim().Equals(""))
+            {
+                return "iets";
+            }
+            Room room = db.Room.Find(lokaalId);
+            if (room == null)
+            {
+                return "iets anders";
+            }
+            return View(room);
         }
-        
+
         [HttpGet]
         [Route("lokaal/edit")]
         public ActionResult Edit()
