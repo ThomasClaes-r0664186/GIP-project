@@ -1,9 +1,7 @@
 using Gip.Models;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using System.Web.Mvc;
-
+using System;
 namespace Gip.Controllers
 {
     public class LokaalController : Controller
@@ -25,7 +23,7 @@ namespace Gip.Controllers
                           d.Capaciteit,
                           d.Middelen
                       };
-
+            return StatusCodeResult(500);
             return View(qry);
         }
 
