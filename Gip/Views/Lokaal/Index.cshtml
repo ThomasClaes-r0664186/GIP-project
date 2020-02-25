@@ -1,12 +1,37 @@
-﻿@model  IEnumerable<Gip.Models.Room>
+﻿@model IEnumerable<Gip.Models.Room>
 </Gip.Models.Room> @{
-ViewData["Title"]="Index" ;
+    ViewData["Title"] = "Index";
 }
 
 <h1>Overzicht van de lokalen</h1>
 <table>
+    <tr>
+        <th>Lokaal</th>
+        <th>Type</th>
+        <th>Capaciteit</th>
+        <th> &nbsp; Middelen</th>
+        <th></th>
+        <th></th>
+        <th></th>
+    </tr>
     @foreach (var lokaal in Model)
     {
-        <tr>@lokaal.Capaciteit</tr>
+        <tr>
+            <td>@lokaal.Gebouw  @lokaal.Verdiep  @lokaal.Nummer </td>
+            <td>@lokaal.Type</td>
+            <td>@lokaal.Capaciteit</td>
+            <td>@lokaal.Middelen</td>
+            <td></td>
+            <td></td>
+            <td>
+                <form action="/lokaal/delete" method="post">
+                    <input type="text" name="lokaalId" style="display: none" value="@lokaal.Gebouw@lokaal.Verdiep@lokaal.Nummer">
+                    <button type="submit" class="btn-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
     }
 </table>
+
+
+
