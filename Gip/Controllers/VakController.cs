@@ -1,16 +1,26 @@
 using Gip.Models;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace Gip.Controllers
 {
     public class VakController : Controller
     {
         private gipDatabaseContext db = new gipDatabaseContext();
+        
         // GET
+        [HttpGet]
+        [Route("vak")]
         public ActionResult Index()
         {
-            return View();
+            var qry = from d in db.Course
+                      orderby d.Vakcode
+                      select d;
+
+            return View(qry);
         }
+
         [HttpPost]
         [Route("vak/add")]
         public ActionResult Add(string vakcode, string titel, int studiepunten)
