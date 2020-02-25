@@ -28,7 +28,7 @@ namespace Gip.Controllers
         public ActionResult Add(string gebouw, int verdiep, string nummer, string type, int capaciteit, string middelen )
         {
             Room room = new Room();
-            room.Gebouw = gebouw;
+            room.Gebouw = gebouw.ToUpper();
             room.Verdiep = verdiep;
             room.Nummer = nummer;
             room.Type = type;
@@ -54,7 +54,7 @@ namespace Gip.Controllers
             {
                 return NotFound();
             }
-            lokaalId += " ";
+            lokaalId = lokaalId.Trim() + " ";
             string gebouw = lokaalId.Substring(0, 1);
             int verdieping = int.Parse(lokaalId.Substring(1,1));
             string nummer = lokaalId.Substring(2, (lokaalId.Length-2));
@@ -73,12 +73,52 @@ namespace Gip.Controllers
 
         [HttpPost]
         [Route("lokaal/edit")]
-        public ActionResult Edit(string lokaalId)
+        public ActionResult Edit(string lokaalId, string gebouw, int verdiep, string nummer, string type, int capaciteit, string middelen)
         {
+            gebouw = gebouw.ToUpper();
             if (lokaalId == null || lokaalId.Trim().Equals(""))
             {
                 return NotFound();
             }
+
+            lokaalId = lokaalId.Trim() + " ";
+            string gebouwId = lokaalId.Substring(0, 1);
+            int verdieping = int.Parse(lokaalId.Substring(1, 1));
+            string nummerOld = lokaalId.Substring(2, (lokaalId.Length - 2));
+
+            Room room = db.Room.Find(gebouwId, verdieping, nummerOld);
+
+            try
+            {
+                if (!room.Gebouw.Equals(gebouw))
+                {
+                    db.Room.Find(gebouwId, verdieping, nummerOld).Gebouw = gebouw;
+                }
+                if (!room.Verdiep.Equals(verdiep))
+                {
+                    db.Room.Find(gebouwId, verdieping, nummerOld).Gebouw = gebouw;
+                }
+                if (!room.Nummer.Equals(nummer))
+                {
+                    db.Room.Find(gebouwId, verdieping, nummerOld).Nummer = nummer;
+                }
+                if (!room.Type.Equals(type))
+                {
+                    db.Room.Find(gebouwId, verdieping, nummerOld).Type = type;
+                }
+                if (!room.Capaciteit.Equals(capaciteit))
+                {
+                    db.Room.Find(gebouwId, verdieping, nummerOld).Capaciteit = capaciteit;
+                }
+                if (!room.Middelen.Equals(middelen))
+                {
+                    db.Room.Find(gebouwId, verdieping, nummerOld).Middelen = middelen;
+                }
+            }
+            catch (Exception e) {
+                return StatusCode(405);
+            }
+            db.SaveChanges();
             return View();
         }
     }
