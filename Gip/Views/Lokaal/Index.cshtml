@@ -4,20 +4,9 @@ ViewData["Title"]="Index" ;
 }
 
 <h1>Overzicht van de lokalen</h1>
-<<<<<<< HEAD
 <table>
     @foreach (var lokaal in Model)
     {
-        <tr>
-            <td>@lokaal<td>
-        </tr>
+        <tr>@lokaal.Capaciteit</tr>
     }
 </table>
-=======
-@foreach (var lokaal in Model) {
-    <table>
-        <tr>@lokaal.Capaciteit</tr>
-    </table>
-}
-
->>>>>>> 80d0e82ded05cc590c6f709f883743fa72339342
