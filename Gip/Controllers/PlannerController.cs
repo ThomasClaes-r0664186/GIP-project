@@ -9,7 +9,7 @@ namespace Gip.Controllers
         // GET /planner
         [HttpGet]
         [Route("planner")]
-        public IActionResult Index()
+        public ActionResult Index()
         {
             return View();
         }

@@ -1,5 +1,7 @@
 using Gip.Models;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace Gip.Controllers
 {
@@ -7,14 +9,28 @@ namespace Gip.Controllers
     {
         private gipDatabaseContext db = new gipDatabaseContext();
         // GET
-        public IActionResult Index()
+        [HttpGet]
+        [Route("lokaal")]
+        public ActionResult Index()
         {
-            return View();
+            var qry = from d in db.Room 
+                      orderby d.Gebouw, d.Verdiep, d.Nummer 
+                      select new {
+                          /*d.Gebouw, 
+                          d.Verdiep, 
+                          d.Nummer,*/
+                          lokaalId = d.Gebouw + d.Verdiep + d.Nummer,
+                          d.Type,
+                          d.Capaciteit,
+                          d.Middelen
+                      };
+
+            return View(qry);
         }
         // POST /add/lokaal
         [HttpPost]
         [Route("lokaal/add")]
-        public IActionResult Add(string gebouw, int verdiep, string nummer, string type, int capaciteit, string middelen )
+        public ActionResult Add(string gebouw, int verdiep, string nummer, string type, int capaciteit, string middelen )
         {
             Room room = new Room();
             room.Gebouw = gebouw;
@@ -30,21 +46,21 @@ namespace Gip.Controllers
         
         [HttpGet]
         [Route("lokaal/add")]
-        public IActionResult Add()
+        public ActionResult Add()
         {
             return View();
         }
         
         [HttpGet]
         [Route("lokaal/delete")]
-        public IActionResult Delete()
+        public ActionResult Delete()
         {
             return View();
         }
         
         [HttpGet]
         [Route("lokaal/edit")]
-        public IActionResult Edit()
+        public ActionResult Edit()
         {
             return View();
         }

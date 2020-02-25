@@ -7,13 +7,13 @@ namespace Gip.Controllers
     {
         private gipDatabaseContext db = new gipDatabaseContext();
         // GET
-        public IActionResult Index()
+        public ActionResult Index()
         {
             return View();
         }
         [HttpPost]
         [Route("vak/add")]
-        public IActionResult Add(string vakcode, string titel, int studiepunten)
+        public ActionResult Add(string vakcode, string titel, int studiepunten)
         { 
             Course course = new Course();
             course.Vakcode = vakcode;
@@ -26,7 +26,7 @@ namespace Gip.Controllers
         
         [HttpGet]
         [Route("vak/delete")]
-        public IActionResult Delete()
+        public ActionResult Delete()
         {
             
             return View();
