@@ -20,47 +20,47 @@ namespace Gip.Models
        // public int Capaciteit { get; set; }
         
         private String middelen;
-        public Utils Middelen
+        public string Middelen
         {
             get
             {
 
-                string[] items = middelen.Split('/');
-
-                bool Projectorsetup =false;
-                bool Schermen = false;
-                bool Scherm = false;
-                bool Wifi = false;
-
-                foreach (string item in items)
-                {
-                    if (!Projectorsetup)
-                        Projectorsetup = item.Contains("Projectorsetup");
-                    if (!Schermen)
-                        Schermen = item.Contains("Schermen");
-                    if (!Scherm)
-                        Schermen = item.Contains("Scherm");
-                    if (!Wifi)
-                        Wifi = item.Contains("wifi");
-                }
-                Utils u = new Utils(Projectorsetup, Scherm, Schermen, Wifi);
-                return u;
+                return middelen;
             }
             set
             {
-                string middelen1 = string.Empty;
+                string middelen1 = value.ToLower();
+                int aantal = middelen1.Split('/').Length;
+                if (aantal > 3)
+                {
+                    throw new RoomException("");
+                }
+                int gevonden = 0;
+                if (!middelen1.Trim().Equals(""))
+                {
+                    if (middelen1.Contains("Projectorsetup"))
+                    {
+                        gevonden++;
+                    }
+                    if (middelen1.Contains("Scherm"))
+                    {
+                        gevonden++;
+                    }
+                    else if (middelen1.Contains("Schermen"))
+                    {
+                        gevonden++;
+                    }
+                    if (middelen1.Contains("Wifi"))
+                    {
+                        gevonden++;
+                    }
+                    if (gevonden != aantal)
+                    {
+                        throw new RoomException("The resources you selected are not available!" + Environment.NewLine + "Please try again!");
+                    }
+                }
                 
-                Utils utils = (Utils)value;
-
-                if (utils.Projectorsetup)                
-                    middelen1 += "Projectorsetup/";
-                if (utils.Scherm)
-                    middelen1 += "Scherm/";
-                if (utils.Schermen)
-                    middelen1 += "Schermen/";
-                if (utils.Wifi)
-                    middelen1 += "Wifi/";
-                middelen1 = middelen1.Substring(0, middelen1.Length - 1);
+                            
             }
             
         } //gooit nog geen exception
