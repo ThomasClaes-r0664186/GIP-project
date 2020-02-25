@@ -36,7 +36,7 @@ namespace Gip.Controllers
             room.Middelen = middelen;
             db.Room.Add(room);
             db.SaveChanges();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Lokaal");
         }
         
         [HttpGet]
