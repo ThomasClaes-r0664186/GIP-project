@@ -7,9 +7,9 @@
 <table>
     <tr>
         <th>Lokaal</th>
-        <th>Type</th>
+        <th> &emsp; Type</th>
         <th>Capaciteit</th>
-        <th> &nbsp; Middelen</th>
+        <th> &emsp; &emsp; &emsp; Middelen</th>
         <th></th>
         <th></th>
         <th></th>
@@ -25,7 +25,7 @@
             <td></td>
             <td>
                 <form action="/lokaal/delete" method="post">
-                    <input type="text" name="lokaalId" style="display: none" value="@lokaal.Gebouw@lokaal.Verdiep@lokaal.Nummer">
+                    <input type="text" name="lokaalId"  value="@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer">
                     <button type="submit" class="btn-danger">Delete</button>
                 </form>
             </td>

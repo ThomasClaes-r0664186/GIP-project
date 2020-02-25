@@ -115,8 +115,9 @@ namespace Gip.Controllers
                     db.Room.Find(gebouwId, verdieping, nummerOld).Middelen = middelen;
                 }
             }
-            catch (Exception e) {
-                return StatusCode(405);
+            catch (Exception)
+            {
+                return StatusCode(422);
             }
             db.SaveChanges();
             return View();
