@@ -100,13 +100,13 @@ namespace Gip.Models
             }
         }
 
-        private int nummer;
-        public int Nummer
+        private string nummer;
+        public string Nummer
         {
             get { return nummer; }
             set
             {
-                if (value > 99 || value < 0)
+                if (value.Trim().Length > 3 || value.Trim().Length < 0)
                 {
                     throw new RoomException("The number you wish to select does not exist!" + Environment.NewLine + "Please try again.");
                 }
