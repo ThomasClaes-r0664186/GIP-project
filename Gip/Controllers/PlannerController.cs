@@ -4,7 +4,7 @@ namespace Gip.Controllers
 {
     public class PlannerController : Controller
     {
-        // GET
+        // GET /planner
         public IActionResult Index()
         {
             return View();

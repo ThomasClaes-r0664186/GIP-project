@@ -4,8 +4,20 @@ namespace Gip.Controllers
 {
     public class OverzichtController : Controller
     {
-        // GET
+        // GET /Overzicht
         public IActionResult Index()
+        {
+            return View();
+        }
+
+        // GET /overzicht/lokalen
+        public ActionResult Lokalen()
+        {
+            return view();
+        }
+
+        // GET /overzicht/vakken
+        public ActionResult Vakken()
         {
             return View();
         }
