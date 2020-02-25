@@ -1,7 +1,25 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
-}
+﻿@model IEnumerable<Gip.Models.Course>
+<Gip.Models.Course>
+    @{
+        ViewData["Title"] = "Index";
+    }
 
-<h1>Overzicht van de vakken</h1>
+    <h1>Overzicht van de vakken</h1>
+    <table class="table table-bordered table-hover table-striped">
+        <tr>
 
+            <th>Vakcode</th>
+            <th>Titel</th>
+            <th>Studiepunten</th>
+
+        </tr>
+        @foreach (var vak in Model)
+        {
+            <tr>
+                <td>@vak.Vakcode</td>
+                <td>@vak.Titel</td>
+                <td>@vak.Studiepunten</td> 
+            </tr>
+
+        }
+    </table>
