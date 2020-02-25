@@ -27,6 +27,9 @@ namespace Gip.Controllers
         [Route("lokaal/add")]
         public ActionResult Add(string gebouw, int verdiep, string nummer, string type, int capaciteit, string middelen )
         {
+
+
+
             Room room = new Room();
             room.Gebouw = gebouw.ToUpper();
             room.Verdiep = verdiep;
@@ -51,7 +54,8 @@ namespace Gip.Controllers
         public ActionResult Delete(string lokaalId)
         {
             if (lokaalId == null || lokaalId.Trim().Equals(""))
-            {
+            {   
+                ViewBag.error = true; 
                 return NotFound();
             }
             lokaalId = lokaalId.Trim() + " ";
@@ -63,11 +67,13 @@ namespace Gip.Controllers
 
             if (room == null)
             {
+                ViewBag.error = true;
                 return NotFound();
             }
 
             db.Room.Remove(room);
             db.SaveChanges();
+            ViewBag.error = false;
             return RedirectToAction("Index", "Lokaal");
         }
 
@@ -75,9 +81,12 @@ namespace Gip.Controllers
         [Route("lokaal/edit")]
         public ActionResult Edit(string lokaalId, string gebouw, int verdiep, string nummer, string type, int capaciteit, string middelen)
         {
+            bool changed = false;
             gebouw = gebouw.ToUpper();
             if (lokaalId == null || lokaalId.Trim().Equals(""))
             {
+                 
+                ViewBag.error = true;
                 return NotFound();
             }
 
@@ -87,40 +96,52 @@ namespace Gip.Controllers
             string nummerOld = lokaalId.Substring(2, (lokaalId.Length - 2));
 
             Room room = db.Room.Find(gebouwId, verdieping, nummerOld);
+            Delete(lokaalId);
 
             try
             {
                 if (!room.Gebouw.Equals(gebouw))
                 {
-                    db.Room.Find(gebouwId, verdieping, nummerOld).Gebouw = gebouw;
+                    room.Gebouw = gebouw;
+                    changed = true;
                 }
                 if (!room.Verdiep.Equals(verdiep))
                 {
-                    db.Room.Find(gebouwId, verdieping, nummerOld).Gebouw = gebouw;
+                    room.Verdiep = verdiep;
+                    changed = true;
                 }
                 if (!room.Nummer.Equals(nummer))
                 {
-                    db.Room.Find(gebouwId, verdieping, nummerOld).Nummer = nummer;
+                    room.Nummer = nummer;
+                    changed = true;
                 }
                 if (!room.Type.Equals(type))
                 {
-                    db.Room.Find(gebouwId, verdieping, nummerOld).Type = type;
+                    room.Type = type;
+                    changed = true;
                 }
                 if (!room.Capaciteit.Equals(capaciteit))
                 {
-                    db.Room.Find(gebouwId, verdieping, nummerOld).Capaciteit = capaciteit;
+                    room.Capaciteit = capaciteit;
+                    changed = true;
                 }
                 if (!room.Middelen.Equals(middelen))
                 {
-                    db.Room.Find(gebouwId, verdieping, nummerOld).Middelen = middelen;
+                    room.Middelen = middelen;
+                    changed = true;
                 }
             }
             catch (Exception)
             {
-                return StatusCode(422);
+                ViewBag.error = true;
+                return View();
             }
-            db.SaveChanges();
-            return View();
+            if (changed) {
+                db.Room.Add(room);
+                db.SaveChanges();
+            }
+            ViewBag.error = false;
+            return RedirectToAction("Index", "Lokaal");
         }
     }
 }
