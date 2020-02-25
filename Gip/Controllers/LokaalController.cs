@@ -14,8 +14,8 @@ namespace Gip.Controllers
         [Route("lokaal")]
         public ActionResult Index()
         {
-            var qry = from d in db.Room 
-                      orderby d.Gebouw, d.Verdiep, d.Nummer 
+            var qry = from d in db.Room
+                      orderby d.Gebouw, d.Verdiep, d.Nummer
                       select new {
                           /*d.Gebouw, 
                           d.Verdiep, 
