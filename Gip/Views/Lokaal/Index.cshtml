@@ -3,5 +3,12 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Overzicht van de vakken</h1>
-
+<h1>Overzicht van de lokalen</h1>
+<table>
+    @foreach (var lokaal in Model)
+    {
+        <tr>
+            <td>@lokaal.lokaalId<td>
+        </tr>
+    }
+</table>
