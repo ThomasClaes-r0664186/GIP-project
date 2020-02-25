@@ -45,11 +45,11 @@ namespace Gip.Models
                     {
                         gevonden++;
                     }
-                    if (middelen1.Contains("scherm"))
+                    if (middelen1.Contains("schermen"))
                     {
                         gevonden++;
                     }
-                    else if (middelen1.Contains("schermen"))
+                    else if (middelen1.Contains("scherm"))
                     {
                         gevonden++;
                     }
@@ -60,6 +60,9 @@ namespace Gip.Models
                     if (gevonden != aantal)
                     {
                         throw new DatabaseException("The resources you selected are not available!" + Environment.NewLine + "Please try again!");
+                    }
+                    else {
+                        middelen = value;
                     }
                 }
                 

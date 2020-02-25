@@ -27,9 +27,6 @@ namespace Gip.Controllers
         [Route("lokaal/add")]
         public ActionResult Add(string gebouw, int verdiep, string nummer, string type, int capaciteit, string middelen )
         {
-
-
-
             Room room = new Room();
             room.Gebouw = gebouw.ToUpper();
             room.Verdiep = verdiep;

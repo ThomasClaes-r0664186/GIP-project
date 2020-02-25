@@ -32,7 +32,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="nummer" class="col-form-label">Nummer:</label>
-                                <input type="text" class="form-control" id="nummer" placeholder="Bv. K01,25.." name="nummer">
+                                <input type="text" class="form-control" id="nummer" placeholder="Bv. 01K,25.." name="nummer">
                             </div>
                             <div class="form-group">
                                 <label for="type" class="col-form-label">Type:</label>
@@ -40,22 +40,22 @@
                             </div>
                             <div class="form-group">
                                 <label for="capaciteit" class="col-form-label">Capaciteit:</label>
-                                <input type="number" class="form-control" id="capaciteit" placeholder="Bv. 100..." name="">
+                                <input type="number" class="form-control" id="capaciteit" placeholder="Bv. 100..." name="capaciteit">
                             </div>
                             <div class="form-group">
                                 <label for="middelen" class="col-form-label">Middelen?</label>
                                 <select id="middelen" class="form-control" name="middelen">
-                                    <option value="1">Wifi/Projectorsetup/Scherm</option>
-                                    <option value="2">Wifi/Schermen</option>
-                                    <option value="3">Wifi/Projectorsetup</option>
-                                    <option value="4">Projectorsetup/Scherm</option>
-                                    <option value="5">Projectorsetup/Schermen</option>
-                                    <option value="6">Wifi/Scherm</option>
-                                    <option value="7">Wifi/Projectorsetup</option>
-                                    <option value="8">Wifi</option>
-                                    <option value="9">Projectorsetup</option>
-                                    <option value="10">Scherm</option>
-                                    <option value="11">Schermen</option>
+                                    <option value="Wifi/Projectorsetup/Scherm">Wifi/Projectorsetup/Scherm</option>
+                                    <option value="Wifi/Schermen">Wifi/Schermen</option>
+                                    <option value="Wifi/Projectorsetup">Wifi/Projectorsetup</option>
+                                    <option value="Projectorsetup/Scherm">Projectorsetup/Scherm</option>
+                                    <option value="Projectorsetup/Schermen">Projectorsetup/Schermen</option>
+                                    <option value="Wifi/Scherm">Wifi/Scherm</option>
+                                    <option value="Wifi/Projectorsetup">Wifi/Projectorsetup</option>
+                                    <option value="Wifi">Wifi</option>
+                                    <option value="Projectorsetup">Projectorsetup</option>
+                                    <option value="Scherm">Scherm</option>
+                                    <option value="Schermen">Schermen</option>
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-primary">Voeg lokaal toe</button>
@@ -111,6 +111,9 @@
                                     </div>
                                     <div class="modal-body">
                                         <form action="/lokaal/edit" method="post">
+                                            <div>
+                                                <input type="text" name="lokaalId" style="display: none" value="@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer">
+                                            </div>
                                             <div class="form-group">
                                                 <label for="gebouw" class="col-form-label">Gebouw:</label>
                                                 <input type="text" class="form-control" id="gebouw" placeholder="Bv. A,B..." name="gebouw">
@@ -121,7 +124,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="nummer" class="col-form-label">Nummer:</label>
-                                                <input type="text" class="form-control" id="nummer" placeholder="Bv. K01,25.." name="nummer">
+                                                <input type="text" class="form-control" id="nummer" placeholder="Bv. 01K,25.." name="nummer">
                                             </div>
                                             <div class="form-group">
                                                 <label for="type" class="col-form-label">Type:</label>
@@ -134,17 +137,17 @@
                                             <div class="form-group">
                                                 <label for="middelen" class="col-form-label">Middelen?</label>
                                                 <select id="middelen" class="form-control" name="middelen">
-                                                    <option value="1">Wifi/Projectorsetup/Scherm</option>
-                                                    <option value="2">Wifi/Schermen</option>
-                                                    <option value="3">Wifi/Projectorsetup</option>
-                                                    <option value="4">Projectorsetup/Scherm</option>
-                                                    <option value="5">Projectorsetup/Schermen</option>
-                                                    <option value="6">Wifi/Scherm</option>
-                                                    <option value="7">Wifi/Projectorsetup</option>
-                                                    <option value="8">Wifi</option>
-                                                    <option value="9">Projectorsetup</option>
-                                                    <option value="10">Scherm</option>
-                                                    <option value="11">Schermen</option>
+                                                    <option value="Wifi/Projectorsetup/Scherm">Wifi/Projectorsetup/Scherm</option>
+                                                    <option value="Wifi/Schermen">Wifi/Schermen</option>
+                                                    <option value="Wifi/Projectorsetup">Wifi/Projectorsetup</option>
+                                                    <option value="Projectorsetup/Scherm">Projectorsetup/Scherm</option>
+                                                    <option value="Projectorsetup/Schermen">Projectorsetup/Schermen</option>
+                                                    <option value="Wifi/Scherm">Wifi/Scherm</option>
+                                                    <option value="Wifi/Projectorsetup">Wifi/Projectorsetup</option>
+                                                    <option value="Wifi">Wifi</option>
+                                                    <option value="Projectorsetup">Projectorsetup</option>
+                                                    <option value="Scherm">Scherm</option>
+                                                    <option value="Schermen">Schermen</option>
                                                 </select>
                                             </div>
                                             <div class="modal-footer">
