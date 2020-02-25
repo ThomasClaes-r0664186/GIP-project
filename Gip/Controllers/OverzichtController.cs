@@ -1,9 +1,11 @@
+using Gip.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gip.Controllers
 {
     public class OverzichtController : Controller
     {
+        private gipDatabaseContext db = new gipDatabaseContext();
         // GET /Overzicht
         [HttpGet]
         [Route("overzicht")]

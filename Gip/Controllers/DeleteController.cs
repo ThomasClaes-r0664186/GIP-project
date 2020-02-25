@@ -1,9 +1,12 @@
+using Gip.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gip.Controllers
 {
     public class DeleteController : Controller
     {
+        private gipDatabaseContext db = new gipDatabaseContext();
+        
         // GET /delete/lokaal
         [HttpGet]
         [Route("delete/lokaal")]
@@ -17,6 +20,8 @@ namespace Gip.Controllers
         [Route("delete/vak")]
         public IActionResult Vak()
         {
+            
+            
             return View();
         }
     }
