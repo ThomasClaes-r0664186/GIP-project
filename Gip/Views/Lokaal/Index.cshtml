@@ -1,14 +1,12 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
+﻿@model  IEnumerable<Gip.Models.Room>
+</Gip.Models.Room> @{
+ViewData["Title"]="Index" ;
 }
 
 <h1>Overzicht van de lokalen</h1>
-<table>
-    @foreach (var lokaal in Model)
-    {
-        <tr>
-            <td>@lokaal.lokaalId<td>
-        </tr>
-    }
-</table>
+@foreach (var lokaal in Model) {
+    <table>
+        <tr>@lokaal.Capaciteit</tr>
+    </table>
+}
+

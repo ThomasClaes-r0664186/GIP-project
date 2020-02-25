@@ -2,6 +2,7 @@ using Gip.Models;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Gip.Controllers
 {
@@ -13,18 +14,11 @@ namespace Gip.Controllers
         [Route("lokaal")]
         public ActionResult Index()
         {
+            var gebouwlst = new List<string>();
             var qry = from d in db.Room
                       orderby d.Gebouw, d.Verdiep, d.Nummer
-                      select new {
-                          /*d.Gebouw, 
-                          d.Verdiep, 
-                          d.Nummer,*/
-                          lokaalId = d.Gebouw + d.Verdiep + d.Nummer,
-                          d.Type,
-                          d.Capaciteit,
-                          d.Middelen
-                      };
-
+                      select d;
+    
             return View(qry);
         }
         // POST /add/lokaal
