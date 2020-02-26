@@ -94,6 +94,10 @@ namespace Gip.Models
                     {
                         gebouw = value;
                     }
+                    else
+                    {
+                        throw new DatabaseException("The building you wish selected does not exist!" + Environment.NewLine + "Please do not include anny special caracters and try again.");
+                    }
                 }
             }
         }
