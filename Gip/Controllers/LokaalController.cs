@@ -77,7 +77,6 @@ namespace Gip.Controllers
         [Route("lokaal/edit")]
         public ActionResult Edit(string lokaalId, string gebouw, int verdiep, string nummer, string type, int capaciteit, string middelen)
         {
-            bool changed = false;
             gebouw = gebouw.ToUpper();
             if (lokaalId == null || lokaalId.Trim().Equals(""))
             {
@@ -96,46 +95,20 @@ namespace Gip.Controllers
 
             try
             {
-                if (!room.Gebouw.Equals(gebouw))
-                {
-                    room.Gebouw = gebouw;
-                    changed = true;
-                }
-                if (!room.Verdiep.Equals(verdiep))
-                {
-                    room.Verdiep = verdiep;
-                    changed = true;
-                }
-                if (!room.Nummer.Equals(nummer))
-                {
-                    room.Nummer = nummer;
-                    changed = true;
-                }
-                if (!room.Type.Equals(type))
-                {
-                    room.Type = type;
-                    changed = true;
-                }
-                if (!room.Capaciteit.Equals(capaciteit))
-                {
-                    room.Capaciteit = capaciteit;
-                    changed = true;
-                }
-                if (!room.Middelen.Equals(middelen))
-                {
-                    room.Middelen = middelen;
-                    changed = true;
-                }
+                room.Gebouw = gebouw;
+                room.Verdiep = verdiep;
+                room.Nummer = nummer;
+                room.Type = type;
+                room.Capaciteit = capaciteit;
+                room.Middelen = middelen;                    
             }
             catch (Exception)
             {
                 ViewBag.error = true;
                 return View();
             }
-            if (changed) {
-                db.Room.Add(room);
-                db.SaveChanges();
-            }
+            db.Room.Add(room);
+            db.SaveChanges();
             ViewBag.error = false;
             return RedirectToAction("Index", "Lokaal");
         }
