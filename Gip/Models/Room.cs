@@ -61,13 +61,8 @@ namespace Gip.Models
                     {
                         throw new DatabaseException("The resources you selected are not available!" + Environment.NewLine + "Please try again!");
                     }
-                    else {
-                        middelen = value;
-                    }
+                    middelen = value;
                 }
-                
-                            
-            }
             
         } //gooit nog geen exception
 
