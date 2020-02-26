@@ -64,7 +64,7 @@ namespace Gip.Controllers
             if (room == null)
             {
                 ViewBag.error = true;
-                return NotFound();
+                return RedirectToAction("Index", "Lokaal");
             }
 
             db.Room.Remove(room);

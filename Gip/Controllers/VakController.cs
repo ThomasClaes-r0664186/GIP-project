@@ -31,15 +31,35 @@ namespace Gip.Controllers
             course.Studiepunten = studiepunten;
             db.Course.Add(course);
             db.SaveChanges();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Vak");
         }
-        
+
         [HttpGet]
-        [Route("vak/delete")]
-        public ActionResult Delete()
+        [Route("vak/add")]
+        public ActionResult Add()
         {
-            
             return View();
+        }
+
+        [HttpPost]
+        [Route("vak/delete")]
+        public ActionResult Delete(string vakcode)
+        {
+            if (vakcode == null || vakcode.Trim().Equals("")) {
+                ViewBag.error = true;
+                return NotFound();
+            }
+
+            Course course = db.Course.Find(vakcode);
+
+            if (course == null) {
+                ViewBag.error = true;
+                return RedirectToAction("Index", "Vak");
+            }
+            db.Course.Remove(course);
+            db.SaveChanges();
+            ViewBag.error = false;
+            return RedirectToAction("Index", "Vak");
         }
         
         [HttpGet]
