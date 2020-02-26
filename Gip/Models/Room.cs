@@ -96,7 +96,7 @@ namespace Gip.Models
                     }
                     else
                     {
-                        throw new DatabaseException("The building you wish selected does not exist!" + Environment.NewLine + "Please do not include anny special caracters and try again.");
+                        throw new DatabaseException("The building you wish selected does not exist!" + Environment.NewLine + "Please do not include any special characters and try again.");
                     }
                 }
             }
