@@ -77,12 +77,18 @@ namespace Gip.Controllers
 
             try
             {
+                course.Vakcode = vakcodeNew;
+                course.Titel = titel;
+                course.Studiepunten = studiepunten;
             }
-            catch (Exception) { 
-            
+            catch (Exception) {
+                ViewBag.error = true;
+                return View();
             }
-
-            return View();
+            db.Course.Add(course);
+            db.SaveChanges();
+            ViewBag.error = false;
+            return RedirectToAction("Index", "Vak");
         }
     }
     }
