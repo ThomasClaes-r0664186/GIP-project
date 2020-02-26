@@ -52,14 +52,34 @@
                     <td>@vak.Titel</td>
                     <td>@vak.Studiepunten</td>
                     <td>
-                        <form action="/vak/delete" method="post">
-                            <input type="text" name="vakcode" style="display: none" value="@vak.Vakcode">
-                            <button type="submit" class="btn-danger">Delete</button>
-                        </form>
+                        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteVakModal-@vak.Vakcode">Delete</button>
+                        <div class="modal fade" id="deleteVakModal-@vak.Vakcode" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Vak verwijderen?</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="/vak/delete" method="post">
+                                            <div>
+                                                <input type="text" name="vakcode" style="display: none" value="@vak.Vakcode">
+                                            </div>
+                                            Ben je zeker dat je het vak wilt verwijderen?
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-sm btn-danger">Verwijder vak</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </td>
                     <td>
-                        <button type="button" class="btn-dark" data-toggle="modal" data-target="#editVak">Edit</button>
-                        <div class="modal fade" id="editVak" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <button type="button" class="btn-dark" data-toggle="modal" data-target="#editVak-@vak.Vakcode">Edit</button>
+                        <div class="modal fade" id="editVak-@vak.Vakcode" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -71,19 +91,19 @@
                                     <div class="modal-body">
                                         <form action="/vak/edit" method="post">
                                             <div>
-                                                <input type="text" name="lokaalId" style="display:none" value="@vak.Vakcode@vak.Titel@vak.Studiepunten">
+                                                <input type="text" name="vakcodeOld" style="display:none" value="@vak.Vakcode">
                                             </div>
                                             <div class="form-group">
                                                 <label for="vakcode" class="col-form-label">Vakcode:</label>
-                                                <input type="text" class="form-control" id="vakcode" name="vakcode">
+                                                <input type="text" class="form-control" id="vakcode" name="vakcodeNew" value="@vak.Vakcode">
                                             </div>
                                             <div class="form-group">
                                                 <label for="titel" class="col-form-label">Titel:</label>
-                                                <input type="text" class="form-control" id="titel" name="titel">
+                                                <input type="text" class="form-control" id="titel" name="titel" value="@vak.Titel">
                                             </div>
                                             <div class="form-group">
                                                 <label for="studiepunten" class="col-form-label">Studiepunten:</label>
-                                                <input type="number" max="25" class="form-control" id="studiepunten" name="studiepunten">
+                                                <input type="number" max="25" class="form-control" id="studiepunten" name="studiepunten" value="@vak.Studiepunten">
                                             </div>
                                             <button type="submit" class="btn-danger">Wijzig vak</button>
                                         </form>

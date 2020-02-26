@@ -93,8 +93,8 @@
 
 
                     <td>
-                        <button type="button" class="btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
-                        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal-@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer">Delete</button>
+                        <div class="modal fade" id="deleteModal-@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -104,12 +104,14 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="/lokaal/delete" method="post"> <!--Lokaal verwijdert niet het juiste maar bovenaan de lijst...-->
+                                        <form action="/lokaal/delete" method="post"> 
                                             <div>
                                                 <input type="text" name="lokaalId" style="display: none" value="@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer">
                                             </div>
                                             Ben je zeker dat je het lokaal wilt verwijderen?
-                                                <button type="submit" class="btn-danger">Verwijder lokaal</button>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-sm btn-danger">Verwijder lokaal</button>
+                                            </div>
                                         </form>
                                     </div>
                                 </div>
@@ -118,8 +120,8 @@
                     </td>
 
                     <td>
-                        <button type="button" class="btn-dark" data-toggle="modal" data-target="#exampleModal">Edit</button>
-                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <button type="button" class="btn btn-sm btn-dark" data-toggle="modal" data-target="#editModal-@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer">Edit</button>
+                        <div class="modal fade" id="editModal-@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -135,27 +137,27 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="gebouw" class="col-form-label">Gebouw:</label>
-                                                <input type="text" class="form-control" id="gebouw"  name="gebouw">
+                                                <input type="text" class="form-control" id="gebouw"  name="gebouw" value="@lokaal.Gebouw">
                                             </div>
                                             <div class="form-group">
                                                 <label for="verdiep" class="col-form-label">Verdieping:</label>
-                                                <input type="number" max="3" class="form-control" id="verdiep"  name="verdiep">
+                                                <input type="number" max="3" class="form-control" id="verdiep"  name="verdiep" value="@lokaal.Verdiep">
                                             </div>
                                             <div class="form-group">
                                                 <label for="nummer" class="col-form-label">Nummer:</label>
-                                                <input type="text" class="form-control" id="nummer"  name="nummer">
+                                                <input type="text" class="form-control" id="nummer"  name="nummer" value="@lokaal.Nummer">
                                             </div>
                                             <div class="form-group">
                                                 <label for="type" class="col-form-label">Type:</label>
-                                                <input type="text" class="form-control" id="type"  name="type">
+                                                <input type="text" class="form-control" id="type"  name="type" value="@lokaal.Type">
                                             </div>
                                             <div class="form-group">
                                                 <label for="capaciteit" class="col-form-label">Capaciteit:</label>
-                                                <input type="number"  max="250" class="form-control" id="capaciteit"  name="capaciteit">
+                                                <input type="number"  max="250" class="form-control" id="capaciteit"  name="capaciteit" value="@lokaal.Capaciteit">
                                             </div>
                                             <div class="form-group">
                                                 <label for="middelen" class="col-form-label">Middelen?</label>
-                                                <select id="middelen" class="form-control" name="middelen">
+                                                <select id="middelen" class="form-control" name="middelen" >
                                                     <option value="Wifi/Projectorsetup/Scherm">Wifi/Projectorsetup/Scherm</option>
                                                     <option value="Wifi/Schermen">Wifi/Schermen</option>
                                                     <option value="Wifi/Projectorsetup">Wifi/Projectorsetup</option>
@@ -167,10 +169,10 @@
                                                     <option value="Projectorsetup">Projectorsetup</option>
                                                     <option value="Scherm">Scherm</option>
                                                     <option value="Schermen">Schermen</option>
-                                                    <option value="Geen middelen">Geen middelen</option>
+                                                    <option value="Geen">Geen middelen</option>
                                                 </select>
                                             </div>                                            
-                                               <button type="submit" class="btn-danger">Wijzig lokaal</button>
+                                               <button type="submit" class="btn btn-sm btn-danger">Wijzig lokaal</button>
                                         </form>
                                     </div>
 

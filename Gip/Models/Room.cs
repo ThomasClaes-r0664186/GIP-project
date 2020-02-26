@@ -69,7 +69,7 @@ namespace Gip.Models
                 }
                 else
                 {
-                    middelen = "geen";
+                    middelen = "Geen";
                 }
 
             }
