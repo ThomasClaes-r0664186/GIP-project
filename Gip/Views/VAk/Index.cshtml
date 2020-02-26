@@ -1,25 +1,38 @@
 ﻿@model IEnumerable<Gip.Models.Course>
-<Gip.Models.Course>
-    @{
-        ViewData["Title"] = "Index";
-    }
-
-    <h1>Overzicht van de vakken</h1>
-    <table class="table table-bordered table-hover table-striped">
-        <tr>
-
-            <th>Vakcode</th>
-            <th>Titel</th>
-            <th>Studiepunten</th>
-
-        </tr>
-        @foreach (var vak in Model)
-        {
-            <tr>
-                <td>@vak.Vakcode</td>
-                <td>@vak.Titel</td>
-                <td>@vak.Studiepunten</td> 
-            </tr>
-
+    <Gip.Models.Course>
+        @{
+            ViewData["Title"] = "Index";
         }
-    </table>
+
+        <h1>Overzicht van de vakken</h1>
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#" style="float:right">Lokaal toevoegen</button>
+
+        <table class="table table-bordered table-hover table-striped">
+            <tr>
+
+                <th>Vakcode</th>
+                <th>Titel</th>
+                <th>Studiepunten</th>
+                <th>Delete</th>
+                <th>Edit</th>
+
+            </tr>
+            @foreach (var vak in Model)
+            {
+                <tr>
+                    <td>@vak.Vakcode</td>
+                    <td>@vak.Titel</td>
+                    <td>@vak.Studiepunten</td>
+                    <td>
+                        <form action="/vak/delete" method="post">
+                         <input type="text" name="vaklId" style="display: none" value="@vak.Vakcode@vak.Titel@vak.Studiepunten">
+                         <button type="submit" class="btn-danger">Delete</button>
+                        </form>
+                    </td>
+                    <td>
+                        <button type="button" class="btn-dark" data-toggle="modal" data-target="">Edit</button>
+                    </td>
+                </tr>
+
+            }
+        </table>
