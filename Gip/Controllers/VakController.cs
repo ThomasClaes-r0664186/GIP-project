@@ -14,22 +14,39 @@ namespace Gip.Controllers
         [Route("vak")]
         public ActionResult Index()
         {
-            var qry = from d in db.Course
-                      orderby d.Vakcode
-                      select d;
-
-            return View(qry);
+            try{
+                var qry = from d in db.Course
+                          orderby d.Vakcode
+                          select d;
+                ViewBag.error = "indexVakGood";
+                return View(qry);
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e);
+                ViewBag.error = "indexVakError";
+                return RedirectToAction("Index", "Lokaal");
+            }
         }
 
         [HttpPost]
         [Route("vak/add")]
         public ActionResult Add(string vakcode, string titel, int studiepunten)
         { 
-            Course course = new Course();
-            course.Vakcode = vakcode;
-            course.Titel = titel;
-            course.Studiepunten = studiepunten;
-            db.Course.Add(course);
+            try{
+                Course course = new Course();
+                course.Vakcode = vakcode;
+                course.Titel = titel;
+                course.Studiepunten = studiepunten;
+                db.Course.Add(course);
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e);
+                ViewBag.error = "addError";
+                return RedirectToAction("Index", "Lokaal");
+            }
+            ViewBag.error = "addGood";
             db.SaveChanges();
             return RedirectToAction("Index", "Vak");
         }
