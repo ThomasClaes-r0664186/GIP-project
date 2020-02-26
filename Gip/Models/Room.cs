@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Gip.Models.Exceptions;
+using System.Text.RegularExpressions;
 
 namespace Gip.Models
 {
@@ -81,13 +82,18 @@ namespace Gip.Models
 
             set 
             {
-                if (value.Trim().Length <= 0 || value.Trim().Length > 3)
+                if (value.Trim().Length <= 0 || value.Trim().Length > 1)
                 {
+                    
                     throw new DatabaseException("The building you wish selected does not exist!" + Environment.NewLine + "Please try again.");
                 }
                 else
                 {
-                    gebouw = value;
+                    string pattern = @"^[a-zA-Z]$";
+                    if (Regex.IsMatch(value, pattern))
+                    {
+                        gebouw = value;
+                    }
                 }
             }
         }
@@ -104,7 +110,11 @@ namespace Gip.Models
                 }
                 else
                 {
-                    verdiep = value;
+                    string pattern = @"^\d$";
+                    if (Regex.IsMatch(value.ToString(), pattern))
+                    {
+                        verdiep = value;
+                    }
                 }
             }
         }
@@ -121,7 +131,11 @@ namespace Gip.Models
                 }
                 else
                 {
-                    nummer = value;
+                    string pattern = @"^\d\d[a-zA-Z]{0,1}$";
+                    if (Regex.IsMatch(value, pattern))
+                    {
+                        nummer = value;
+                    }
                 }
             }
         }
