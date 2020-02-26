@@ -56,6 +56,8 @@
                                     <option value="Projectorsetup">Projectorsetup</option>
                                     <option value="Scherm">Scherm</option>
                                     <option value="Schermen">Schermen</option>
+                                    <option value="GeenMiddelen">Geen middelen</option>
+
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-primary">Voeg lokaal toe</button>
@@ -116,23 +118,23 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="gebouw" class="col-form-label">Gebouw:</label>
-                                                <input type="text" class="form-control" id="gebouw" placeholder="Bv. A,B..." name="gebouw">
+                                                <input type="text" class="form-control" id="gebouw"  name="gebouw" value="@lokaal.Gebouw">
                                             </div>
                                             <div class="form-group">
                                                 <label for="verdiep" class="col-form-label">Verdieping:</label>
-                                                <input type="number" max="3" class="form-control" id="verdiep" placeholder="Bv. 1,2,3.." name="verdiep">
+                                                <input type="number" max="3" class="form-control" id="verdiep"  name="verdiep">
                                             </div>
                                             <div class="form-group">
                                                 <label for="nummer" class="col-form-label">Nummer:</label>
-                                                <input type="text" class="form-control" id="nummer" placeholder="Bv. 01K,25.." name="nummer">
+                                                <input type="text" class="form-control" id="nummer"  name="nummer">
                                             </div>
                                             <div class="form-group">
                                                 <label for="type" class="col-form-label">Type:</label>
-                                                <input type="text" class="form-control" id="type" placeholder="Bv. Aula,Vergaderruimte..." name="type">
+                                                <input type="text" class="form-control" id="type"  name="type">
                                             </div>
                                             <div class="form-group">
                                                 <label for="capaciteit" class="col-form-label">Capaciteit:</label>
-                                                <input type="number"  max="250" class="form-control" id="capaciteit" placeholder="Bv. 100..." name="capaciteit">
+                                                <input type="number"  max="250" class="form-control" id="capaciteit"  name="capaciteit">
                                             </div>
                                             <div class="form-group">
                                                 <label for="middelen" class="col-form-label">Middelen?</label>
@@ -148,6 +150,7 @@
                                                     <option value="Projectorsetup">Projectorsetup</option>
                                                     <option value="Scherm">Scherm</option>
                                                     <option value="Schermen">Schermen</option>
+                                                    <option value="GeenMiddelen">Geen middelen</option>
                                                 </select>
                                             </div>
                                             <div class="modal-footer">
