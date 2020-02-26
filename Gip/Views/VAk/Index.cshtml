@@ -19,15 +19,15 @@
                         <form action="/vak/add" method="post">
                             <div class="form-group">
                                 <label for="Vakcode" class="col-form-label">Vakcode:</label>
-                                <input type="text" class="form-control" id="Vakcode" placeholder="Bv. MGP05A..." name="Vakcode">
+                                <input required="required" type="text" class="form-control" id="Vakcode" placeholder="Bv. MGP05A..." name="Vakcode">
                             </div>
                             <div class="form-group">
                                 <label for="titel" class="col-form-label">Titel:</label>
-                                <input type="text" class="form-control" id="titel" placeholder="Bv. Java,PHP..." name="titel">
+                                <input required="required" type="text" class="form-control" id="titel" placeholder="Bv. Java,PHP..." name="titel">
                             </div>
                             <div class="form-group">
                                 <label for="studiepunten" class="col-form-label">Studiepunten:</label>
-                                <input type="number" max="25" class="form-control" id="studiepunten" placeholder="Bv. 5,7..." name="studiepunten">
+                                <input required="required" type="number" max="25" class="form-control" id="studiepunten" placeholder="Bv. 5,7..." name="studiepunten">
                             </div>
                             <button type="submit" class="btn btn-primary">Voeg vak toe</button>
                         </form>
@@ -67,7 +67,7 @@
                                             <div>
                                                 <input type="text" name="vakcode" style="display: none" value="@vak.Vakcode">
                                             </div>
-                                            Ben je zeker dat je het vak wilt verwijderen?
+                                            Ben je zeker dat je het vak @vak.Titel wilt verwijderen?
                                             <div class="modal-footer">
                                                 <button type="submit" class="btn btn-sm btn-danger">Verwijder vak</button>
                                             </div>
@@ -78,7 +78,7 @@
                         </div>
                     </td>
                     <td>
-                        <button type="button" class="btn-dark" data-toggle="modal" data-target="#editVak-@vak.Vakcode">Edit</button>
+                        <button type="button" class="btn btn-sm btn-dark" data-toggle="modal" data-target="#editVak-@vak.Vakcode">Edit</button>
                         <div class="modal fade" id="editVak-@vak.Vakcode" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
@@ -95,17 +95,17 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="vakcode" class="col-form-label">Vakcode:</label>
-                                                <input type="text" class="form-control" id="vakcode" name="vakcodeNew" value="@vak.Vakcode">
+                                                <input required="required" type="text" class="form-control" id="vakcode" name="vakcodeNew" value="@vak.Vakcode">
                                             </div>
                                             <div class="form-group">
                                                 <label for="titel" class="col-form-label">Titel:</label>
-                                                <input type="text" class="form-control" id="titel" name="titel" value="@vak.Titel">
+                                                <input  required="required" type="text" class="form-control" id="titel" name="titel" value="@vak.Titel">
                                             </div>
                                             <div class="form-group">
                                                 <label for="studiepunten" class="col-form-label">Studiepunten:</label>
-                                                <input type="number" max="25" class="form-control" id="studiepunten" name="studiepunten" value="@vak.Studiepunten">
+                                                <input required="required" type="number" max="25" class="form-control" id="studiepunten" name="studiepunten" value="@vak.Studiepunten">
                                             </div>
-                                            <button type="submit" class="btn-danger">Wijzig vak</button>
+                                            <button type="submit" class="btn btn-dark">Wijzig vak</button>
                                         </form>
                                     </div>
                                 </div>
