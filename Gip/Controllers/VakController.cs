@@ -62,10 +62,26 @@ namespace Gip.Controllers
             return RedirectToAction("Index", "Vak");
         }
         
-        [HttpGet]
+        [HttpPost]
         [Route("vak/edit")]
-        public ActionResult Edit()
+        public ActionResult Edit(string vakcodeOld, string vakcodeNew, string titel, int studiepunten)
         {
+            if (vakcodeOld == null || vakcodeOld.Trim().Equals(""))
+            {
+                ViewBag.error = true;
+                return NotFound();
+            }
+
+            Course course = db.Course.Find(vakcodeOld);
+            Delete(vakcodeOld);
+
+            try
+            {
+            }
+            catch (Exception) { 
+            
+            }
+
             return View();
         }
     }
