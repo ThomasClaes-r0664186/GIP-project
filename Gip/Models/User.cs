@@ -23,18 +23,17 @@ namespace Gip.Models
             get { return naam; }
             set 
             {
-                string pattern = @"^[a-zA-Z]+$";               
+                string pattern = @"^[a-zA-Z&àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ]+$";               
                 if (value != "")
                 {                    
                     if (Regex.IsMatch(value, pattern))
                     {
                         naam = value;
-                    }
-                    
+                    }                    
                 }
                 else
                 {
-                    throw new DatabaseException("The chosen name is invalid!" + Environment.NewLine + "Please do not include special caracters and try again.");
+                    throw new DatabaseException("The chosen name is invalid!" + Environment.NewLine + "Please do not include anny special caracters and try again.");
                 }
             }
         }
@@ -68,9 +67,19 @@ namespace Gip.Models
             get { return userid; }
             set 
             {
-                string pattern = @"^[a-zA-Z]+$";
-                userid = value; 
-            }//verder af maken
+                string pattern = @"^[cru]\d{7}$";
+                if (value != "")
+                {
+                    if (Regex.IsMatch(value, pattern))
+                    {
+                        userid = value;
+                    }
+                }
+                else
+                {
+                    throw new DatabaseException("The chosen User identification number is invalid!" + Environment.NewLine + "Please do not include special caracters and try again.");
+                }
+            } 
         }
 
 
