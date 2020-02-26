@@ -62,7 +62,6 @@ namespace Gip.Controllers
         [Route("lokaal/add")]
         public ActionResult Add()
         {
-            ViewBag.error = "addGood";
             return View();
         }
 

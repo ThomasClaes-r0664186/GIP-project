@@ -62,20 +62,21 @@ namespace Gip.Controllers
         [Route("vak/delete")]
         public ActionResult Delete(string vakcode)
         {
-            if (vakcode == null || vakcode.Trim().Equals("")) {
-                ViewBag.error = true;
-                return NotFound();
+            if (vakcode == null || vakcode.Trim().Equals(""))
+            {
+                ViewBag.error = "deleteError";
+                return  RedirectToAction("Index", "Vak");
             }
 
             Course course = db.Course.Find(vakcode);
 
             if (course == null) {
-                ViewBag.error = true;
+                ViewBag.error = "deleteError";
                 return RedirectToAction("Index", "Vak");
             }
             db.Course.Remove(course);
             db.SaveChanges();
-            ViewBag.error = false;
+            ViewBag.error = "deleteGood";
             return RedirectToAction("Index", "Vak");
         }
         
@@ -85,8 +86,8 @@ namespace Gip.Controllers
         {
             if (vakcodeOld == null || vakcodeOld.Trim().Equals(""))
             {
-                ViewBag.error = true;
-                return NotFound();
+                ViewBag.error = "editError";
+                return RedirectToAction("Index", "Vak");
             }
 
             Course course = db.Course.Find(vakcodeOld);
@@ -99,12 +100,12 @@ namespace Gip.Controllers
                 course.Studiepunten = studiepunten;
             }
             catch (Exception) {
-                ViewBag.error = true;
+                ViewBag.error = "deleteError";
                 return View();
             }
             db.Course.Add(course);
             db.SaveChanges();
-            ViewBag.error = false;
+            ViewBag.error = "deleteGood";
             return RedirectToAction("Index", "Vak");
         }
     }
