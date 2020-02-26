@@ -52,7 +52,7 @@ namespace Gip.Controllers
             if (lokaalId == null || lokaalId.Trim().Equals(""))
             {   
                 ViewBag.error = true; 
-                return NotFound();
+                return RedirectToAction("Index", "Lokaal");
             }
             lokaalId = lokaalId.Trim() + " ";
             string gebouw = lokaalId.Substring(0, 1);
@@ -89,7 +89,6 @@ namespace Gip.Controllers
             int verdieping = int.Parse(lokaalId.Substring(1, 1));
             string nummerOld = lokaalId.Substring(2, (lokaalId.Length - 2));
 
-            //omdat we de room sowieso deleten, kunnen we het eigenlijk zonder de changed bool doen, reminder Thomas
             Room room = db.Room.Find(gebouwId, verdieping, nummerOld);
             Delete(lokaalId);
 

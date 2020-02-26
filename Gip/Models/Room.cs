@@ -69,7 +69,7 @@ namespace Gip.Models
                 }
                 else
                 {
-                    middelen = "geen";
+                    middelen = "Geen";
                 }
 
             }
@@ -185,23 +185,4 @@ namespace Gip.Models
 
         public virtual ICollection<CourseMoment> CourseMoment { get; set; }
     }
-
-    /*
-       public class Items
-    {
-        public bool Projectorsetup;
-        public bool Scherm;
-        public bool Schermen;
-        public bool Wifi;
-
-        public Items(bool projectorsetup,bool scherm,bool schermen,bool wifi)
-        {
-            Projectorsetup = projectorsetup;
-            Schermen = schermen;
-            Scherm = scherm;
-            Wifi = wifi;
-        }
-    }
-     */
-
 }
