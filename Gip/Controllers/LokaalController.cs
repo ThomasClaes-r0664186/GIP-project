@@ -13,12 +13,22 @@ namespace Gip.Controllers
         [Route("lokaal")]
         public ActionResult Index()
         {
-            //var gebouwlst = new List<string>();
-            var qry = from d in db.Room
-                      orderby d.Gebouw, d.Verdiep, d.Nummer
-                      select d;
-    
-            return View(qry);
+            try
+            {
+                //var gebouwlst = new List<string>();
+                var _qry = from d in db.Room
+                    orderby d.Gebouw, d.Verdiep, d.Nummer
+                    select d;
+                ViewBag.error = "none";
+                return View(qry);
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e);
+                ViewBag.error = "indexLokaal";
+                return RedirectToAction("Index", "Home");
+            }
+            
         }
 
         // POST /add/lokaal
@@ -26,15 +36,25 @@ namespace Gip.Controllers
         [Route("lokaal/add")]
         public ActionResult Add(string gebouw, int verdiep, string nummer, string type, int capaciteit, string middelen )
         {
-            Room room = new Room();
-            room.Gebouw = gebouw.ToUpper();
-            room.Verdiep = verdiep;
-            room.Nummer = nummer;
-            room.Type = type;
-            room.Capaciteit = capaciteit;
-            room.Middelen = middelen;
-            db.Room.Add(room);
+            try
+            {
+                Room room = new Room();
+                room.Gebouw = gebouw.ToUpper();
+                room.Verdiep = verdiep;
+                room.Nummer = nummer;
+                room.Type = type;
+                room.Capaciteit = capaciteit;
+                room.Middelen = middelen;
+                db.Room.Add(room);
+            }
+            catch (Exception e)
+            {
+                System.Console.WriteLine(e);
+                ViewBag.error = "add";
+                return RedirectToAction("Index", "Lokaal");
+            }
             db.SaveChanges();
+            ViewBag.error = "none";
             return RedirectToAction("Index", "Lokaal");
         }
         
@@ -42,6 +62,7 @@ namespace Gip.Controllers
         [Route("lokaal/add")]
         public ActionResult Add()
         {
+            ViewBag.error = "none";
             return View();
         }
 
@@ -51,7 +72,7 @@ namespace Gip.Controllers
         {
             if (lokaalId == null || lokaalId.Trim().Equals(""))
             {   
-                ViewBag.error = true; 
+                ViewBag.error = "delete"; 
                 return RedirectToAction("Index", "Lokaal");
             }
             lokaalId = lokaalId.Trim() + " ";
@@ -63,13 +84,13 @@ namespace Gip.Controllers
 
             if (room == null)
             {
-                ViewBag.error = true;
+                ViewBag.error = "delete";
                 return RedirectToAction("Index", "Lokaal");
             }
 
             db.Room.Remove(room);
             db.SaveChanges();
-            ViewBag.error = false;
+            ViewBag.error = "none";
             return RedirectToAction("Index", "Lokaal");
         }
 
@@ -80,7 +101,7 @@ namespace Gip.Controllers
             gebouw = gebouw.ToUpper();
             if (lokaalId == null || lokaalId.Trim().Equals(""))
             {
-                ViewBag.error = true;
+                ViewBag.error = "edit";
                 return NotFound();
             }
 
@@ -103,12 +124,12 @@ namespace Gip.Controllers
             }
             catch (Exception)
             {
-                ViewBag.error = true;
+                ViewBag.error = "edit";
                 return View();
             }
             db.Room.Add(room);
             db.SaveChanges();
-            ViewBag.error = false;
+            ViewBag.error = "none";
             return RedirectToAction("Index", "Lokaal");
         }
     }
