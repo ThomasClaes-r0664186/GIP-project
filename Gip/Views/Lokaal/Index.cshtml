@@ -95,8 +95,7 @@
                     <td>
                         <form action="/lokaal/delete" method="post">
                             <input type="text" name="lokaalId" style="display: none" value="@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer">
-                            <button onclick="return confirm('Ben je zeker dat je lokaal @lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer wilt verwijderen?')" type="submit" class="btn-danger">Delete</button>
-
+                            <button type="submit" data-toggle="modal" data-target="#deleteModal" class="btn-danger">Delete</button>
                         </form>
                     </td>
 
