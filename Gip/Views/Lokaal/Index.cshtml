@@ -5,6 +5,16 @@
         }
         <h1>Overzicht van de lokalen</h1>
 
+        @if(ViewBag.error != null)
+        @if (ViewBag.error )
+        {
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Error</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
 
 
 
@@ -15,7 +25,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLongTitle">Een lokaal toevoegen?</h5>
+                        <h5 class="modal-title" id="exampleModalLongTitle">Een lokaal toevoegen</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -36,7 +46,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="type" class="col-form-label">Type:</label>
-                                <input type="text" class="form-control" id="type" placeholder="Bv. Aula,Vergaderlokaal..." name="type">
+                                <input type="text" class="form-control" id="type" placeholder="Bv. Aula,Vergaderlokaal,Computerlokaal" name="type">
                             </div>
                             <div class="form-group">
                                 <label for="capaciteit" class="col-form-label">Capaciteit:</label>
@@ -98,13 +108,13 @@
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Lokaal verwijderen?</h5>
+                                        <h5 class="modal-title" id="exampleModalLabel">Een lokaal verwijderen</h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="/lokaal/delete" method="post"> 
+                                        <form action="/lokaal/delete" method="post">
                                             <div>
                                                 <input type="text" name="lokaalId" style="display: none" value="@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer">
                                             </div>
@@ -137,27 +147,27 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="gebouw" class="col-form-label">Gebouw:</label>
-                                                <input type="text" class="form-control" id="gebouw"  name="gebouw" value="@lokaal.Gebouw">
+                                                <input type="text" class="form-control" id="gebouw" name="gebouw" value="@lokaal.Gebouw">
                                             </div>
                                             <div class="form-group">
                                                 <label for="verdiep" class="col-form-label">Verdieping:</label>
-                                                <input type="number" max="3" class="form-control" id="verdiep"  name="verdiep" value="@lokaal.Verdiep">
+                                                <input type="number" max="3" class="form-control" id="verdiep" name="verdiep" value="@lokaal.Verdiep">
                                             </div>
                                             <div class="form-group">
                                                 <label for="nummer" class="col-form-label">Nummer:</label>
-                                                <input type="text" class="form-control" id="nummer"  name="nummer" value="@lokaal.Nummer">
+                                                <input type="text" class="form-control" id="nummer" name="nummer" value="@lokaal.Nummer">
                                             </div>
                                             <div class="form-group">
                                                 <label for="type" class="col-form-label">Type:</label>
-                                                <input type="text" class="form-control" id="type"  name="type" value="@lokaal.Type">
+                                                <input type="text" class="form-control" id="type" name="type" value="@lokaal.Type">
                                             </div>
                                             <div class="form-group">
                                                 <label for="capaciteit" class="col-form-label">Capaciteit:</label>
-                                                <input type="number"  max="250" class="form-control" id="capaciteit"  name="capaciteit" value="@lokaal.Capaciteit">
+                                                <input type="number" max="250" class="form-control" id="capaciteit" name="capaciteit" value="@lokaal.Capaciteit">
                                             </div>
                                             <div class="form-group">
                                                 <label for="middelen" class="col-form-label">Middelen?</label>
-                                                <select id="middelen" class="form-control" name="middelen" >
+                                                <select id="middelen" class="form-control" name="middelen">
                                                     <option value="Wifi/Projectorsetup/Scherm">Wifi/Projectorsetup/Scherm</option>
                                                     <option value="Wifi/Schermen">Wifi/Schermen</option>
                                                     <option value="Wifi/Projectorsetup">Wifi/Projectorsetup</option>
@@ -171,8 +181,8 @@
                                                     <option value="Schermen">Schermen</option>
                                                     <option value="Geen">Geen middelen</option>
                                                 </select>
-                                            </div>                                            
-                                               <button type="submit" class="btn btn-sm btn-danger">Wijzig lokaal</button>
+                                            </div>
+                                            <button type="submit" class="btn btn-sm btn-danger">Wijzig lokaal</button>
                                         </form>
                                     </div>
 

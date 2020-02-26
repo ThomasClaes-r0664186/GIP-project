@@ -52,7 +52,7 @@ namespace Gip.Controllers
             if (lokaalId == null || lokaalId.Trim().Equals(""))
             {   
                 ViewBag.error = true; 
-                return NotFound();
+                return RedirectToAction("Index", "Lokaal");
             }
             lokaalId = lokaalId.Trim() + " ";
             string gebouw = lokaalId.Substring(0, 1);
