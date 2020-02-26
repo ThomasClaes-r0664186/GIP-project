@@ -9,7 +9,7 @@
 
 
 
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModalLong" style="float:right">Lokaal toevoegen</button>
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModalLong" style="float:right">Lokaal toevoegen</button>
 
         <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -36,7 +36,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="type" class="col-form-label">Type:</label>
-                                <input type="text" class="form-control" id="type" placeholder="Bv. Aula,Vergaderruimte..." name="type">
+                                <input type="text" class="form-control" id="type" placeholder="Bv. Aula,Vergaderlokaal..." name="type">
                             </div>
                             <div class="form-group">
                                 <label for="capaciteit" class="col-form-label">Capaciteit:</label>
@@ -93,10 +93,30 @@
 
 
                     <td>
-                        <form action="/lokaal/delete" method="post">
-                            <input type="text" name="lokaalId" style="display: none" value="@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer">
-                            <button type="submit" data-toggle="modal" data-target="#deleteModal" class="btn-danger">Delete</button>
-                        </form>
+                        <button type="button" class="btn-danger" data-toggle="modal" data-target="#deleteModal">Delete</button>
+                        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Lokaal verwijderen?</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="/lokaal/delete" method="post"> <!--Lokaal verwijdert niet het juiste maar bovenaan de lijst...-->
+                                            <div>
+                                                <input type="text" name="lokaalId" style="display: none" value="@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer">
+                                            </div>
+                                            Ben je zeker dat je het lokaal wilt verwijderen?
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn-danger">Verwijder lokaal</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </td>
 
                     <td>
@@ -153,7 +173,7 @@
                                                 </select>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="submit" class="btn-danger">Verander lokaal</button>
+                                                <button type="submit" class="btn-danger">Wijzig lokaal</button>
                                             </div>
                                         </form>
                                     </div>
