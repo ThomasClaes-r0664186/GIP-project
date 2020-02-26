@@ -19,13 +19,13 @@ namespace Gip.Controllers
                 var _qry = from d in db.Room
                     orderby d.Gebouw, d.Verdiep, d.Nummer
                     select d;
-                ViewBag.error = "none";
+                ViewBag.error = "indexLokaalGood";
                 return View(qry);
             }
             catch (Exception e)
             {
                 System.Console.WriteLine(e);
-                ViewBag.error = "indexLokaal";
+                ViewBag.error = "indexLokaalError";
                 return RedirectToAction("Index", "Home");
             }
             
@@ -50,11 +50,11 @@ namespace Gip.Controllers
             catch (Exception e)
             {
                 System.Console.WriteLine(e);
-                ViewBag.error = "add";
+                ViewBag.error = "addError";
                 return RedirectToAction("Index", "Lokaal");
             }
             db.SaveChanges();
-            ViewBag.error = "none";
+            ViewBag.error = "addGood";
             return RedirectToAction("Index", "Lokaal");
         }
         
@@ -62,7 +62,7 @@ namespace Gip.Controllers
         [Route("lokaal/add")]
         public ActionResult Add()
         {
-            ViewBag.error = "none";
+            ViewBag.error = "addGood";
             return View();
         }
 
@@ -72,7 +72,7 @@ namespace Gip.Controllers
         {
             if (lokaalId == null || lokaalId.Trim().Equals(""))
             {   
-                ViewBag.error = "delete"; 
+                ViewBag.error = "deleteError"; 
                 return RedirectToAction("Index", "Lokaal");
             }
             lokaalId = lokaalId.Trim() + " ";
@@ -84,13 +84,13 @@ namespace Gip.Controllers
 
             if (room == null)
             {
-                ViewBag.error = "delete";
+                ViewBag.error = "deleteError";
                 return RedirectToAction("Index", "Lokaal");
             }
 
             db.Room.Remove(room);
             db.SaveChanges();
-            ViewBag.error = "none";
+            ViewBag.error = "deleteGood";
             return RedirectToAction("Index", "Lokaal");
         }
 
@@ -101,7 +101,7 @@ namespace Gip.Controllers
             gebouw = gebouw.ToUpper();
             if (lokaalId == null || lokaalId.Trim().Equals(""))
             {
-                ViewBag.error = "edit";
+                ViewBag.error = "editError";
                 return NotFound();
             }
 
@@ -124,12 +124,12 @@ namespace Gip.Controllers
             }
             catch (Exception)
             {
-                ViewBag.error = "edit";
+                ViewBag.error = "editError";
                 return View();
             }
             db.Room.Add(room);
             db.SaveChanges();
-            ViewBag.error = "none";
+            ViewBag.error = "editGood";
             return RedirectToAction("Index", "Lokaal");
         }
     }
