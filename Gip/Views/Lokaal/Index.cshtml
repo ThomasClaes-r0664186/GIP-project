@@ -91,14 +91,19 @@
                             </div>
                             <div class="form-group">
                                 <label for="type" class="col-form-label">Type:</label>
-                                <input required="required" type="text" class="form-control" id="type" placeholder="Bv. Aula,Vergaderlokaal,Computerlokaal" name="type">
+                                <select id="type" class="form-control" name="type">
+                                    <option value="Aula">Aula</option>
+                                    <option value="Computerlokaal">Computerlokaal</option>
+                                    <option value="Vergaderlokaal">Vergaderlokaal</option>
+                                    <option value="Lokaal">Lokaal</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="capaciteit" class="col-form-label">Capaciteit:</label>
                                 <input required="required" type="number" max="250" class="form-control" id="capaciteit" placeholder="Bv. 100..." name="capaciteit">
                             </div>
                             <div class="form-group">
-                                <label for="middelen" class="col-form-label">Middelen?</label>
+                                <label for="middelen" class="col-form-label">Middelen:</label>
                                 <select id="middelen" class="form-control" name="middelen">
                                     <option value="Wifi/Projectorsetup/Scherm">Wifi/Projectorsetup/Scherm</option>
                                     <option value="Wifi/Schermen">Wifi/Schermen</option>
@@ -204,14 +209,22 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="type" class="col-form-label">Type:</label>
-                                                <input required="required" type="text" class="form-control" id="type" name="type" value="@lokaal.Type">
+                                                <div class="form-group">
+                                                    <label for="type" class="col-form-label">Type:</label>
+                                                    <select id="type" class="form-control" name="type">
+                                                        <option value="Aula">Aula</option>
+                                                        <option value="Computerlokaal">Computerlokaal</option>
+                                                        <option value="Vergaderlokaal">Vergaderlokaal</option>
+                                                        <option value="Lokaal">Lokaal</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="capaciteit" class="col-form-label">Capaciteit:</label>
                                                 <input required="required" type="number" max="250" class="form-control" id="capaciteit" name="capaciteit" value="@lokaal.Capaciteit">
                                             </div>
                                             <div class="form-group">
-                                                <label for="middelen" class="col-form-label">Middelen?</label>
+                                                <label for="middelen" class="col-form-label">Middelen:</label>
                                                 <select id="middelen" class="form-control" name="middelen">
                                                     <option value="Wifi/Projectorsetup/Scherm">Wifi/Projectorsetup/Scherm</option>
                                                     <option value="Wifi/Schermen">Wifi/Schermen</option>
