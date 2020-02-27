@@ -5,7 +5,8 @@
         }
         <h1>Overzicht van de lokalen</h1>
         @if (ViewBag.error == "addError")
-         {
+
+        {
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 <strong>Error: lokaal is niet toegevoegd</strong>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -13,6 +14,7 @@
                 </button>
             </div>
          }
+
 
         @if (ViewBag.error == "editError")
         {
@@ -79,11 +81,11 @@
                         <form action="/lokaal/add" method="post">
                             <div class="form-group">
                                 <label for="gebouw" class="col-form-label">Gebouw:</label>
-                                <input  type="text" required="required" class="form-control" id="gebouw" placeholder="Bv. A,B..." name="gebouw">
+                                <input type="text" class="form-control" id="gebouw" placeholder="Bv. A,B..." name="gebouw">
                             </div>
                             <div class="form-group">
                                 <label for="verdiep" class="col-form-label">Verdieping:</label>
-                                <input required="required"  type="number" max="9" class="form-control" id="verdiep" placeholder="Bv. 1,2,3.." name="verdiep">
+                                <input required="required" type="number" max="9" class="form-control" id="verdiep" placeholder="Bv. 1,2,3.." name="verdiep">
                             </div>
                             <div class="form-group">
                                 <label for="nummer" class="col-form-label">Nummer:</label>
@@ -197,7 +199,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="gebouw" class="col-form-label">Gebouw:</label>
-                                                <input required="required" type="text" class="form-control" id="gebouw" name="gebouw" value="@lokaal.Gebouw">
+                                                <input required="required" type="text" class="form-control" id="gebouw" name="gebouw" value="@lokaal.Gebouw.Trim()">
                                             </div>
                                             <div class="form-group">
                                                 <label for="verdiep" class="col-form-label">Verdieping:</label>
