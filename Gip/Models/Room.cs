@@ -188,7 +188,7 @@ namespace Gip.Models
                 else
                 {
                     string pattern = @"^\d$";
-                    if (Regex.IsMatch(value.ToString(), pattern))
+                    if (!Regex.IsMatch(value+"", pattern))
                     {
                         capaciteit = value;
                     }
