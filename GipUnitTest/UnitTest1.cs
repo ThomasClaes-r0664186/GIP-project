@@ -5,10 +5,9 @@ namespace GipUnitTest
 {
     public class UnitTest1
     {
-        [Fact]
-        public void Test1()
+        public static void Main(string[] args)
         {
-
+            CourseTest test = new CourseTest();
         }
     }
 }
