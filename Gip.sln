@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16 stop ermee push
+# Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gip", "Gip\Gip.csproj", "{F27FC3D7-D1F7-42AB-9C3A-52734583A897}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GipTest", "GipTest\GipTest.csproj", "{BBF9694D-5B9D-4378-AAC3-A6D34BFA74BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{F27FC3D7-D1F7-42AB-9C3A-52734583A897}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F27FC3D7-D1F7-42AB-9C3A-52734583A897}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F27FC3D7-D1F7-42AB-9C3A-52734583A897}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBF9694D-5B9D-4378-AAC3-A6D34BFA74BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBF9694D-5B9D-4378-AAC3-A6D34BFA74BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBF9694D-5B9D-4378-AAC3-A6D34BFA74BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBF9694D-5B9D-4378-AAC3-A6D34BFA74BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
