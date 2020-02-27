@@ -113,7 +113,7 @@ namespace Gip.Models
                 else
                 {
                     string pattern = @"^\d\d[a-zA-Z]{0,1}$";
-                    if (Regex.IsMatch(value, pattern))
+                    if (!Regex.IsMatch(value, pattern))
                     {
                         nummer = value;
                     }
