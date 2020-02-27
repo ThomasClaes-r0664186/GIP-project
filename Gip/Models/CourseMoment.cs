@@ -13,6 +13,7 @@ namespace Gip.Models
         public string Nummer { get; set; }
         public string Userid { get; set; }
 
+        public string LessenLijst { get; set; }
         public virtual Room Room { get; set; }
         public virtual Schedule Schedule { get; set; }
         public virtual User User { get; set; }
