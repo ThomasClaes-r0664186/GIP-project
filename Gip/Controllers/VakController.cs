@@ -23,9 +23,9 @@ namespace Gip.Controllers
             }
             catch (Exception e)
             {
-                System.Console.WriteLine(e);
+                Console.WriteLine(e);
                 ViewBag.error = "indexVakError";
-                return RedirectToAction("Index", "Lokaal");
+                return RedirectToAction("Index", "Home");
             }
         }
 
@@ -42,9 +42,9 @@ namespace Gip.Controllers
             }
             catch (Exception e)
             {
-                System.Console.WriteLine(e);
+                Console.WriteLine(e);
                 ViewBag.error = "addError";
-                return RedirectToAction("Index", "Lokaal");
+                return RedirectToAction("Index", "Vak");
             }
             ViewBag.error = "addGood";
             db.SaveChanges();
