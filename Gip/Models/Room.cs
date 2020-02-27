@@ -29,7 +29,7 @@ namespace Gip.Models
             }
             set
             {
-                string middelen1 = value.ToLower();
+                string middelen1 = value.ToLower().Trim();
                 int aantal = 1;
                 if (middelen1.Contains('/'))
                 {
@@ -58,13 +58,14 @@ namespace Gip.Models
                     {
                         gevonden++;
                     }
+                    if(middelen1.Contains("geen"))
                     if (gevonden != aantal)
                     {
                         throw new DatabaseException("The resources you selected are not available!" + Environment.NewLine + "Please try again!");
                     }
                     else
                     {
-                        middelen = value;
+                        middelen = value.Trim();
                     }
                 }
                 else

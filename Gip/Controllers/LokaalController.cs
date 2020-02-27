@@ -28,7 +28,6 @@ namespace Gip.Controllers
                 ViewBag.error = "indexLokaalError";
                 return RedirectToAction("Index", "Home");
             }
-            
         }
 
         // POST /add/lokaal
