@@ -53,28 +53,3 @@ namespace Gip.Controllers
         }
     }
 }
-
-/**
- * [HttpPost]
-   [Route("vak/add")]
- * public ActionResult Add(string vakcode, string titel, int studiepunten)
-        { 
-            try{
-                Course course = new Course();
-                course.Vakcode = vakcode;
-                course.Titel = titel;
-                course.Studiepunten = studiepunten;
-                db.Course.Add(course);
-            }
-            catch (Exception e)
-            {
-                System.Console.WriteLine(e);
-                ViewBag.error = "addError";
-                return RedirectToAction("Index", "Lokaal");
-            }
-            ViewBag.error = "addGood";
-            db.SaveChanges();
-            return RedirectToAction("Index", "Vak");
-        }
- * 
- **/
