@@ -6,16 +6,6 @@ namespace Gip.Models
 {
     public partial class CourseMoment
     {
-<<<<<<< HEAD
-        public string Vakcode { get; set; }
-        public DateTime Datum { get; set; }
-        public DateTime Startmoment { get; set; }
-        public string Gebouw { get; set; }
-        public int Verdiep { get; set; }
-        public string Nummer { get; set; }
-        public string Userid { get; set; }
-        public string LessenLijst { get; set; }
-
         public CourseMoment()
         {
 
