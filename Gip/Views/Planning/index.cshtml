@@ -1,19 +1,22 @@
-﻿
-@{
-    ViewData["Title"] = "index";
-}
+﻿@model IEnumerable<Gip.Models.Planner>
+<Gip.Models.Planner>
+    @{
+        ViewData["Title"] = "index";
+    }
 
-<h1>Overzicht van de planning</h1>
-<table class="table table-bordered table-hover table-striped">
-    <tr>
-        <th>Datum</th>
-        <th>Vak</th>
-        <th>Lokaal</th>
-    </tr>
-    <tr>
-        <td><!--Clickable naar lessen--></td>
-        <td><!--Clickable naar lesmomenten--></td>
-        <td><!----></td>
-    </tr>
-</table>
+    <h1>Overzicht van de planning</h1>
+    <table class="table table-bordered table-hover table-striped">
+        <tr>
+            <th>Datum</th>
+            <th>Vak</th>
+            <th>Lokaal</th>
+        </tr>
+        @foreach (var planner in Model) {
+            <tr>
+                <td>@planner.Datum.ToString("dd/MM/yyyy")</td>
+                <td>@planner.Titel</td>
+                <td>@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer</td>
+            </tr>
+        }
+    </table>
 

@@ -67,12 +67,18 @@ namespace Gip.Controllers
 
             try
             {
-                Schedule schedule = new Schedule();
-                CourseMoment moment = new CourseMoment();
+                Schedule schedule = db.Schedule.Find(datum, tijd);
+                if (schedule == null) {
+                    schedule = new Schedule();
+                    schedule.Datum = datum;
+                    schedule.Startmoment = tijd;
+                    schedule.Eindmoment = tijd.AddHours(duratie);
 
-                schedule.Datum = datum;
-                schedule.Startmoment = tijd;
-                schedule.Eindmoment = tijd.AddHours(duratie);
+                    db.Schedule.Add(schedule);
+                    db.SaveChanges();
+                }
+
+                CourseMoment moment = new CourseMoment();
                 moment.Vakcode = vakcode;
                 moment.Datum = datum;
                 moment.Startmoment = schedule.Startmoment;
@@ -82,7 +88,6 @@ namespace Gip.Controllers
                 moment.Userid = "r0664186";
                 moment.LessenLijst = lessenlijst;
 
-                db.Schedule.Add(schedule);
                 db.CourseMoment.Add(moment);
             }
             catch (Exception e)
