@@ -47,7 +47,7 @@ namespace Gip.Controllers
         [Route("planner/add")]
         public ActionResult Add(string dat, string uur, string lokaalId, double duratie, string titel, string lessenlijst) {
             DateTime datum = DateTime.ParseExact(dat, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-
+            //DateTime uren = 
 
             return View();
         }
