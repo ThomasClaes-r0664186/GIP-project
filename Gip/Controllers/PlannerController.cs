@@ -102,29 +102,21 @@ namespace Gip.Controllers
         {
             try
             {
-                var _qry = from cm in db.CourseMoment
-                           join c in db.Course on cm.Vakcode equals c.Vakcode
-                           join s in db.Schedule
-                                on new { cm.Datum, cm.Startmoment }
-                                equals new { s.Datum, s.Startmoment }
+                var lokaalQry = from lok in db.Room
+                                orderby lok.Gebouw, lok.Verdiep, lok.Nummer
+                                select lok;
+                var vakQry = from vak in db.Course
+                             orderby vak.Vakcode
+                             select vak;
 
-                           where (cm.Datum.DayOfYear / 7) == (DateTime.Now.DayOfYear / 7)
-                           select new
-                           {
-                               datum = cm.Datum,
-                               startmoment = cm.Startmoment,
-                               gebouw = cm.Gebouw,
-                               verdiep = cm.Verdiep,
-                               nummer = cm.Nummer,
-                               vakcode = c.Vakcode,
-                               titel = c.Titel,
-                               eindmoment = s.Eindmoment
-                           };
-
-                List<Planner> planners = new List<Planner>();
-                foreach (var qry in _qry)
+                List < Planner > planners = new List<Planner>();
+                foreach (var qry in lokaalQry)
                 {
-                    Planner planner = new Planner(qry.datum, qry.startmoment, qry.gebouw, qry.verdiep, qry.nummer, qry.vakcode, qry.titel, qry.eindmoment);
+                    Planner planner = new Planner(qry.Gebouw, qry.Verdiep, qry.Nummer);
+                    planners.Add(planner);
+                }
+                foreach (var qry in vakQry) {
+                    Planner planner = new Planner(qry.Vakcode, qry.Titel);
                     planners.Add(planner);
                 }
                 return View("../Planner/Index",planners);

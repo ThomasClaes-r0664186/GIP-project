@@ -14,7 +14,10 @@
                 <select class="form-control" required>
                     @foreach (var planner in Model)
                     {
-                        <option value="lokaalId">@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer</option>
+                        if (@planner.Gebouw != null)
+                        {
+                            <option value="lokaalId">@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer</option>
+                        }
                     }
                 </select>
                 <small>Gelieve het lokaal aan te duiden</small>
@@ -25,8 +28,10 @@
                 <select class="form-control" required>
                     @foreach (var planner in Model)
                     {
-                        <option value="vakcode">@planner.Vakcode</option>
-
+                        if (@planner.Vakcode != null)
+                        {
+                            <option value="vakcode">@planner.Vakcode @planner.Titel</option>
+                        }
                     }
                 </select>
                 <small>Gelieve de vakcode aan te duiden</small>

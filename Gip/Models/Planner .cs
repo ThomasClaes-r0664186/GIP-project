@@ -25,6 +25,29 @@ namespace Gip.Models
             Eindmoment = eindmoment;
         }
 
+
+        public Planner(string gebouw, int verdiep, string nummer) {
+            Datum = new DateTime();
+            Startmoment = new DateTime();
+            Gebouw = gebouw;
+            Verdiep = verdiep;
+            Nummer = nummer;
+            Vakcode = null;
+            Titel = null;
+            Eindmoment = new DateTime();
+        }
+
+        public Planner(string vakcode, string titel) {
+            Datum = new DateTime();
+            Startmoment = new DateTime();
+            Gebouw = null;
+            Verdiep = -1;
+            Nummer = null;
+            Vakcode = vakcode;
+            Titel = titel;
+            Eindmoment = new DateTime();
+        }
+
         public DateTime Datum {
             get { return _datum; }
             set { this._datum = value; } 
