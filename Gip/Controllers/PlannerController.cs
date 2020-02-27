@@ -159,5 +159,35 @@ namespace Gip.Controllers
                 return RedirectToAction("Index","Planner");
             }
         }
+
+        [HttpPost]
+        [Route("planner/delete")]
+        public ActionResult Delete(string vakcode, DateTime datum, DateTime startMoment, string gebouw, int verdiep, string nummer) {
+            CourseMoment moment = db.CourseMoment.Find(vakcode, datum, startMoment, gebouw, verdiep, nummer, "R0664186");
+            if (moment == null) {
+                ViewBag.error = "deleteError";
+                return RedirectToAction("Index", "Planner");
+            }
+            try
+            {
+                db.CourseMoment.Remove(moment);
+                db.SaveChanges();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+                ViewBag.error = "coursemomentsDeleteError";
+                return RedirectToAction("Index", "Planner");
+            }
+            ViewBag.error = "coursemomentDeletedCorrectly";
+            return RedirectToAction("Index", "Planner");
+        }
+
+        [HttpPost]
+        [Route("planner/edit")]
+        public ActionResult Edit() { 
+            return RedirectToAction("Index", "Planner");
+        }
+
     }
 }
