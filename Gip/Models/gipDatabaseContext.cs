@@ -54,6 +54,9 @@ namespace Gip.Models
                 entity.Property(e => e.Vakcode)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+                
+                entity.Property(e => e.LessenLijst)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Datum).HasColumnType("date");
 
@@ -92,7 +95,7 @@ namespace Gip.Models
 
                 entity.HasOne(d => d.Room)
                     .WithMany(p => p.CourseMoment)
-                    .HasForeignKey(d => new { d.Gebouw, d.Verdiep, d.Nummer })
+                    .HasForeignKey(d => new {d.Gebouw, d.Verdiep, d.Nummer})
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_CourseMoment_Room");
             });
