@@ -8,13 +8,18 @@
     <table class="table table-bordered table-hover table-striped">
         <tr>
             <th>Datum</th>
+            <th>Start/einde</th>
             <th>Vak</th>
             <th>Lokaal</th>
+            <th>Delete</th>
+            <th>Edit</th>
+
         </tr>
         @foreach (var planner in Model) {
             <tr>
                 <td>@planner.Datum.ToString("dd/MM/yyyy")</td>
-                <td>@planner.Titel</td>
+                <td>@planner.Startmoment.ToString("HH:mm") / @planner.Eindmoment.ToString("HH:mm")</td>
+                <td>@planner.Titel</td> 
                 <td>@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer</td>
             </tr>
         }
