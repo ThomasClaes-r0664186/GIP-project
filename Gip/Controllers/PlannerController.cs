@@ -22,50 +22,15 @@ namespace Gip.Controllers
 
                        where (cm.Datum.DayOfYear/7) == (DateTime.Now.DayOfYear/7)
                        select new { 
-                            cm.Datum,
-                            cm.Startmoment,
-                            cm.Gebouw,
-                            cm.Verdiep,
-                            cm.Nummer,
-                            c.Titel,
-                            s.Eindmoment
+                            datum =cm.Datum,
+                            startmoment = cm.Startmoment,
+                            gebouw = cm.Gebouw,
+                            verdiep = cm.Verdiep,
+                            nummer = cm.Nummer,
+                            titel = c.Titel,
+                            eindmoment = s.Eindmoment
                        };
             return View(_qry);
         }
     }
 }
-
-/* try
-            {
-                var _qry = from d in db.Room
-                    orderby d.Gebouw, d.Verdiep, d.Nummer
-                    select d;
-                ViewBag.error = "indexLokaalGood";
-                return View(qry);
-            }
-            catch (Exception e)
-            {
-                System.Console.WriteLine(e);
-                ViewBag.error = "indexLokaalError";
-                return RedirectToAction("Index", "Home");
-            }
-
-    var klant = from c in db.Customers
-                join o in db.Orders on c.CustomerId equals o.CustomerId
-                join d in db.OrderDetails on o.OrderId equals d.OrderId
-                where c.CustomerId == costumerInQuestion
-                select new {
-                    aantal = d.UnitPrice * d.Quantity, 
-                    orderId = o.OrderId
-                };
-
-    var orders = from o in db.Orders
-                join c in db.Customers on o.CustomerId equals c.CustomerId
-                join e in db.Employees on o.EmployeeId equals e.EmployeeId
-                select new
-                {
-                    o.OrderId,
-                    o.CustomerId,
-                    c.CompanyName,
-                    e.FirstName
-                };*/

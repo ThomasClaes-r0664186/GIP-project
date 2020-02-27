@@ -29,7 +29,7 @@ namespace Gip.Models
             }
             set
             {
-                string middelen1 = value.ToLower().Trim();
+                string middelen1 = value.ToLower();
                 int aantal = 1;
                 if (middelen1.Contains('/'))
                 {
@@ -58,7 +58,9 @@ namespace Gip.Models
                     {
                         gevonden++;
                     }
-                    if(middelen1.Contains("geen"))
+                    if (middelen1.Contains("geen middelen")) {
+                        gevonden++;
+                    }
                     if (gevonden != aantal)
                     {
                         throw new DatabaseException("The resources you selected are not available!" + Environment.NewLine + "Please try again!");
@@ -70,7 +72,7 @@ namespace Gip.Models
                 }
                 else
                 {
-                    middelen = "Geen";
+                    middelen = "Geen middelen";
                 }
 
             }
@@ -151,7 +153,7 @@ namespace Gip.Models
             get { return type; }
             set
             {
-                if (value == "Computerlokaal" || value == "Aula" || value == "Vergaderlokaal")
+                if (value == "Computerlokaal" || value == "Aula" || value == "Vergaderlokaal" || value == "Lokaal")
                 {
                     type = value;
                 }
