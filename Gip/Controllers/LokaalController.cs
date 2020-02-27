@@ -87,7 +87,7 @@ namespace Gip.Controllers
             }
 
             db.Room.Remove(room);
-            db.SaveChanges();
+                db.SaveChanges();
             ViewBag.error = "deleteGood";
             return RedirectToAction("Index", "Lokaal");
         }

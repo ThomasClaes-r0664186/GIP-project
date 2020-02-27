@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Gip.Models.Planner>
     <Gip.Models.Planner>
 
-        <form>
+        <form action="" method="post">
             <div class="form-group">
                 <label for="uur">Startuur:</label>
                 <input type="time" id="uur" class="form-control" name="uur" min="06:00" max="22:00" value="12:00" required />
@@ -12,9 +12,11 @@
                 <select class="form-control" required>
                     @foreach (var planner in Model)
                     {
-                        <option value="lokaalId">@planner</option>
+                        <option value="lokaalId">@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer</option>
                     }
                 </select>
+                <small>Gelieve het lokaal aan te duiden</small>
+
             </div>
             <div class="form-group">
                 <label>Vak:</label>
@@ -22,8 +24,10 @@
                     @foreach (var planner in Model)
                     {
                         <option value="vakcode">@planner.Vakcode</option>
+
                     }
                 </select>
+                <small>Gelieve de vakcode aan te duiden</small>
             </div>
             <div class="form-group">
                 <label>Lesduur:</label>
@@ -61,10 +65,12 @@
                     <option value="15.5">15,5 uur</option>
                     <option value="16">16 uur</option>
                 </select>
+                <small>Gelieve de gewenste lesduur aan te duiden</small>
             </div>
             <div class="form-group">
                 <label for="lessenlijst">Beschrijving</label>
                 <input type="text" maxlength="250" class="form-control" name="lessenlijst" required>
+                <small>Geef een eventuele beschrijving</small>
             </div>
 
             <button type="submit" class="btn btn-primary">Submit</button>
