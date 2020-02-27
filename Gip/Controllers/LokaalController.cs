@@ -16,7 +16,7 @@ namespace Gip.Controllers
             try
             {
                 //var gebouwlst = new List<string>();
-                var _qry = from d in db.Room
+                var qry = from d in db.Room
                     orderby d.Gebouw, d.Verdiep, d.Nummer
                     select d;
                 ViewBag.error = "indexLokaalGood";
