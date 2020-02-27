@@ -4,17 +4,22 @@
             ViewData["Title"] = "Index";
         }
         <h1>Overzicht van de lokalen</h1>
-        @if (ViewBag.error=="addError")
-        {
+        @if (ViewBag.error == "addError")
+         {
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 <strong>Error: lokaal is niet toegevoegd</strong>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-        }
-        
-        @if (ViewBag.error=="editError")
+         }
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Error: lokaal is niet toegevoegd</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        @if (ViewBag.error == "editError")
         {
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 <strong>Error: lokaal is niet aangepast</strong>
@@ -23,26 +28,26 @@
                 </button>
             </div>
         }
-    
-        @if (ViewBag.error=="deleteError")
-            {
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error: lokaal is niet verwijdert</strong>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            }
-        @if (ViewBag.error=="deleteGood")
-            {
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <strong>Error: lokaal is niet verwijdert</strong>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            }
-        @if (ViewBag.error=="addGood")
+
+        @if (ViewBag.error == "deleteError")
+        {
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Error: lokaal is niet verwijdert</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
+        @if (ViewBag.error == "deleteGood")
+        {
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Error: lokaal is niet verwijdert</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
+        @if (ViewBag.error == "addGood")
         {
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <strong>Lokaal is toegevoegd</strong>
@@ -51,7 +56,7 @@
                 </button>
             </div>
         }
-        @if (ViewBag.error=="editGood")
+        @if (ViewBag.error == "editGood")
         {
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <strong>Lokaal is aangepast</strong>
@@ -79,7 +84,7 @@
                         <form action="/lokaal/add" method="post">
                             <div class="form-group">
                                 <label for="gebouw" class="col-form-label">Gebouw:</label>
-                                <input required="required" type="text" class="form-control" id="gebouw" placeholder="Bv. A,B..." name="gebouw">
+                                <input  type="text" required="required" class="form-control" id="gebouw" placeholder="Bv. A,B..." name="gebouw">
                             </div>
                             <div class="form-group">
                                 <label for="verdiep" class="col-form-label">Verdieping:</label>
