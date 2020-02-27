@@ -92,6 +92,14 @@ namespace Gip.Controllers
             return RedirectToAction("Index", "Lokaal");
         }
 
+        [HttpGet]
+        [Route("lokaal/edit")]
+        public ActionResult Edit()
+        {
+            return View();
+        }
+
+
         [HttpPost]
         [Route("lokaal/edit")]
         public ActionResult Edit(string lokaalId, string gebouw, int verdiep, string nummer, string type, int capaciteit, string middelen)
@@ -113,7 +121,7 @@ namespace Gip.Controllers
 
             try
             {
-                room.Gebouw = gebouw;
+                room.Gebouw = gebouw.Trim();
                 room.Verdiep = verdiep;
                 room.Nummer = nummer;
                 room.Type = type;
