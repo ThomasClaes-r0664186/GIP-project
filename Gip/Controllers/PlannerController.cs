@@ -59,7 +59,7 @@ namespace Gip.Controllers
         public ActionResult Add(string dat, string uur, string lokaalId, double duratie, string vakcode, string lessenlijst)
         {
             DateTime datum = DateTime.ParseExact(dat, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-            DateTime tijd = new DateTime(0001, 1, 1, int.Parse(uur.Split(":")[0]), int.Parse(uur.Split(":")[1]), 0);
+            DateTime tijd = new DateTime(1800, 1, 1, int.Parse(uur.Split(":")[0]), int.Parse(uur.Split(":")[1]), 0);
             lokaalId = lokaalId.Trim() + " ";
             string gebouw = lokaalId.Substring(0, 1);
             int verdieping = int.Parse(lokaalId.Substring(1, 1));
