@@ -1,42 +1,73 @@
 ﻿@model IEnumerable<Gip.Models.Planner>
-<Gip.Models.Planner>
+    <Gip.Models.Planner>
 
-
-
-    @{
-        ViewData["Title"] = "Index";
-    }
-
-    <h1>Planner</h1>
-
-
-    <table class="table table-bordered table-hover table-striped">
-        <tr>
-            <th>Datum</th>
-            <th>Lokaal</th>
-            <th>Vak</th>
-        </tr>
-
-        <tr>
-            <td>
-                <input type="date" id="date" name="dat" />
-                <input type="time" id="uur" name="uur" min="06:00" max="22:00" />
+        <form>
+            <div class="form-group">
+                <label for="uur">Startuur:</label>
+                <input type="time" id="uur" class="form-control" name="uur" min="06:00" max="22:00" value="12:00" required />
                 <small>Openingstijden van 06:00 tot 22:00</small>
-            </td>
-
-            <td>
-            @foreach (var planner in Model)
-            {
-                <select>
-                    <option value="lokaalId">@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer</option>
+            </div>
+            <div class="form-group">
+                <label>Lokaal:</label>
+                <select class="form-control" required>
+                    @foreach (var planner in Model)
+                    {
+                        <option value="lokaalId">@planner</option>
+                    }
                 </select>
-            }
+            </div>
+            <div class="form-group">
+                <label>Vak:</label>
+                <select class="form-control" required>
+                    @foreach (var planner in Model)
+                    {
+                        <option value="vakcode">@planner.Vakcode</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Lesduur:</label>
+                <select class="form-control">
+                    <option value="0.5">30 minuten</option>
+                    <option value="1">1 uur</option>
+                    <option value="1.5">1,5 uur</option>
+                    <option value="2">2 uur</option>
+                    <option value="2.5">2,5 uur</option>
+                    <option value="3">3 uur</option>
+                    <option value="3.5">3,5 uur</option>
+                    <option value="4">4 uur</option>
+                    <option value="4.5">4,5 uur</option>
+                    <option value="5">5 uur</option>
+                    <option value="5.5">5,5 uur</option>
+                    <option value="6">6 uur</option>
+                    <option value="6.5">6,5 uur</option>
+                    <option value="7">7 uur</option>
+                    <option value="7.5">7,5 uur</option>
+                    <option value="8">8 uur</option>
+                    <option value="8.5">8,5 uur</option>
+                    <option value="9">9 uur</option>
+                    <option value="9.5">9,5 uur</option>
+                    <option value="10">10 uur</option>
+                    <option value="10.5">10,5 uur</option>
+                    <option value="11">11 uur</option>
+                    <option value="11.5">11,5 uur</option>
+                    <option value="12">12 uur</option>
+                    <option value="12.5">12,5 uur</option>
+                    <option value="13">13 uur</option>
+                    <option value="13.5">13,5 uur</option>
+                    <option value="14">14 uur</option>
+                    <option value="14.5">14,5 uur</option>
+                    <option value="15">15 uur</option>
+                    <option value="15.5">15,5 uur</option>
+                    <option value="16">16 uur</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="lessenlijst">Beschrijving</label>
+                <input type="text" maxlength="250" class="form-control" name="lessenlijst" required>
+            </div>
 
-            </td>
-            <td>
-
-            </td>  
-        </tr>
-    </table>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
 
 
