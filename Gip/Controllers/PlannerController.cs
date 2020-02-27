@@ -67,16 +67,22 @@ namespace Gip.Controllers
 
             try
             {
+                Schedule schedule = new Schedule();
                 CourseMoment moment = new CourseMoment();
+
+                schedule.Datum = datum;
+                schedule.Startmoment = tijd;
+                schedule.Eindmoment = tijd.AddHours(duratie);
                 moment.Vakcode = vakcode;
                 moment.Datum = datum;
-                moment.Startmoment = tijd;
+                moment.Startmoment = schedule.Startmoment;
                 moment.Gebouw = gebouw;
                 moment.Verdiep = verdieping;
                 moment.Nummer = nummer;
                 moment.Userid = "r0664186";
                 moment.LessenLijst = lessenlijst;
 
+                db.Schedule.Add(schedule);
                 db.CourseMoment.Add(moment);
             }
             catch (Exception e)
@@ -95,6 +101,32 @@ namespace Gip.Controllers
         public ActionResult Add()
         {
             return View();
+        }
+
+        [HttpGet]
+        [Route("planner/viewTopic")]
+        public ActionResult ViewTopic(string vakcode, DateTime datum, DateTime startMoment, string lokaalId) {
+
+            return View();
+        }
+
+        [HttpGet]
+        [Route("planner/viewCourseMoments")]
+        public ActionResult ViewCourseMoments(string vakcode)
+        {
+            try
+            {
+                var qry = from cm in db.CourseMoment
+                          where cm.Vakcode == vakcode
+                          select cm;
+                ViewBag.error = "coursemomentsGood";
+                return View(qry);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e);
+                ViewBag.error = "coursmomentsError";
+                return RedirectToAction("Index","Planner");
+            }
         }
     }
 }

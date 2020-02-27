@@ -6,7 +6,6 @@ using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace GipUnitTest
 {
-    
     public class SeleniumTest : IDisposable
     {
         public IWebDriver driver;
