@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Gip.Models.Exceptions;
-using System.ComponentModel.DataAnnotations;
 namespace Gip.Models
 {
     public partial class User
@@ -12,7 +11,12 @@ namespace Gip.Models
             CourseMoment = new HashSet<CourseMoment>();
             CourseUser = new HashSet<CourseUser>();
         }
-
+        public User(string naam, string mail, string userid)
+        {
+            this.Naam = naam;
+            this.Mail = mail;
+            this.Userid = userid;
+        }
         //public string Userid { get; set; }
         //public string Naam { get; set; }
         //public string Mail { get; set; }
@@ -23,17 +27,23 @@ namespace Gip.Models
             get { return naam; }
             set 
             {
-                string pattern = @"^[a-zA-Z&àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ]+$";               
-                if (value != "")
-                {                    
-                    if (Regex.IsMatch(value, pattern))
-                    {
-                        naam = value;
-                    }                    
+                if (value == "")
+                {
+                    throw new DatabaseException("The chosen name is empty!" + Environment.NewLine + "Please try again.");
+
                 }
                 else
                 {
-                    throw new DatabaseException("The chosen name is invalid!" + Environment.NewLine + "Please do not include anny special caracters and try again.");
+                    string pattern = @"^[a-zA-Z&àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ]+$";
+                    if (Regex.IsMatch(value, pattern))
+                    {
+                        naam = value;
+                    }
+                    else
+                    {
+                        throw new DatabaseException("The chosen name is invalid!" + Environment.NewLine + "Please do not include anny special caracters and try again.");
+
+                    }
                 }
             }
         }
@@ -45,39 +55,51 @@ namespace Gip.Models
             get { return mail; }
             set 
             {
-                string pattern = @"^([a-zA-Z0-9_-.]+)@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.)|(([a-zA-Z0-9-]+.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(]?)$";
-                if (value != "")
+                if (value.Trim() == "")
                 {
-                    if (Regex.IsMatch(value, pattern))
-                    {
-                        mail = value;
-                    }
+                    throw new DatabaseException("The chosen Email address is empty!" + Environment.NewLine + "Please try again.");
                 }
                 else
                 {
-                    throw new DatabaseException("The chosen Email address is invalid!" + Environment.NewLine + "Please do not include special caracters and try again.");
+                    string pattern = @"^([a-zA-Z0-9_-.]+)@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.)|(([a-zA-Z0-9-]+.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(]?)$";
+                    if (Regex.IsMatch(value, pattern))
+                    {
+                            mail = value;
+                    }
+                    else
+                    {
+                        throw new DatabaseException("The chosen Email address is invalid!" + Environment.NewLine + "Please do not include special caracters and try again.");
+
+                    }
+
                 }
             }
         }
 
         private string userid;
-
         public string Userid
         {
             get { return userid; }
             set 
             {
-                string pattern = @"^[cru]\d{7}$";
-                if (value != "")
+                if (value == "")
                 {
+                    throw new DatabaseException("The chosen User identification number is empty!" + Environment.NewLine + "Please try again.");
+
+                }
+                else
+                {
+                    string pattern = @"^[cru]\d{7}$";
+
                     if (Regex.IsMatch(value, pattern))
                     {
                         userid = value;
                     }
-                }
-                else
-                {
-                    throw new DatabaseException("The chosen User identification number is invalid!" + Environment.NewLine + "Please do not include special caracters and try again.");
+                    else
+                    {
+                        throw new DatabaseException("The chosen User identification number is invalid!" + Environment.NewLine + "Please do not include special caracters and try again.");
+
+                    }
                 }
             } 
         }

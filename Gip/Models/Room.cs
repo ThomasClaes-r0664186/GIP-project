@@ -9,18 +9,16 @@ namespace Gip.Models
 {
     public partial class Room
     {
-        public Room()
-        {
-            CourseMoment = new HashSet<CourseMoment>();
-        }
 
-       // public string Gebouw { get; set; } //if(value.toLower.trim().length <= 0) throw new exeption, else gebouw = value
-       // public int Verdiep { get; set; }
-       // public string Nummer { get; set; }
-       // public string Type { get; set; }
-       // public int Capaciteit { get; set; }
-        
-        private String middelen;
+
+        // public string Gebouw { get; set; } //if(value.toLower.trim().length <= 0) throw new exeption, else gebouw = value
+        // public int Verdiep { get; set; }
+        // public string Nummer { get; set; }
+        // public string Type { get; set; }
+        // public int Capaciteit { get; set; }
+        public virtual ICollection<CourseMoment> CourseMoment { get; set; }
+
+        private string middelen;
         public string Middelen
         {
             get
@@ -108,7 +106,7 @@ namespace Gip.Models
             get { return verdiep; }
             set
             {
-                if (value < 0 || value > 3)
+                if (value < 0 || value > 9)
                 {
                     throw new DatabaseException("The floor you wish to select does not exist!" + Environment.NewLine + "Please try again.");
                 }
@@ -118,6 +116,10 @@ namespace Gip.Models
                     if (Regex.IsMatch(value.ToString(), pattern))
                     {
                         verdiep = value;
+                    }
+                    else
+                    {
+                        throw new DatabaseException("The floor you wish to select does not exist!" + Environment.NewLine + "Please do not include any special characters and try again.");
                     }
                 }
             }
@@ -131,7 +133,7 @@ namespace Gip.Models
             {
                 if (value.Trim().Length > 3 || value.Trim().Length < 0)
                 {
-                    throw new DatabaseException("The number you wish to select does not exist!" + Environment.NewLine + "Please try again.");
+                    throw new DatabaseException("The number you wish to select is invalid!" + Environment.NewLine + "Please try again.");
                 }
                 else
                 {
@@ -140,12 +142,16 @@ namespace Gip.Models
                     {
                         nummer = value;
                     }
+                    else
+                    {
+                        throw new DatabaseException("The number you wish to select is invalid!" + Environment.NewLine + "Please do not include any special characters and try again.");
+                    }
                 }
             }
         }
 
         private string type;
-        public string Type
+        public string Type //is dropdown
         {
             get { return type; }
             set
@@ -178,11 +184,32 @@ namespace Gip.Models
                 }
                 else
                 {
-                    capaciteit = value;
+                    string pattern = @"^\d$";
+                    if (Regex.IsMatch(value.ToString(), pattern))
+                    {
+                        capaciteit = value;
+                    }
+                    else
+                    {
+                        throw new DatabaseException("The capacity you wish to select does not exist!" + Environment.NewLine + "Please do not include any special characters and try again.");
+                    }
                 }
             }
         }
 
-        public virtual ICollection<CourseMoment> CourseMoment { get; set; }
+        public Room(string middelen, string gebouw, int verdiep, string nummer, string type, int capaciteit)
+        {
+            this.Capaciteit = capaciteit;
+            this.Gebouw = gebouw;
+            this.Verdiep = verdiep;
+            this.Nummer = nummer;
+            this.Middelen = middelen;
+            this.Type = type;
+        }
+        public Room()
+        {
+            CourseMoment = new HashSet<CourseMoment>();
+        }
+
     }
 }
