@@ -19,7 +19,7 @@
         @if (ViewBag.error == "editError")
         {
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>Error: lokaal is niet aangepast</strong>
+                <strong>Error: lokaal is niet aangepast. Het lokaal werd uit de databank verwijderd, gelieve deze opnieuw aan te maken.</strong>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -37,12 +37,12 @@
         }
         @if (ViewBag.error == "deleteGood")
         {
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>Error: lokaal is niet verwijdert</strong>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Lokaal is verwijderd</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
         }
         @if (ViewBag.error == "addGood")
         {
@@ -267,7 +267,3 @@
           </script>
         <script src="~/js/site.js" |></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-
-
-
-

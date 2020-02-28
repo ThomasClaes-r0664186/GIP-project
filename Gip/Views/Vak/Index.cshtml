@@ -5,63 +5,63 @@
         }
 
         <h1>Overzicht van de vakken</h1>
-        
-        @if (ViewBag.error=="addError")
-         {
-          <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>Error: vak is niet toegevoegd</strong>
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-         }
-                
-                @if (ViewBag.error=="editError")
-                {
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <strong>Error: vak is niet aangepast</strong>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                }
-    
-                @if (ViewBag.error=="deleteError")
-                    {
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            <strong>Error: vak is niet verwijdert</strong>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                    }
-                @if (ViewBag.error=="deleteGood")
-                    {
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            <strong>Error: vak is niet verwijdert</strong>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                    }
-                @if (ViewBag.error=="addGood")
-                {
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <strong>vak is toegevoegd</strong>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                }
-                @if (ViewBag.error=="editGood")
-                {
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <strong>vak is aangepast</strong>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                }
+
+        @if (ViewBag.error == "addError")
+        {
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Error: vak is niet toegevoegd</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
+
+        @if (ViewBag.error == "editError")
+        {
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Error: vak is niet aangepast</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
+
+        @if (ViewBag.error == "deleteError")
+        {
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Error: vak is niet verwijdert</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
+        @if (ViewBag.error == "deleteGood")
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Lokaal is verwijderd</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
+        @if (ViewBag.error == "addGood")
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>vak is toegevoegd</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
+        @if (ViewBag.error == "editGood")
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>vak is aangepast</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
         <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addVak" style="float:right">Vak toevoegen</button>
         <div class="modal fade" id="addVak" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -156,7 +156,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="titel" class="col-form-label">Titel:</label>
-                                                <input  required="required" type="text" class="form-control" id="titel" name="titel" value="@vak.Titel">
+                                                <input required="required" type="text" class="form-control" id="titel" name="titel" value="@vak.Titel">
                                             </div>
                                             <div class="form-group">
                                                 <label for="studiepunten" class="col-form-label">Studiepunten:</label>

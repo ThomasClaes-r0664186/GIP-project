@@ -18,7 +18,15 @@ namespace Gip.Controllers
                 var qry = from d in db.Course
                           orderby d.Vakcode
                           select d;
-                ViewBag.error = "indexVakGood";
+                if (TempData["error"] != null)
+                {
+                    ViewBag.error = TempData["error"].ToString();
+                }
+                if (ViewBag.error == null || !ViewBag.error.Equals("addError") && !ViewBag.error.Equals("addGood") && !ViewBag.error.Equals("deleteError") && !ViewBag.error.Equals("deleteGood") && !ViewBag.error.Equals("editError") && !ViewBag.error.Equals("editGood"))
+                {
+                    ViewBag.error = "indexVakGood";
+                }
+                
                 return View(qry);
             }
             catch (Exception e)
@@ -44,10 +52,10 @@ namespace Gip.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ViewBag.error = "addError";
+                TempData["error"] = "addError";
                 return RedirectToAction("Index", "Vak");
             }
-            ViewBag.error = "addGood";
+            TempData["error"] = "addGood";
             return RedirectToAction("Index", "Vak");
         }
 
@@ -64,14 +72,14 @@ namespace Gip.Controllers
         {
             if (vakcode == null || vakcode.Trim().Equals(""))
             {
-                ViewBag.error = "deleteError";
+                TempData["error"] = "deleteError";
                 return  RedirectToAction("Index", "Vak");
             }
 
             Course course = db.Course.Find(vakcode);
 
             if (course == null) {
-                ViewBag.error = "deleteError";
+                TempData["error"] = "deleteError";
                 return RedirectToAction("Index", "Vak");
             }
 
@@ -82,11 +90,12 @@ namespace Gip.Controllers
             }
             catch (Exception e)
             {
-                ViewBag.error = "deleteError";
+                Console.WriteLine(e);
+                TempData["error"] = "deleteError";
                 return RedirectToAction("Index", "Vak");
             }
 
-            ViewBag.error = "deleteGood";
+            TempData["error"] = "deleteGood";
             return RedirectToAction("Index", "Vak");
         }
         
@@ -96,7 +105,7 @@ namespace Gip.Controllers
         {
             if (vakcodeOld == null || vakcodeOld.Trim().Equals(""))
             {
-                ViewBag.error = "editError";
+                TempData["error"] = "editError";
                 return RedirectToAction("Index", "Vak");
             }
             try{
@@ -109,10 +118,10 @@ namespace Gip.Controllers
                 db.Course.Add(course);
                 db.SaveChanges();
             }catch (Exception) {
-                ViewBag.error = "deleteError";
-                return View();
+                TempData["error"] = "editError";
+                return RedirectToAction("Index", "Vak");
             }
-            ViewBag.error = "deleteGood";
+            TempData["error"] = "editGood";
             return RedirectToAction("Index", "Vak");
         }
     }
