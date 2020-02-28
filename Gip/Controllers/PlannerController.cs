@@ -136,7 +136,8 @@ namespace Gip.Controllers
 
         [HttpGet]
         [Route("planner/viewTopic")]
-        public ActionResult ViewTopic(string vakcode, DateTime datum, DateTime startMoment, string lokaalId) {
+        public ActionResult ViewTopic(string vakcode, DateTime datum, DateTime startMoment, string lokaalId) 
+        {
 
             return View();
         }

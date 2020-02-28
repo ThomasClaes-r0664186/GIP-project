@@ -4,7 +4,10 @@
         ViewData["Title"] = "index";
     }
 
-    <h1>Overzicht van de planning</h1>
+    <h1>
+        Overzicht van de planning van deze week
+        <script>document.write(new Date().toLocaleDateString());</script>
+    </h1>
     <table class="table table-bordered table-hover table-striped">
         <tr>
             <th>Datum</th>
