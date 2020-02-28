@@ -133,32 +133,6 @@ namespace Gip.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("planner/viewTopic")]
-        public ActionResult ViewTopic(string vakcode, DateTime datum, DateTime startMoment, string lokaalId) 
-        {
-            return View();
-        }
-
-        [HttpGet]
-        [Route("planner/viewCourseMoments")]
-        public ActionResult ViewCourseMoments(string vakcode)
-        {
-            try
-            {
-                var qry = from cm in db.CourseMoment
-                          where cm.Vakcode == vakcode
-                          select cm;
-                ViewBag.error = "coursemomentsGood";
-                return View(qry);
-            }
-            catch (Exception e) {
-                Console.WriteLine(e);
-                ViewBag.error = "coursmomentsError";
-                return RedirectToAction("Index","Planner");
-            }
-        }
-
         [HttpPost]
         [Route("planner/delete")]
         public ActionResult Delete(string vakcode, DateTime datum, DateTime startMoment, string gebouw, int verdiep, string nummer) {
@@ -232,6 +206,33 @@ namespace Gip.Controllers
             ViewBag.error = "addGood";
             db.SaveChanges();
             return RedirectToAction("Index", "Planner");
+        }
+
+        [HttpGet]
+        [Route("planner/viewTopic")]
+        public ActionResult ViewTopic(string vakcode, DateTime datum, DateTime startMoment, string lokaalId)
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [Route("planner/viewCourseMoments")]
+        public ActionResult ViewCourseMoments(string vakcode)
+        {
+            try
+            {
+                var qry = from cm in db.CourseMoment
+                          where cm.Vakcode == vakcode
+                          select cm;
+                ViewBag.error = "coursemomentsGood";
+                return View(qry);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                ViewBag.error = "coursmomentsError";
+                return RedirectToAction("Index", "Planner");
+            }
         }
 
     }
