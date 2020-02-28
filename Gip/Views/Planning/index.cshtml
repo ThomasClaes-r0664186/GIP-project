@@ -72,8 +72,8 @@
 
                 </td>
                 <td>
-                    <button type="button" class="btn btn-sm btn-dark" data-toggle="modal" data-target="#editPlanning">Edit</button>
-                    <div class="modal fade" id="editPlanning" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <button type="button" class="btn btn-sm btn-dark" data-toggle="modal" data-target="#editPlanning-@planner.Vakcode.Trim()@planner.Datum.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Startmoment.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer.Trim()">Edit</button>
+                    <div class="modal fade" id="editPlanning-@planner.Vakcode.Trim()@planner.Datum.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Startmoment.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer.Trim()" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -85,8 +85,91 @@
                                 <div class="modal-body">
                                     <form action="/planning/edit" method="post">
                                         <div>
+                                            <input type="text" name="oldVakcode" style="display: none" value="@planner.Vakcode">
+                                            <input type="text" name="oldDatum" style="display: none" value="@planner.Datum">
+                                            <input type="text" name="oldStartmoment" style="display: none" value="@planner.Startmoment">
+                                            <input type="text" name="oldGebouw" style="display: none" value="@planner.Gebouw">
+                                            <input type="text" name="oldVerdiep" style="display: none" value="@planner.Verdiep">
+                                            <input type="text" name="oldNummer" style="display: none" value="@planner.Nummer">
                                         </div>
                                         <div class="form-group">
+                                            <input type="date" id="dat" class="form-control" name="newDatum" min="@DateTime.Today.ToString("dd/MM/yyyy")" max="" required="required" value="@planner.Datum" />
+                                            <small>Een datum die hoger gaat dan dit jaar + 1 wordt niet aanvaard.</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="uur">Startuur:</label>
+                                            <input type="time" id="uur" class="form-control" name="newStartmoment" min="06:00" max="22:00" value="12:00" required="required"/>
+                                            <small>Openingstijden van 06:00 tot 22:00</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Lokaal:</label>
+                                            <select class="form-control" name="newLokaalid"  required="required">
+                                                @foreach (var plannerLokaal in Model)
+                                                {
+                                                    if (@planner.Gebouw != null)
+                                                    {
+                                                        <option value="@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer">@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer</option>
+                                                    }
+                                                }
+                                            </select>
+                                            <small>Gelieve het lokaal aan te duiden</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Vak:</label>
+                                            <select class="form-control" name="newVakcode" required="required">
+                                                @foreach (var plannerVak in Model)
+                                                {
+                                                    if (@planner.Vakcode != null)
+                                                    {
+                                                        <option value="@planner.Vakcode">@planner.Vakcode @planner.Titel</option>
+                                                    }
+                                                }
+                                            </select>
+                                            <small>Gelieve de vakcode aan te duiden</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Lesduur:</label>
+                                            <select class="form-control" name="newDuratie" required="required">
+                                                <option value="0.5">30 minuten</option>
+                                                <option value="1">1 uur</option>
+                                                <option value="1.5">1,5 uur</option>
+                                                <option value="2">2 uur</option>
+                                                <option value="2.5">2,5 uur</option>
+                                                <option value="3">3 uur</option>
+                                                <option value="3.5">3,5 uur</option>
+                                                <option value="4">4 uur</option>
+                                                <option value="4.5">4,5 uur</option>
+                                                <option value="5">5 uur</option>
+                                                <option value="5.5">5,5 uur</option>
+                                                <option value="6">6 uur</option>
+                                                <option value="6.5">6,5 uur</option>
+                                                <option value="7">7 uur</option>
+                                                <option value="7.5">7,5 uur</option>
+                                                <option value="8">8 uur</option>
+                                                <option value="8.5">8,5 uur</option>
+                                                <option value="9">9 uur</option>
+                                                <option value="9.5">9,5 uur</option>
+                                                <option value="10">10 uur</option>
+                                                <option value="10.5">10,5 uur</option>
+                                                <option value="11">11 uur</option>
+                                                <option value="11.5">11,5 uur</option>
+                                                <option value="12">12 uur</option>
+                                                <option value="12.5">12,5 uur</option>
+                                                <option value="13">13 uur</option>
+                                                <option value="13.5">13,5 uur</option>
+                                                <option value="14">14 uur</option>
+                                                <option value="14.5">14,5 uur</option>
+                                                <option value="15">15 uur</option>
+                                                <option value="15.5">15,5 uur</option>
+                                                <option value="16">16 uur</option>
+                                            </select>
+                                            <small>Gelieve de gewenste lesduur aan te duiden</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="lessenlijst">Beschrijving</label>
+                                            <textarea class="form-control" name="newLessenlijst" rows="4" cols="50">
+                                            </textarea>
+                                            <small>Geef een eventuele beschrijving</small>
                                         </div>
                                         <button type="submit" class="btn btn-dark">Wijzig planning</button>
                                     </form>
