@@ -13,9 +13,6 @@
              }
              </script>
     <h1 id="dateOfWeek"></h1>
-        Overzicht van de planning van deze week
-        
-    </h1>
     <table class="table table-bordered table-hover table-striped">
         <tr>
             <th>Datum</th>
@@ -33,8 +30,8 @@
                 <td>@planner.Titel</td> 
                 <td>@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer</td>
                 <td>
-                    <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deletePlanning-@planner.Vakcode.Trim()@planner.Datum@planner.Startmoment@planner.Gebouw@planner.Verdiep@planner.Nummer">Delete</button>
-                    <div class="modal fade" id="deletePlanning-@planner.Vakcode.Trim()@planner.Datum@planner.Startmoment@planner.Gebouw@planner.Verdiep@planner.Nummer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deletePlanning-@planner.Vakcode.Trim()@planner.Datum.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Startmoment.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer.Trim()">Delete</button>
+                    <div class="modal fade" id="deletePlanning-@planner.Vakcode.Trim()@planner.Datum.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Startmoment.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer.Trim()" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -44,7 +41,7 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <form action="/planning/delete" method="post">
+                                    <form action="/planner/delete" method="post">
                                         <div>
                                             <input type="text" name="vakcode" style="display: none" value="@planner.Vakcode">
                                             <input type="text" name="datum" style="display: none" value="@planner.Datum">
@@ -65,8 +62,28 @@
 
                 </td>
                 <td>
-                    <button type="button" class="btn btn-sm btn-dark" data-toggle="modal" data-target="">Edit</button>
-
+                    <button type="button" class="btn btn-sm btn-dark" data-toggle="modal" data-target="#editPlanning">Edit</button>
+                    <div class="modal fade" id="editPlanning" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Planning wijzigen?</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="/planning/edit" method="post">
+                                        <div>
+                                        </div>
+                                        <div class="form-group">
+                                        </div>
+                                        <button type="submit" class="btn btn-dark">Wijzig planning</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </td>
             </tr>
         }

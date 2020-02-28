@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 using System.Globalization;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Gip.Controllers
@@ -138,7 +137,6 @@ namespace Gip.Controllers
         [Route("planner/viewTopic")]
         public ActionResult ViewTopic(string vakcode, DateTime datum, DateTime startMoment, string lokaalId) 
         {
-
             return View();
         }
 
@@ -164,7 +162,8 @@ namespace Gip.Controllers
         [HttpPost]
         [Route("planner/delete")]
         public ActionResult Delete(string vakcode, DateTime datum, DateTime startMoment, string gebouw, int verdiep, string nummer) {
-            CourseMoment moment = db.CourseMoment.Find(vakcode, datum, startMoment, gebouw, verdiep, nummer, "R0664186");
+            DateTime newStartMoment = new DateTime(1800, 1, 1, startMoment.Hour, startMoment.Minute, startMoment.Second);
+            CourseMoment moment = db.CourseMoment.Find(vakcode, datum, newStartMoment, gebouw, verdiep, nummer, "r0664186");
             if (moment == null) {
                 ViewBag.error = "deleteError";
                 return RedirectToAction("Index", "Planner");
@@ -186,7 +185,52 @@ namespace Gip.Controllers
 
         [HttpPost]
         [Route("planner/edit")]
-        public ActionResult Edit() { 
+        public ActionResult Edit(string oldVakcode, 
+            DateTime oldDatum, DateTime oldStartMoment, 
+            string oldGebouw, int oldVerdiep, string oldNummer, 
+            string newVakcode, 
+            string newDatum, string newStartMoment, double duratie,
+            string newGebouw, int newVerdiep, string newNummer, string newLessenlijst) {
+            //new vakcode => dropdown met lokalen, datetime => checken of bestaat anders aanmaken.
+
+            try
+            {
+                CourseMoment moment = db.CourseMoment.Find(oldVakcode, oldDatum, oldStartMoment, oldGebouw, oldVerdiep, oldNummer, "r0664186");
+                if (moment == null)
+                {
+                    ViewBag.error = "deleteError";
+                    return RedirectToAction("Index", "Planner");
+                }
+                else
+                {
+                    db.CourseMoment.Remove(moment);
+                }
+
+                DateTime datum = DateTime.ParseExact(newDatum, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                DateTime tijd = new DateTime(1800, 1, 1, int.Parse(newStartMoment.Split(":")[0]), int.Parse(newStartMoment.Split(":")[1]), 0);
+                Schedule schedule = db.Schedule.Find(datum, tijd);
+
+                if (schedule == null)
+                {
+                    schedule = new Schedule();
+                    schedule.Datum = datum;
+                    schedule.Startmoment = tijd;
+                    schedule.Eindmoment = tijd.AddHours(duratie);
+
+                    db.Schedule.Add(schedule);
+                    db.SaveChanges();
+                }
+
+                CourseMoment newMoment = new CourseMoment(newVakcode, datum, tijd, newGebouw, newVerdiep, newNummer, "r0664186", newLessenlijst);
+                db.CourseMoment.Add(newMoment);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e);
+                ViewBag.error = "coursemomentEditError";
+                return RedirectToAction("Index","Planner");
+            }
+            ViewBag.error = "addGood";
+            db.SaveChanges();
             return RedirectToAction("Index", "Planner");
         }
 
