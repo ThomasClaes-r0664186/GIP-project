@@ -195,15 +195,15 @@ namespace Gip.Controllers
 
             try
             {
-                CourseMoment moment = db.CourseMoment.Find(oldVakcode, oldDatum, oldStartMoment, oldGebouw, oldVerdiep, oldNummer, "r0664186");
-                if (moment == null)
+                CourseMoment oldMoment = db.CourseMoment.Find(oldVakcode, oldDatum, oldStartMoment, oldGebouw, oldVerdiep, oldNummer, "r0664186");
+                if (oldMoment == null)
                 {
                     ViewBag.error = "deleteError";
                     return RedirectToAction("Index", "Planner");
                 }
                 else
                 {
-                    db.CourseMoment.Remove(moment);
+                    db.CourseMoment.Remove(oldMoment);
                 }
 
                 DateTime datum = DateTime.ParseExact(newDatum, "yyyy-MM-dd", CultureInfo.InvariantCulture);
