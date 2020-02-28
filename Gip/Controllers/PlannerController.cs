@@ -14,7 +14,7 @@ namespace Gip.Controllers
         // GET /planner
         [HttpGet]
         [Route("planner")]
-        public ActionResult Index()
+        public ActionResult Index(int week)
         {
             try
             {
@@ -23,8 +23,8 @@ namespace Gip.Controllers
                            join s in db.Schedule
                                 on new { cm.Datum, cm.Startmoment }
                                 equals new { s.Datum, s.Startmoment }
-
-                           where (cm.Datum.DayOfYear / 7) == (DateTime.Now.DayOfYear / 7)
+                                //we hebben aan week 52+1 gedaan, maar vonden het niet en het was al laat op den dag
+                           where ((cm.Datum.DayOfYear / 7) + week) == ((DateTime.Now.DayOfYear / 7) + week)
                            select new
                            {
                                datum = cm.Datum,
@@ -210,9 +210,16 @@ namespace Gip.Controllers
 
         [HttpGet]
         [Route("planner/viewTopic")]
-        public ActionResult ViewTopic(string vakcode, DateTime datum, DateTime startMoment, string lokaalId)
+        public ActionResult ViewTopic(string vakcode, DateTime datum, DateTime startMoment, string gebouw, int verdiep, string nummer)
         {
-            return View();
+            try {
+                CourseMoment oldMoment = db.CourseMoment.Find(vakcode, datum, startMoment, gebouw, verdiep, nummer, "r0664186");
+                return View("../Planning/ViewTopi", oldMoment);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e);
+                return RedirectToAction("Index", "Planner");
+            }
         }
 
         [HttpGet]
