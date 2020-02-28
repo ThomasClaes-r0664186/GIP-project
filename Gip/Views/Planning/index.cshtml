@@ -1,63 +1,67 @@
 ﻿@model IEnumerable<Gip.Models.Planner>
-<Gip.Models.Planner>
-    @{
-        ViewData["Title"] = "index";
-    }
+    <Gip.Models.Planner>
+        @{
+            ViewData["Title"] = "index";
+        }
 
-    <h1>Overzicht van de planning</h1>
-    <table class="table table-bordered table-hover table-striped">
-        <tr>
-            <th>Datum</th>
-            <th>Start/einde</th>
-            <th>Vak</th>
-            <th>Lokaal</th>
-            <th>Delete</th>
-            <th>Edit</th>
+        <h1 id="date">Overzicht van de planning van week</h1>
 
-        </tr>
-        @foreach (var planner in Model) {
+        <table class="table table-bordered table-hover table-striped">
             <tr>
-                <td>@planner.Datum.ToString("dd/MM/yyyy")</td>
-                <td>@planner.Startmoment.ToString("HH:mm") / @planner.Eindmoment.ToString("HH:mm")</td>
-                <td>@planner.Titel</td> 
-                <td>@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer</td>
-                <td>
-                    <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deletePlanning">Delete</button>
-                    <div class="modal fade" id="deletePlanning" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Het lesmoment van de planning verwijderen?</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <form action="/planning/delete" method="post">
-                                        <div>
-                                            <input type="text" name="vakcode" style="display: none" value="@planner.Vakcode">
-                                            <input type="text" name="datum" style="display: none" value="@planner.Datum">
-                                            <input type="text" name="startMoment" style="display: none" value="@planner.Startmoment">
-                                            <input type="text" name="gebouw" style="display: none" value="@planner.Gebouw">
-                                            <input type="text" name="verdiep" style="display: none" value="@planner.Verdiep">
-                                            <input type="text" name="nummer" style="display: none" value="@planner.Nummer">
-                                        </div>
-                                        Ben je zeker dat je het lesmoment op @planner.Datum.ToString("dd/MM/yyyy") over het vak @planner.Titel met startmoment @planner.Startmoment.ToString("HH:mm") wilt verwijderen?
-                                        <div class="modal-footer">
-                                            <button type="submit" class="btn btn-sm btn-danger">Verwijder lesmoment van de planning</button>
-                                        </div>
-                                    </form>
+                <th>Datum</th>
+                <th>Start/einde</th>
+                <th>Vak</th>
+                <th>Lokaal</th>
+                <th>Delete</th>
+                <th>Edit</th>
+
+            </tr>
+            @foreach (var planner in Model)
+            {
+                <tr>
+                    <td>@planner.Datum.ToString("dd/MM/yyyy")</td>
+                    <td>@planner.Startmoment.ToString("HH:mm") / @planner.Eindmoment.ToString("HH:mm")</td>
+                    <td>@planner.Titel</td>
+                    <td>@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deletePlanning-@planner.Vakcode@planner.Datum@planner.Startmoment@planner.Gebouw@planner.Verdiep@planner.Nummer">Delete</button>
+                        <div class="modal fade" id="deletePlanning-@planner.Vakcode@planner.Datum@planner.Startmoment@planner.Gebouw@planner.Verdiep@planner.Nummer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Het lesmoment van de planning verwijderen?</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="/planning/delete" method="post">
+                                            <div>
+                                                <input type="text" name="vakcode" style="display: none" value="@planner.Vakcode">
+                                                <input type="text" name="datum" style="display: none" value="@planner.Datum">
+                                                <input type="text" name="startMoment" style="display: none" value="@planner.Startmoment">
+                                                <input type="text" name="gebouw" style="display: none" value="@planner.Gebouw">
+                                                <input type="text" name="verdiep" style="display: none" value="@planner.Verdiep">
+                                                <input type="text" name="nummer" style="display: none" value="@planner.Nummer">
+                                            </div>
+                                            Ben je zeker dat je het lesmoment op @planner.Datum.ToString("dd/MM/yyyy") over het vak @planner.Titel met startmoment @planner.Startmoment.ToString("HH:mm") wilt verwijderen?
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-sm btn-danger">Verwijder lesmoment van de planning</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                </td>
-                <td>
-                    <button type="button" class="btn btn-sm btn-dark">Edit</button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-dark">Edit</button>
 
-                </td>
-            </tr>
-        }
-    </table>
+                    </td>
+                </tr>
+            }
 
+        </table>
+
+    
