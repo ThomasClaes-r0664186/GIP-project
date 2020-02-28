@@ -3,10 +3,16 @@
     @{
         ViewData["Title"] = "index";
     }
-
     <h1>
         Overzicht van de planning van deze week
-        <script>document.write(new Date().toLocaleDateString());</script>
+        <script>
+        document.write(new Date().toLocaleDateString());
+        parseDateSwapDayMonth = (dateString) => {
+            let arrayOfDate = dateString.split("/");
+            return arrayOfDate[1] + "/" + arrayOfDate[0] + "/" + arrayOfDate[2];
+        };
+        
+        </script>
     </h1>
     <table class="table table-bordered table-hover table-striped">
         <tr>
