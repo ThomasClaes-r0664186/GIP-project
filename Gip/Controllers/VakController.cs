@@ -32,13 +32,14 @@ namespace Gip.Controllers
         [HttpPost]
         [Route("vak/add")]
         public ActionResult Add(string vakcode, string titel, int studiepunten)
-        { 
+        {
             try{
                 Course course = new Course();
                 course.Vakcode = vakcode;
                 course.Titel = titel;
                 course.Studiepunten = studiepunten;
                 db.Course.Add(course);
+                db.SaveChanges();
             }
             catch (Exception e)
             {
@@ -47,7 +48,6 @@ namespace Gip.Controllers
                 return RedirectToAction("Index", "Vak");
             }
             ViewBag.error = "addGood";
-            db.SaveChanges();
             return RedirectToAction("Index", "Vak");
         }
 
@@ -74,8 +74,18 @@ namespace Gip.Controllers
                 ViewBag.error = "deleteError";
                 return RedirectToAction("Index", "Vak");
             }
-            db.Course.Remove(course);
-            db.SaveChanges();
+
+            try
+            {
+                db.Course.Remove(course);
+                db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                ViewBag.error = "deleteError";
+                return RedirectToAction("Index", "Vak");
+            }
+
             ViewBag.error = "deleteGood";
             return RedirectToAction("Index", "Vak");
         }
@@ -89,22 +99,19 @@ namespace Gip.Controllers
                 ViewBag.error = "editError";
                 return RedirectToAction("Index", "Vak");
             }
-
-            Course course = db.Course.Find(vakcodeOld);
-            Delete(vakcodeOld);
-
-            try
-            {
+            try{
+                
+                Course course = db.Course.Find(vakcodeOld);
+                Delete(vakcodeOld);
                 course.Vakcode = vakcodeNew;
                 course.Titel = titel;
                 course.Studiepunten = studiepunten;
-            }
-            catch (Exception) {
+                db.Course.Add(course);
+                db.SaveChanges();
+            }catch (Exception) {
                 ViewBag.error = "deleteError";
                 return View();
             }
-            db.Course.Add(course);
-            db.SaveChanges();
             ViewBag.error = "deleteGood";
             return RedirectToAction("Index", "Vak");
         }

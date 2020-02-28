@@ -45,6 +45,8 @@ namespace Gip.Controllers
                 room.Capaciteit = capaciteit;
                 room.Middelen = middelen;
                 db.Room.Add(room);
+                
+                db.SaveChanges();
             }
             catch (Exception e)
             {
@@ -52,7 +54,6 @@ namespace Gip.Controllers
                 ViewBag.error = "addError";
                 return RedirectToAction("Index", "Lokaal");
             }
-            db.SaveChanges();
             ViewBag.error = "addGood";
             return RedirectToAction("Index", "Lokaal");
         }
@@ -86,8 +87,17 @@ namespace Gip.Controllers
                 return RedirectToAction("Index", "Lokaal");
             }
 
-            db.Room.Remove(room);
+            try
+            {
+
+                db.Room.Remove(room);
                 db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                ViewBag.error = "deleteError";
+                return RedirectToAction("Index", "Lokaal");
+            }
             ViewBag.error = "deleteGood";
             return RedirectToAction("Index", "Lokaal");
         }
@@ -133,8 +143,18 @@ namespace Gip.Controllers
                 ViewBag.error = "editError";
                 return View();
             }
-            db.Room.Add(room);
-            db.SaveChanges();
+
+            try
+            {
+
+                db.Room.Add(room);
+                db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                ViewBag.error = "editError";
+                return RedirectToAction("Index", "Lokaal");
+            }
             ViewBag.error = "editGood";
             return RedirectToAction("Index", "Lokaal");
         }
