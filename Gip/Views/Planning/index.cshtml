@@ -3,32 +3,38 @@
     @{
         ViewData["Title"] = "index";
     }
-            
-    <h1 id="dateOfWeek"></h1>
-    <table class="table table-bordered table-hover table-striped">
-        <tr>
-            <th>Datum</th>
-            <th>Start/einde</th>
-            <th>Vak</th>
-            <th>Lokaal</th>
-            <th>Delete</th>
-            <th>Edit</th>
-
-        </tr>
-        @foreach (var planner in Model) {
             <script>
-                         function voegDagToe (dateString) {
-                               let dagen = ["Zondag","Maandag","Dinsdag","Woensdag","Donderdag","Vrijdag","Zaterdag"];
-                               let arrayOfDate = dateString.split("-");
-                               let swappedDate=  arrayOfDate[1] + "/" + arrayOfDate[0] + "-/" + arrayOfDate[2];
-                               let date = new Date(Date.parse(swappedDate));
-                               let s = ""+datum-@planner.Vakcode.Trim()@planner.Datum.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Startmoment.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer.Trim() +"";
-                               let metDag = dagen[date.getDay()]+" "+dateString;
-                               $(s).text(metDag);
-                         }
-                         </script>
+             function voegDagToe (_dateString) {
+                   let dateString = _dateString.toString();
+                   let dagen = ["Zondag","Maandag","Dinsdag","Woensdag","Donderdag","Vrijdag","Zaterdag"];
+                   let arrayOfDate = dateString.split("/");
+                   let swappedDate=  arrayOfDate[1] + "/" + arrayOfDate[0] + "-/" + arrayOfDate[2];
+                   let date = new Date(Date.parse(swappedDate));
+                   return dagen[date.getDay()]+" "+dateString;     
+             }
+             $(document).ready(function() {
+             $('td.veranderDatum').each(function(){
+                               $(this).text(voegDagToe($(this).text()));
+                            });
+             })
+             </script>
+    <h1 id="dateOfWeek"></h1>
+<table class="table table-bordered table-hover table-striped">
+    <thead>
+    <tr>
+        <th>Datum</th>
+        <th>Start/einde</th>
+        <th>Vak</th>
+        <th>Lokaal</th>
+        <th>Delete</th>
+        <th>Edit</th>
+
+    </tr>
+    </thead>
+    <tbody>
+        @foreach (var planner in Model) {
             <tr>
-                <td id="deletePlanning-@planner.Vakcode.Trim()@planner.Datum.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Startmoment.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer.Trim()">@planner.Datum.ToString("dd/MM/yyyy")</td>
+                <td class="veranderDatum">@planner.Datum.ToString("dd/MM/yyyy")</td>
                 <td>@planner.Startmoment.ToString("HH:mm") / @planner.Eindmoment.ToString("HH:mm")</td>
                 <td>@planner.Titel</td> 
                 <td>@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer</td>
@@ -90,5 +96,6 @@
                 </td>
             </tr>
         }
+        </tbody>
     </table>
 
