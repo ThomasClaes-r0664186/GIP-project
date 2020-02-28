@@ -57,6 +57,7 @@ namespace Gip.Controllers
         [Route("planner/add")]
         public ActionResult Add(string dat, string uur, string lokaalId, double duratie, string vakcode, string lessenlijst)
         {
+            double _duratie = Convert.ToDouble(duratie);
             DateTime datum = DateTime.ParseExact(dat, "yyyy-MM-dd", CultureInfo.InvariantCulture);
             DateTime tijd = new DateTime(1800, 1, 1, int.Parse(uur.Split(":")[0]), int.Parse(uur.Split(":")[1]), 0);
             lokaalId = lokaalId.Trim() + " ";
@@ -71,7 +72,7 @@ namespace Gip.Controllers
                     schedule = new Schedule();
                     schedule.Datum = datum;
                     schedule.Startmoment = tijd;
-                    schedule.Eindmoment = tijd.AddHours(duratie);
+                    schedule.Eindmoment = tijd.AddHours(_duratie);
 
                     db.Schedule.Add(schedule);
                     db.SaveChanges();
