@@ -16,6 +16,7 @@ namespace Gip.Controllers
         [Route("planner")]
         public ActionResult Index(int week)
         {
+            int weekToUse = ((DateTime.Now.DayOfYear / 7) + week);
             try
             {
                 var _qry = from cm in db.CourseMoment
@@ -24,7 +25,7 @@ namespace Gip.Controllers
                                 on new { cm.Datum, cm.Startmoment }
                                 equals new { s.Datum, s.Startmoment }
                                 //we hebben aan week 52+1 gedaan, maar vonden het niet en het was al laat op den dag
-                           where ((cm.Datum.DayOfYear / 7) + week) == ((DateTime.Now.DayOfYear / 7) + week)
+                           where (cm.Datum.DayOfYear / 7) == weekToUse
                            select new
                            {
                                datum = cm.Datum,
@@ -43,6 +44,8 @@ namespace Gip.Controllers
                     Planner planner = new Planner(qry.datum, qry.startmoment, qry.gebouw, qry.verdiep, qry.nummer, qry.vakcode, qry.titel, qry.eindmoment);
                     planners.Add(planner);
                 }
+                ViewBag.nextWeek = week += 1;
+                ViewBag.prevWeek = week -= 2;
                 return View("../Planning/Index",planners);
             }
             catch (Exception e)
