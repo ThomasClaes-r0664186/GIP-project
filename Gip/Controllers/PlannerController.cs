@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 using System.Globalization;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Gip.Controllers
@@ -138,7 +137,6 @@ namespace Gip.Controllers
         [Route("planner/viewTopic")]
         public ActionResult ViewTopic(string vakcode, DateTime datum, DateTime startMoment, string lokaalId) 
         {
-
             return View();
         }
 
@@ -164,7 +162,8 @@ namespace Gip.Controllers
         [HttpPost]
         [Route("planner/delete")]
         public ActionResult Delete(string vakcode, DateTime datum, DateTime startMoment, string gebouw, int verdiep, string nummer) {
-            CourseMoment moment = db.CourseMoment.Find(vakcode, datum, startMoment, gebouw, verdiep, nummer, "R0664186");
+            DateTime newStartMoment = new DateTime(1800, 1, 1, startMoment.Hour, startMoment.Minute, startMoment.Second);
+            CourseMoment moment = db.CourseMoment.Find(vakcode, datum, newStartMoment, gebouw, verdiep, nummer, "r0664186");
             if (moment == null) {
                 ViewBag.error = "deleteError";
                 return RedirectToAction("Index", "Planner");
@@ -187,6 +186,7 @@ namespace Gip.Controllers
         [HttpPost]
         [Route("planner/edit")]
         public ActionResult Edit() { 
+
             return RedirectToAction("Index", "Planner");
         }
 
