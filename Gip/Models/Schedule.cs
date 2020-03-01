@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Gip.Models.Exceptions;
-using System.Text.RegularExpressions;
 
 namespace Gip.Models
 {

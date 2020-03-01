@@ -38,6 +38,9 @@ namespace Gip.Controllers
                                eindmoment = s.Eindmoment
                            };
 
+                ViewBag.maandag = FirstDayOfWeek(weekToUse).ToString("dd-MM-yyyy");
+                ViewBag.vrijdag = FirstDayOfWeek(weekToUse).AddDays(4).ToString("dd-MM-yyyy");
+
                 List<Planner> planners = new List<Planner>();
                 foreach (var qry in _qry)
                 {
@@ -247,5 +250,20 @@ namespace Gip.Controllers
             }
         }
 
+        public static DateTime FirstDayOfWeek(int weekOfYear) {
+            DateTime jan1 = new DateTime(DateTime.Today.Year, 1, 1);
+            int daysOffset = DayOfWeek.Thursday - jan1.DayOfWeek;
+
+            DateTime firstThursday = jan1.AddDays(daysOffset);
+            var cal = CultureInfo.CurrentCulture.Calendar;
+            int firstWeek = cal.GetWeekOfYear(firstThursday, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+            var weekNum = weekOfYear + 1 ;
+            if (firstWeek == 1) {
+                weekNum -= 1;
+            }
+
+            var result = firstThursday.AddDays(weekNum * 7);
+            return result.AddDays(-3);
+        }
     }
 }

@@ -25,9 +25,10 @@
             })
         </script>
 
-        <h1 id="dateOfWeek"></h1>
+        <p>@ViewBag.maandag</p>
+        <p>@ViewBag.vrijdag</p>
 
-        @if ((ViewBag.prevWeek+1) > 0)
+        @if ((ViewBag.prevWeek + 1) > 0)
         {
             <a role="button" class="btn btn-default btn-lg" asp-area="" asp-controller="Planner" asp-action="Index" asp-route-week="@ViewBag.prevWeek">
                 <span data-feather="arrow-left"></span>
