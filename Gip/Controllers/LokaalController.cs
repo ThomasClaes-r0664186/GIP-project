@@ -22,8 +22,9 @@ namespace Gip.Controllers
 
                 if (TempData["error"] != null) {
                     ViewBag.error = TempData["error"].ToString();
+                    TempData["error"] = null;
                 }
-                if (ViewBag.error == null || !ViewBag.error.Equals("addError") && !ViewBag.error.Equals("addGood") && !ViewBag.error.Equals("deleteError") && !ViewBag.error.Equals("deleteGood") && !ViewBag.error.Equals("editError") && !ViewBag.error.Equals("editGood"))
+                if (ViewBag.error == null || !ViewBag.error.Contains("addError") && !ViewBag.error.Contains("addGood") && !ViewBag.error.Contains("deleteError") && !ViewBag.error.Contains("deleteGood") && !ViewBag.error.Contains("editError") && !ViewBag.error.Contains("editGood"))
                 {
                     ViewBag.error = "indexLokaalGood";
                 }
@@ -32,7 +33,7 @@ namespace Gip.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ViewBag.error = "indexLokaalError";
+                ViewBag.error = "indexLokaalError" + "/" + "Er is een fout opgetreden bij het opvragen van het overzicht.";
                 return RedirectToAction("Index", "Home");
             }
         }
@@ -58,7 +59,7 @@ namespace Gip.Controllers
             catch (Exception e)
             {
                 System.Console.WriteLine(e);
-                TempData["error"] = "addError";
+                TempData["error"] = "addError" + "/" + e.Message;
                 return RedirectToAction("Index", "Lokaal");
             }
             TempData["error"] = "addGood";
@@ -90,7 +91,7 @@ namespace Gip.Controllers
 
             if (room == null)
             {
-                TempData["error"] = "deleteError";
+                TempData["error"] = "deleteError" + "/" + "Room werd niet in de databank gevonden.";
                 return RedirectToAction("Index", "Lokaal");
             }
 
@@ -99,9 +100,9 @@ namespace Gip.Controllers
                 db.Room.Remove(room);
                 db.SaveChanges();
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                TempData["error"] = "deleteError";
+                TempData["error"] = "deleteError" + "/" + "Databank error";
                 return RedirectToAction("Index", "Lokaal");
             }
             TempData["error"] = "deleteGood";
@@ -125,7 +126,7 @@ namespace Gip.Controllers
                 gebouw = gebouw.ToUpper();
                 if (lokaalId == null || lokaalId.Trim().Equals(""))
                 {
-                    TempData["error"] = "editError";
+                    TempData["error"] = "editError" + "/" + "Lokaal id is leeg.";
                     return NotFound();
                 }
 
@@ -150,7 +151,7 @@ namespace Gip.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                TempData["error"] = "editError";
+                TempData["error"] = "editError" + "/" + e.Message;
                 return RedirectToAction("Index", "Lokaal");
             }
             TempData["error"] = "editGood";

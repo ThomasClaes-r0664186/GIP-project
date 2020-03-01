@@ -86,7 +86,7 @@ namespace Gip.Models
                 if (value.Trim().Length <= 0 || value.Trim().Length > 1)
                 {
                     
-                    throw new DatabaseException("The building you wish selected does not exist!" + Environment.NewLine + "Please try again.");
+                    throw new DatabaseException("U heeft niets meegegeven als gebouwcharacter.");
                 }
                 else
                 {
@@ -97,7 +97,7 @@ namespace Gip.Models
                     }
                     else
                     {
-                        throw new DatabaseException("The building you wish selected does not exist!" + Environment.NewLine + "Please do not include any special characters and try again.");
+                        throw new DatabaseException("Dit gebouw bestaat niet of u heeft een verboden character ingegeven.");
                     }
                 }
             }
@@ -111,7 +111,7 @@ namespace Gip.Models
             {
                 if (value < 0 || value > 9)
                 {
-                    throw new DatabaseException("The floor you wish to select does not exist!" + Environment.NewLine + "Please try again.");
+                    throw new DatabaseException("Het verdiep mag niet negatief zijn noch boven 9.");
                 }
                 else
                 {
@@ -122,7 +122,7 @@ namespace Gip.Models
                     }
                     else
                     {
-                        throw new DatabaseException("The floor you wish to select does not exist!" + Environment.NewLine + "Please do not include any special characters and try again.");
+                        throw new DatabaseException("U heeft een verboden character ingegeven, gelieve dit niet te doen.");
                     }
                 }
             }
@@ -136,7 +136,7 @@ namespace Gip.Models
             {
                 if (value.Trim().Length > 3 || value.Trim().Length < 0)
                 {
-                    throw new DatabaseException("The number you wish to select is invalid!" + Environment.NewLine + "Please try again.");
+                    throw new DatabaseException("Het nummer mag niet langer zijn dan 3 characters of u heeft een leeg nummer meegegeven.");
                 }
                 else
                 {
@@ -147,7 +147,7 @@ namespace Gip.Models
                     }
                     else
                     {
-                        throw new DatabaseException("The number you wish to select is invalid!" + Environment.NewLine + "Please do not include any special characters and try again.");
+                        throw new DatabaseException("U heeft een verboden character ingegeven, gelieve dit niet te doen.");
                     }
                 }
             }
@@ -179,11 +179,11 @@ namespace Gip.Models
             {
                 if (value > 400)
                 {
-                    throw new DatabaseException("The chosen capacity was to high!" + Environment.NewLine + "Please try again.");
+                    throw new DatabaseException("De capaciteit mag niet hoger zijn dan 400.");
                 }
                 else if (value < 0)
                 {
-                    throw new DatabaseException("The chosen capacity was to low!" + Environment.NewLine + "Please try again.");
+                    throw new DatabaseException("De capaciteit mag niet negatief zijn.");
                 }
                 else
                 {
@@ -194,7 +194,7 @@ namespace Gip.Models
                     }
                     else
                     {
-                        throw new DatabaseException("The capacity you wish to select does not exist!" + Environment.NewLine + "Please do not include any special characters and try again.");
+                        throw new DatabaseException("U heeft een verboden character ingegeven, gelieve dit niet te doen.");
                     }
                 }
             }

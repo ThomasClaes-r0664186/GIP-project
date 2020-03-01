@@ -32,7 +32,7 @@ namespace Gip.Models
             {
                 if (value.Trim() == "")
                 {
-                    throw new DatabaseException("The chosen course code is invalid!" + Environment.NewLine + "Please try again!");
+                    throw new DatabaseException("U heeft een lege vakcode meegegeven.");
                 }
                 else
                 {
@@ -43,7 +43,7 @@ namespace Gip.Models
                     }
                     else
                     {
-                        throw new DatabaseException("The chosen course code is invalid!" + Environment.NewLine + "Please do not include any special characters and try again!");
+                        throw new DatabaseException("je hebt een foutief formaat van vakcode of een ongeldig character ingegeven. Gelieve een vakcode van het formaat AAA11A in te geven");
                     }
                 }
             }
@@ -57,7 +57,7 @@ namespace Gip.Models
             {
                 if (value.Trim() == "")
                 {
-                    throw new DatabaseException("The chosen title is invalid!" + Environment.NewLine + "Please try again!");
+                    throw new DatabaseException("De titel mag niet leeg zijn.");
 
                 }
                 else
@@ -65,7 +65,7 @@ namespace Gip.Models
                     string pattern = @"[\\\/\<\>\;]";
                     if (Regex.IsMatch(value, pattern))
                     {
-                        throw new DatabaseException("The title you wish selected does not exist!" + Environment.NewLine + "Please do not include any special characters and try again.");
+                        throw new DatabaseException("U heeft een verboden character ingegeven, gelieve dit niet te doen.");
                     }
                     else
                     {
@@ -84,12 +84,12 @@ namespace Gip.Models
             {
                 if (value <=0)
                 {
-                    throw new DatabaseException("The chosen amount of credits is invalid!" + Environment.NewLine + "Please try again!");
+                    throw new DatabaseException("Het aantal studiepunten mag niet negatief zijn.");
 
                 }
                 else if (value > 60)
                 {
-                    throw new DatabaseException("The chosen amount of credits is invalid!" + Environment.NewLine + "Please try again!");
+                    throw new DatabaseException("Het aantal studiepunten mag niet hoger zijn dan 60.");
                 }
                 else
                 {
@@ -100,7 +100,7 @@ namespace Gip.Models
                     }
                     else
                     {
-                        throw new DatabaseException("The chosen amount of credits is invalid!" + Environment.NewLine + "Please do not include any special characters and try again.");
+                        throw new DatabaseException("U heeft een verboden character ingegeven, gelieve dit niet te doen.");
                     }
                 }
             }

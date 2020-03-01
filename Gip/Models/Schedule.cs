@@ -29,13 +29,13 @@ namespace Gip.Models
 
                 if (value.Year > DateTime.Now.Year + 1)
                 {
-                    throw new DatabaseException("The selected date is to far in the future!" + Environment.NewLine + "Please try again.");
+                    throw new DatabaseException("De gekozen datum is te ver in de toekomst.");
                 }
                 else
                 {
                     if (value.DayOfWeek > DayOfWeek.Saturday && value.DayOfWeek > DayOfWeek.Sunday)
                     {
-                        throw new DatabaseException("The school is closed on weekends!" + Environment.NewLine + "Please select a different date!");
+                        throw new DatabaseException("De school is gesloten in het weekend.");
                     }
                     else
                     {
@@ -53,7 +53,7 @@ namespace Gip.Models
             {
                 if (value.Hour < 6 || value.Hour > 22)
                 {
-                    throw new DatabaseException("The chosen starting time is invalid!" + Environment.NewLine + "Please select a different starting time.");
+                    throw new DatabaseException("De school is enkel open tussen 6:00 en 22:00");
                 }
                 else
                 {
@@ -71,7 +71,7 @@ namespace Gip.Models
             {
                 if (value.Hour > 22)
                 {
-                    throw new DatabaseException("The ending time is invalid!" + Environment.NewLine + "Please select an earlier time.");
+                    throw new DatabaseException("Uw eindmoment is te laat, de school is dan reeds gesloten.");
 
                 }
                 else

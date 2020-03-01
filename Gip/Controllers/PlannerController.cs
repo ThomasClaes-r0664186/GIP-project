@@ -51,7 +51,7 @@ namespace Gip.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ViewBag.error = "indexVakError";
+                ViewBag.error = "indexVakError" + "/" + "Er liep iets mis bij het ophalen van de planner.";
                 return RedirectToAction("Index", "Home");
             }
         }
@@ -96,7 +96,7 @@ namespace Gip.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ViewBag.error = "addError";
+                ViewBag.error = "addError" + "/" + e.Message;
                 return RedirectToAction("Index", "Planner");
             }
             ViewBag.error = "addGood";
@@ -132,7 +132,7 @@ namespace Gip.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ViewBag.error = "indexVakError";
+                ViewBag.error = "indexVakError" + "/" + e.Message;
                 return RedirectToAction("Index", "Home");
             }
         }
@@ -143,7 +143,7 @@ namespace Gip.Controllers
             DateTime newStartMoment = new DateTime(1800, 1, 1, startMoment.Hour, startMoment.Minute, startMoment.Second);
             CourseMoment moment = db.CourseMoment.Find(vakcode, datum, newStartMoment, gebouw, verdiep, nummer, "r0664186");
             if (moment == null) {
-                ViewBag.error = "deleteError";
+                ViewBag.error = "deleteError" + "/" + "Er is geen overeenkomend moment gevonden.";
                 return RedirectToAction("Index", "Planner");
             }
             try
@@ -154,7 +154,7 @@ namespace Gip.Controllers
             catch(Exception e)
             {
                 Console.WriteLine(e);
-                ViewBag.error = "coursemomentsDeleteError";
+                ViewBag.error = "coursemomentsDeleteError" + "/" + "Er is een databank probleem opgetreden.";
                 return RedirectToAction("Index", "Planner");
             }
             ViewBag.error = "coursemomentDeletedCorrectly";
@@ -176,7 +176,7 @@ namespace Gip.Controllers
                 CourseMoment oldMoment = db.CourseMoment.Find(oldVakcode, oldDatum, oldStartMoment, oldGebouw, oldVerdiep, oldNummer, "r0664186");
                 if (oldMoment == null)
                 {
-                    ViewBag.error = "deleteError";
+                    ViewBag.error = "deleteError" + "/" + "Er is geen overeenkomend moment gevonden in de databank.";
                     return RedirectToAction("Index", "Planner");
                 }
                 else
@@ -204,7 +204,7 @@ namespace Gip.Controllers
             }
             catch (Exception e) {
                 Console.WriteLine(e);
-                ViewBag.error = "coursemomentEditError";
+                ViewBag.error = "coursemomentEditError" + "/" + e.Message;
                 return RedirectToAction("Index","Planner");
             }
             ViewBag.error = "addGood";
@@ -222,6 +222,7 @@ namespace Gip.Controllers
             }
             catch (Exception e) {
                 Console.WriteLine(e);
+                ViewBag.error = "coursemomentViewTopicError" + "/" + "Databank fout.";
                 return RedirectToAction("Index", "Planner");
             }
         }
@@ -241,7 +242,7 @@ namespace Gip.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ViewBag.error = "coursmomentsError";
+                ViewBag.error = "coursemomentViewCourseMomentsError" + "/" + "Databank fout.";
                 return RedirectToAction("Index", "Planner");
             }
         }

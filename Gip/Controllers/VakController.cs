@@ -21,8 +21,9 @@ namespace Gip.Controllers
                 if (TempData["error"] != null)
                 {
                     ViewBag.error = TempData["error"].ToString();
+                    TempData["error"] = null;
                 }
-                if (ViewBag.error == null || !ViewBag.error.Equals("addError") && !ViewBag.error.Equals("addGood") && !ViewBag.error.Equals("deleteError") && !ViewBag.error.Equals("deleteGood") && !ViewBag.error.Equals("editError") && !ViewBag.error.Equals("editGood"))
+                if (ViewBag.error == null || !ViewBag.error.Contains("addError") && !ViewBag.error.Contains("addGood") && !ViewBag.error.Contains("deleteError") && !ViewBag.error.Contains("deleteGood") && !ViewBag.error.Contains("editError") && !ViewBag.error.Contains("editGood"))
                 {
                     ViewBag.error = "indexVakGood";
                 }
@@ -32,7 +33,7 @@ namespace Gip.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ViewBag.error = "indexVakError";
+                ViewBag.error = "indexVakError" + "/" + e.Message;
                 return RedirectToAction("Index", "Home");
             }
         }
@@ -52,7 +53,7 @@ namespace Gip.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                TempData["error"] = "addError";
+                TempData["error"] = "addError" + "/" + e.Message;
                 return RedirectToAction("Index", "Vak");
             }
             TempData["error"] = "addGood";
@@ -72,14 +73,14 @@ namespace Gip.Controllers
         {
             if (vakcode == null || vakcode.Trim().Equals(""))
             {
-                TempData["error"] = "deleteError";
+                TempData["error"] = "deleteError" + "/" + "Vakcode mag niet leeg zijn.";
                 return  RedirectToAction("Index", "Vak");
             }
 
             Course course = db.Course.Find(vakcode);
 
             if (course == null) {
-                TempData["error"] = "deleteError";
+                TempData["error"] = "deleteError" + "/" + "Vak niet gevonden in databank";
                 return RedirectToAction("Index", "Vak");
             }
 
@@ -91,7 +92,7 @@ namespace Gip.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                TempData["error"] = "deleteError";
+                TempData["error"] = "deleteError" + "/" + "Databank error.";
                 return RedirectToAction("Index", "Vak");
             }
 
@@ -105,7 +106,7 @@ namespace Gip.Controllers
         {
             if (vakcodeOld == null || vakcodeOld.Trim().Equals(""))
             {
-                TempData["error"] = "editError";
+                TempData["error"] = "editError" + "/" + "De oude vakcode is niet goed doorgegeven want deze is leeg.";
                 return RedirectToAction("Index", "Vak");
             }
             try{
@@ -117,8 +118,8 @@ namespace Gip.Controllers
                 course.Studiepunten = studiepunten;
                 db.Course.Add(course);
                 db.SaveChanges();
-            }catch (Exception) {
-                TempData["error"] = "editError";
+            }catch (Exception e) {
+                TempData["error"] = "editError" + "/" + e.Message;
                 return RedirectToAction("Index", "Vak");
             }
             TempData["error"] = "editGood";

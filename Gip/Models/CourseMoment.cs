@@ -30,7 +30,7 @@ namespace Gip.Models
             {
                 if (value == "")
                 {
-                    throw new DatabaseException("The chosen User identification number is empty!" + Environment.NewLine + "Please try again.");
+                    throw new DatabaseException("De userid mag niet leeg zijn.");
 
                 }
                 else
@@ -43,7 +43,7 @@ namespace Gip.Models
                     }
                     else
                     {
-                        throw new DatabaseException("The chosen User identification number is invalid!" + Environment.NewLine + "Please do not include special caracters and try again.");
+                        throw new DatabaseException("U heeft een verboden character ingegeven, gelieve dit niet te doen.");
 
                     }
                 }
@@ -58,7 +58,7 @@ namespace Gip.Models
             {
                 if (value.Trim() == "")
                 {
-                    throw new DatabaseException("The chosen course code is invalid!" + Environment.NewLine + "Please try again!");
+                    throw new DatabaseException("U heeft een lege vakcode meegegeven.");
                 }
                 else
                 {
@@ -69,7 +69,7 @@ namespace Gip.Models
                     }
                     else
                     {
-                        throw new DatabaseException("The chosen course code is invalid!" + Environment.NewLine + "Please do not include any special characters and try again!");
+                        throw new DatabaseException("je hebt een foutief formaat van vakcode of een ongeldig character ingegeven. Gelieve een vakcode van het formaat AAA11A in te geven");
                     }
                 }
             }
@@ -83,7 +83,7 @@ namespace Gip.Models
             {
                 if (value < 0 || value > 9)
                 {
-                    throw new DatabaseException("The floor you wish to select does not exist!" + Environment.NewLine + "Please try again.");
+                    throw new DatabaseException("Het verdiep mag niet negatief zijn noch boven 9.");
                 }
                 else
                 {
@@ -94,7 +94,7 @@ namespace Gip.Models
                     }
                     else
                     {
-                        throw new DatabaseException("The floor you wish to select does not exist!" + Environment.NewLine + "Please do not include any special characters and try again.");
+                        throw new DatabaseException("U heeft een verboden character ingegeven, gelieve dit niet te doen.");
                     }
                 }
             }
@@ -108,7 +108,7 @@ namespace Gip.Models
             {
                 if (value.Trim().Length > 3 || value.Trim().Length < 0)
                 {
-                    throw new DatabaseException("The number you wish to select is invalid!" + Environment.NewLine + "Please try again.");
+                    throw new DatabaseException("Het nummer mag niet langer zijn dan 3 characters of u heeft een leeg nummer meegegeven.");
                 }
                 else
                 {
@@ -119,7 +119,7 @@ namespace Gip.Models
                     }
                     else
                     {
-                        throw new DatabaseException("The number you wish to select is invalid!" + Environment.NewLine + "Please do not include any special characters and try again.");
+                        throw new DatabaseException("U heeft een verboden character ingegeven, gelieve dit niet te doen.");
                     }
                 }
             }
@@ -135,7 +135,7 @@ namespace Gip.Models
                 if (value.Trim().Length <= 0 || value.Trim().Length > 1)
                 {
 
-                    throw new DatabaseException("The building you wish selected does not exist!" + Environment.NewLine + "Please try again.");
+                    throw new DatabaseException("U heeft niets meegegeven als gebouwcharacter.");
                 }
                 else
                 {
@@ -146,7 +146,7 @@ namespace Gip.Models
                     }
                     else
                     {
-                        throw new DatabaseException("The building you wish selected does not exist!" + Environment.NewLine + "Please do not include any special characters and try again.");
+                        throw new DatabaseException("Dit gebouw bestaat niet of u heeft een verboden character ingegeven.");
                     }
                 }
             }
@@ -161,14 +161,14 @@ namespace Gip.Models
             {
                 if (value == "")
                 {
-                    throw new DatabaseException("The chosen topic list is empty!" + Environment.NewLine + "Please try again!");
+                    throw new DatabaseException("De lessenlijst mag niet leeg zijn.");
                 }
                 else
                 {
                     string pattern = @"[\\\/\<\>\;]";
                     if (Regex.IsMatch(value, pattern))
                     {
-                        throw new DatabaseException("The topic list you wish select is invalid!" + Environment.NewLine + "Please do not include any special characters and try again.");
+                        throw new DatabaseException("De lessenlijst bevat een verboden character, gelieve dit niet te doen.");
                     }
                     else
                     {
@@ -188,13 +188,13 @@ namespace Gip.Models
               
                 if (value.Year > DateTime.Now.Year +1)
                 {
-                    throw new DatabaseException("The selected date is to far in the future!" + Environment.NewLine + "Please try again.");
+                    throw new DatabaseException("De gekozen datum is te ver in de toekomst.");
                 }
                 else
                 {
                     if (value.DayOfWeek > DayOfWeek.Saturday && value.DayOfWeek > DayOfWeek.Sunday)
                     {
-                        throw new DatabaseException("The school is closed on weekends!" + Environment.NewLine + "Please select a different date!");
+                        throw new DatabaseException("De school is gesloten in het weekend.");
                     }
                     else
                     {
@@ -213,7 +213,7 @@ namespace Gip.Models
             {
                 if (value.Hour < 6 || value.Hour > 22)
                 {
-                    throw new DatabaseException("The chosen starting time is invalid!" + Environment.NewLine + "Please select a different starting time!");
+                    throw new DatabaseException("De school is enkel open tussen 6:00 en 22:00");
                 }
                 else
                 {

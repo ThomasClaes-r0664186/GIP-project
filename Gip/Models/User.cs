@@ -41,7 +41,7 @@ namespace Gip.Models
                     }
                     else
                     {
-                        throw new DatabaseException("The chosen name is invalid!" + Environment.NewLine + "Please do not include anny special caracters and try again.");
+                        throw new DatabaseException("U heeft verboden characters ingegeven voor de naam, gelieve dit niet te doen.");
 
                     }
                 }
@@ -57,7 +57,7 @@ namespace Gip.Models
             {
                 if (value.Trim() == "")
                 {
-                    throw new DatabaseException("The chosen Email address is empty!" + Environment.NewLine + "Please try again.");
+                    throw new DatabaseException("Het email-adres is leeg.");
                 }
                 else
                 {
@@ -68,7 +68,7 @@ namespace Gip.Models
                     }
                     else
                     {
-                        throw new DatabaseException("The chosen Email address is invalid!" + Environment.NewLine + "Please do not include special caracters and try again.");
+                        throw new DatabaseException("Het email-adres heeft een verkeerd formaat of een verkeerd character. Gelieve een deftig email-adres in te geven.");
 
                     }
 
@@ -84,7 +84,7 @@ namespace Gip.Models
             {
                 if (value == "")
                 {
-                    throw new DatabaseException("The chosen User identification number is empty!" + Environment.NewLine + "Please try again.");
+                    throw new DatabaseException("Deze user id is leeg.");
 
                 }
                 else
@@ -97,7 +97,7 @@ namespace Gip.Models
                     }
                     else
                     {
-                        throw new DatabaseException("The chosen User identification number is invalid!" + Environment.NewLine + "Please do not include special caracters and try again.");
+                        throw new DatabaseException("Deze user id heeft verbode characters, gelieve dit niet te doen.");
 
                     }
                 }

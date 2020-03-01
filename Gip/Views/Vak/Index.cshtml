@@ -6,57 +6,57 @@
 
         <h1>Overzicht van de vakken</h1>
 
-        @if (ViewBag.error == "addError")
+        @if (ViewBag.error.Contains("addError"))
         {
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>Error: vak is niet toegevoegd</strong>
+                <strong>@ViewBag.error.Split("/")[1]</strong>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
         }
 
-        @if (ViewBag.error == "editError")
+        @if (ViewBag.error.Contains("editError"))
         {
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>Error: vak is niet aangepast</strong>
+                <strong>@ViewBag.error.Split("/")[1]</strong>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
         }
 
-        @if (ViewBag.error == "deleteError")
+        @if (ViewBag.error.Contains("deleteError"))
         {
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>Error: vak is niet verwijdert</strong>
+                <strong>@ViewBag.error.Split("/")[1]</strong>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
         }
-        @if (ViewBag.error == "deleteGood")
+        @if (ViewBag.error.Contains("deleteGood"))
         {
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>Lokaal is verwijderd</strong>
+                <strong>@ViewBag.error.Split("/")[0]</strong>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
         }
-        @if (ViewBag.error == "addGood")
+        @if (ViewBag.error.Contains("addGood"))
         {
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>vak is toegevoegd</strong>
+                <strong>@ViewBag.error.Split("/")[0]</strong>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
         }
-        @if (ViewBag.error == "editGood")
+        @if (ViewBag.error.Contains("editGood"))
         {
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>vak is aangepast</strong>
+                <strong>@ViewBag.error.Split("/")[0]</strong>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

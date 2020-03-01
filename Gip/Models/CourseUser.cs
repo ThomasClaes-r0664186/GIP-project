@@ -15,7 +15,7 @@ namespace Gip.Models
             {
                 if (value == "")
                 {
-                    throw new DatabaseException("The chosen User identification number is empty!" + Environment.NewLine + "Please try again.");
+                    throw new DatabaseException("De user id mag niet leeg zijn.");
 
                 }
                 else
@@ -28,7 +28,7 @@ namespace Gip.Models
                     }
                     else
                     {
-                        throw new DatabaseException("The chosen User identification number is invalid!" + Environment.NewLine + "Please do not include special caracters and try again.");
+                        throw new DatabaseException("U heeft een verkeerd formaat ingegeven. gelieve een C, R of U in te geven met erachter 7 cijfers.");
 
                     }
                 }
@@ -43,7 +43,7 @@ namespace Gip.Models
             {
                 if (value.Trim() == "")
                 {
-                    throw new DatabaseException("The chosen course code is invalid!" + Environment.NewLine + "Please try again!");
+                    throw new DatabaseException("Vakcode mag niet leeg zijn.");
                 }
                 else
                 {
@@ -54,7 +54,7 @@ namespace Gip.Models
                     }
                     else
                     {
-                        throw new DatabaseException("The chosen course code is invalid!" + Environment.NewLine + "Please do not include any special characters and try again!");
+                        throw new DatabaseException("U heeft een verboden character ingegeven of de vakcode is van een verkeerd formaat.");
                     }
                 }
             }
