@@ -8,7 +8,7 @@
                 <label for="dat">Datum:</label>
                 <!-- zet hieronder in max nog dat datetime.today => year ervan + 1? Niet zeker of de min werkt, op controleren.-->
                 <input type="date" id="dat" class="form-control" name="dat" min="@DateTime.Today.ToString("dd/MM/yyyy")" max="" required="required" />
-                <small>Een datum die hoger gaat dan dit jaar + 1 wordt niet aanvaard.</small>
+                <small>Een datum die hoger gaat dan dit jaar + 1 wordt niet aanvaard. (Zaterdag en Zondag gesloten)</small>
             </div>
             <div class="form-group">
                 <label for="uur">Startuur:</label>
