@@ -228,7 +228,11 @@ namespace Gip.Controllers
                 DateTime newStartMoment = new DateTime(1800, 1, 1, startMoment.Hour, startMoment.Minute, startMoment.Second);
                 nummer = nummer += " ";
                 CourseMoment moment = db.CourseMoment.Find(vakcode, dt, newStartMoment, gebouw, verdiep, nummer, "r0664186");
-                return View("../Planning/ViewTopi", moment);
+                Schedule schedule = db.Schedule.Find(dt, newStartMoment);
+                Course course = db.Course.Find(vakcode);
+
+                Planner planner = new Planner(moment.Datum, schedule.Startmoment, moment.Gebouw, moment.Verdiep, moment.Nummer, course.Vakcode, course.Titel, schedule.Eindmoment, moment.LessenLijst);
+                return View("../Planning/ViewTopi", planner);
             }
             catch (Exception e) {
                 Console.WriteLine(e);
