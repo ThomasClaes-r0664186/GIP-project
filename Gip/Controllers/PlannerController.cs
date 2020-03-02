@@ -220,8 +220,15 @@ namespace Gip.Controllers
         public ActionResult ViewTopic(string vakcode, DateTime datum, DateTime startMoment, string gebouw, int verdiep, string nummer)
         {
             try {
-                CourseMoment oldMoment = db.CourseMoment.Find(vakcode, datum, startMoment, gebouw, verdiep, nummer, "r0664186");
-                return View("../Planning/ViewTopi", oldMoment);
+                int Year = Convert.ToInt32(datum.ToString("dd/MM/yyyy").Split('/')[2]);
+                int Month = Convert.ToInt32(datum.ToString("dd/MM/yyyy").Split('/')[0]);
+                int Day = Convert.ToInt32(datum.ToString("dd/MM/yyyy").Split('/')[1]);
+                DateTime dt = new DateTime(Year, Month, Day, datum.Hour, datum.Minute, datum.Second);
+
+                DateTime newStartMoment = new DateTime(1800, 1, 1, startMoment.Hour, startMoment.Minute, startMoment.Second);
+                nummer = nummer += " ";
+                CourseMoment moment = db.CourseMoment.Find(vakcode, dt, newStartMoment, gebouw, verdiep, nummer, "r0664186");
+                return View("../Planning/ViewTopi", moment);
             }
             catch (Exception e) {
                 Console.WriteLine(e);

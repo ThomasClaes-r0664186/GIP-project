@@ -55,12 +55,12 @@
                 @foreach (var planner in Model)
                 {
                     <tr>
-                        <td id="datumClick" onclick="window.location = 'planner/viewTopic';" class="veranderDatum">@planner.Datum.ToString("dd/MM/yyyy")</td>
+                        <td id="datumClick" onclick="window.location = 'planner/viewTopic?vakcode=@planner.Vakcode&datum=@planner.Datum&startMoment=@planner.Startmoment&gebouw=@planner.Gebouw&verdiep=@planner.Verdiep&nummer=@planner.Nummer';" class="veranderDatum">@planner.Datum.ToString("dd/MM/yyyy")</td>
                         <td>@planner.Startmoment.ToString("HH:mm") / @planner.Eindmoment.ToString("HH:mm")</td>
                         <td id="vakClick" onclick="window.location = 'planner/viewCourseMoments?vakcode=@planner.Vakcode';">@planner.Titel</td>
                         <td>@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer</td>
                         <td>
-                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deletePlanning-@planner.Vakcode.Trim()@planner.Datum.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Startmoment.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer.Trim()">Delete</button>
+                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deletePlanning-@planner.Vakcode@planner.Datum.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Startmoment.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer.Trim()">Delete</button>
                             <div class="modal fade" id="deletePlanning-@planner.Vakcode.Trim()@planner.Datum.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Startmoment.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer.Trim()" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
