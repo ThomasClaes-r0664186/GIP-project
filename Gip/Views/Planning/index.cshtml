@@ -25,7 +25,7 @@
             })
         </script>
 
-       <h1>Planning van week @ViewBag.maandag tot @ViewBag.vrijdag</h1>
+        <h1>Planning van week @ViewBag.maandag tot @ViewBag.vrijdag</h1>
 
         @if ((ViewBag.prevWeek + 1) > 0)
         {
@@ -55,9 +55,9 @@
                 @foreach (var planner in Model)
                 {
                     <tr>
-                        <td class="veranderDatum">@planner.Datum.ToString("dd/MM/yyyy")</td>
+                        <td id="datumClick" onclick="window.location = 'planner/viewCourseMoments';" class="veranderDatum">@planner.Datum.ToString("dd/MM/yyyy")</td>
                         <td>@planner.Startmoment.ToString("HH:mm") / @planner.Eindmoment.ToString("HH:mm")</td>
-                        <td>@planner.Titel</td>
+                        <td id="vakClick" onclick="window.location = 'planner/viewTopic';">@planner.Titel</td>
                         <td>@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer</td>
                         <td>
                             <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deletePlanning-@planner.Vakcode.Trim()@planner.Datum.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Startmoment.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer.Trim()">Delete</button>
@@ -203,3 +203,11 @@
             </tbody>
         </table>
 
+        <style>
+        #datumClick:hover{
+            cursor: pointer;
+        }
+        #vakClick:hover{
+            cursor: pointer;
+        }
+        </style>
