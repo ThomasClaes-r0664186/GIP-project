@@ -16,7 +16,7 @@ namespace Gip.Controllers
         [Route("planner")]
         public ActionResult Index(int week)
         {
-            int weekToUse = ((DateTime.Now.DayOfYear / 7) + week);
+            int weekToUse = GetIso8601WeekOfYear(DateTime.Now)+week;
             try
             {
                 var _qry = from cm in db.CourseMoment
@@ -24,7 +24,7 @@ namespace Gip.Controllers
                            join s in db.Schedule
                                 on new { cm.Datum, cm.Startmoment }
                                 equals new { s.Datum, s.Startmoment }
-                                //we hebben aan week 52+1 gedaan, maar vonden het niet en het was al laat op den dag
+                                //we hebben aan week 52+1 gedacht, maar vonden het niet en het was al laat op den dag
                            where (cm.Datum.DayOfYear / 7) == weekToUse
                            select new
                            {
@@ -248,6 +248,17 @@ namespace Gip.Controllers
                 ViewBag.error = "coursemomentViewCourseMomentsError" + "/" + "Databank fout.";
                 return RedirectToAction("Index", "Planner");
             }
+        }
+
+        public static int GetIso8601WeekOfYear(DateTime time)
+        {
+            DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
+            if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
+            {
+                time = time.AddDays(3);
+            }
+
+            return (time.DayOfYear / 7);
         }
 
         public static DateTime FirstDayOfWeek(int weekOfYear) {
