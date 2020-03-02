@@ -247,11 +247,33 @@ namespace Gip.Controllers
         {
             try
             {
-                var qry = from cm in db.CourseMoment
+                var _qry = from cm in db.CourseMoment
+                          join c in db.Course on cm.Vakcode equals c.Vakcode
+                          join s in db.Schedule
+                               on new { cm.Datum, cm.Startmoment }
+                               equals new { s.Datum, s.Startmoment }
                           where cm.Vakcode == vakcode
-                          select cm;
+                          select new
+                          {
+                              datum = cm.Datum,
+                              startmoment = cm.Startmoment,
+                              gebouw = cm.Gebouw,
+                              verdiep = cm.Verdiep,
+                              nummer = cm.Nummer,
+                              vakcode = c.Vakcode,
+                              titel = c.Titel,
+                              eindmoment = s.Eindmoment
+                          };
+
+                List<Planner> planners = new List<Planner>();
+                foreach (var qry in _qry)
+                {
+                    Planner planner = new Planner(qry.datum, qry.startmoment, qry.gebouw, qry.verdiep, qry.nummer, qry.vakcode, qry.titel, qry.eindmoment);
+                    planners.Add(planner);
+                }
+
                 ViewBag.error = "coursemomentsGood";
-                return View("../Planning/courseMomentsOffTopic", qry);
+                return View("../Planning/courseMomentsOffTopic", planners);
             }
             catch (Exception e)
             {
