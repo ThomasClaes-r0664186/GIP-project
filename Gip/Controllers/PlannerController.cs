@@ -240,7 +240,7 @@ namespace Gip.Controllers
                           where cm.Vakcode == vakcode
                           select cm;
                 ViewBag.error = "coursemomentsGood";
-                return View(qry);
+                return View("../Planning/courseMomentsOffTopic", qry);
             }
             catch (Exception e)
             {
