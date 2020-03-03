@@ -6,6 +6,11 @@
 
         <h1>Overzicht van de vakken</h1>
 
+        @if (ViewBag.error == null)
+        {
+            ViewBag.error = " ";
+        }
+
         @if (ViewBag.error.Contains("addError"))
         {
             <div class="alert alert-warning alert-dismissible fade show" role="alert">

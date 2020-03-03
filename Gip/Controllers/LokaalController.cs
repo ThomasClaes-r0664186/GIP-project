@@ -79,7 +79,7 @@ namespace Gip.Controllers
         {
             if (lokaalId == null || lokaalId.Trim().Equals(""))
             {
-                TempData["error"] = "deleteError";
+                TempData["error"] = "deleteError" + "/" + "LokaalId werd leeg meegegeven.";
                 return RedirectToAction("Index", "Lokaal");
             }
             lokaalId = lokaalId.Trim() + " ";
