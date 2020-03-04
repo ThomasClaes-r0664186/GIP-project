@@ -247,7 +247,7 @@ namespace Gip.Controllers
                 //double _duratie = Convert.ToDouble(duratie);
                 //DateTime eindmoment = newStartMoment.AddHours(_duratie);
                 //Schedule schedule = db.Schedule.Find(dt, newStartMoment,eindmoment);
-                Schedule schedule = db.Schedule.Find(dt, newStartMoment);
+                Schedule schedule = db.Schedule.Find(dt, newStartMoment); //delete deze code wanneer duratie gefxt is
                 Course course = db.Course.Find(vakcode);
                 Planner planner = new Planner(moment.Datum, schedule.Startmoment, moment.Gebouw, moment.Verdiep, moment.Nummer, course.Vakcode, course.Titel, schedule.Eindmoment, moment.LessenLijst);
                 return View("../Planning/ViewTopi", planner);
