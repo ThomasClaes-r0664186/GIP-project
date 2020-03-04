@@ -80,16 +80,15 @@ namespace Gip.Controllers
             string gebouw = lokaalId.Substring(0, 1);
             int verdieping = int.Parse(lokaalId.Substring(1, 1));
             string nummer = lokaalId.Substring(2, (lokaalId.Length - 2));
-
+            DateTime eindmoment = tijd.AddHours(_duratie);
             try
             {
-                Schedule schedule = db.Schedule.Find(datum, tijd);
+                Schedule schedule = db.Schedule.Find(datum, tijd,eindmoment);
                 if (schedule == null) {
                     schedule = new Schedule();
                     schedule.Datum = datum;
                     schedule.Startmoment = tijd;
-                    schedule.Eindmoment = tijd.AddHours(_duratie);
-
+                    schedule.Eindmoment = eindmoment;
                     db.Schedule.Add(schedule);
                     db.SaveChanges();
                 }
@@ -205,14 +204,15 @@ namespace Gip.Controllers
 
                 DateTime datum = DateTime.ParseExact(newDatum, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 DateTime tijd = new DateTime(1800, 1, 1, int.Parse(newStartMoment.Split(":")[0]), int.Parse(newStartMoment.Split(":")[1]), 0);
-                Schedule schedule = db.Schedule.Find(datum, tijd);
+                DateTime eindmoment = tijd.AddHours(_duratie);
+                Schedule schedule = db.Schedule.Find(datum, tijd,eindmoment);
 
                 if (schedule == null)
                 {
                     schedule = new Schedule();
                     schedule.Datum = datum;
                     schedule.Startmoment = tijd;
-                    schedule.Eindmoment = tijd.AddHours(_duratie);
+                    schedule.Eindmoment = eindmoment;
 
                     db.Schedule.Add(schedule);
                     db.SaveChanges();
@@ -233,7 +233,7 @@ namespace Gip.Controllers
 
         [HttpGet]
         [Route("planner/viewTopic")]
-        public ActionResult ViewTopic(string vakcode, DateTime datum, DateTime startMoment, string gebouw, int verdiep, string nummer)
+        public ActionResult ViewTopic(string vakcode, DateTime datum, DateTime startMoment/*,double duratie*/, string gebouw, int verdiep, string nummer)
         {
             try {
                 int Year = Convert.ToInt32(datum.ToString("dd/MM/yyyy").Split('/')[2]);
@@ -244,9 +244,11 @@ namespace Gip.Controllers
                 DateTime newStartMoment = new DateTime(1800, 1, 1, startMoment.Hour, startMoment.Minute, startMoment.Second);
                 nummer = nummer += " ";
                 CourseMoment moment = db.CourseMoment.Find(vakcode, dt, newStartMoment, gebouw, verdiep, nummer, "r0664186");
+                //double _duratie = Convert.ToDouble(duratie);
+                //DateTime eindmoment = newStartMoment.AddHours(_duratie);
+                //Schedule schedule = db.Schedule.Find(dt, newStartMoment,eindmoment);
                 Schedule schedule = db.Schedule.Find(dt, newStartMoment);
                 Course course = db.Course.Find(vakcode);
-
                 Planner planner = new Planner(moment.Datum, schedule.Startmoment, moment.Gebouw, moment.Verdiep, moment.Nummer, course.Vakcode, course.Titel, schedule.Eindmoment, moment.LessenLijst);
                 return View("../Planning/ViewTopi", planner);
             }
