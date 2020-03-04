@@ -299,7 +299,6 @@ namespace Gip.Controllers
             }
         }
 
-
         public static int GetIso8601WeekOfYear(DateTime time)
         {
             DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);

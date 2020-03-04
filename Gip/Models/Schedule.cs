@@ -30,16 +30,16 @@ namespace Gip.Models
                 {
                     throw new DatabaseException("De gekozen datum is te ver in de toekomst.");
                 }
+                else if (value.DayOfWeek == DayOfWeek.Saturday || value.DayOfWeek == DayOfWeek.Sunday)
+                {
+                    throw new DatabaseException("De school is gesloten in het weekend.");
+                }
+                else if (value < DateTime.Now ) {
+                    throw new DatabaseException("Je kan het moment niet vroeger dan vandaag plannen.");
+                }
                 else
                 {
-                    if (value.DayOfWeek > DayOfWeek.Saturday && value.DayOfWeek > DayOfWeek.Sunday)
-                    {
-                        throw new DatabaseException("De school is gesloten in het weekend.");
-                    }
-                    else
-                    {
-                        datum = value;
-                    }
+                    datum = value;
                 }
             }
         }
