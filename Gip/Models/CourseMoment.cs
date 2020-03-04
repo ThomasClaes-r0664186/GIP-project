@@ -10,7 +10,7 @@ namespace Gip.Models
         {
 
         }
-        public CourseMoment(string vakcode, DateTime datum, DateTime startmoment, string gebouw, int verdiep, string nummer, string userid, string lessenLijst)
+        public CourseMoment(string vakcode, DateTime datum, DateTime startmoment, string gebouw, int verdiep, string nummer, string userid, string lessenLijst, DateTime eindmoment)
         {
             this.Vakcode = vakcode;
             this.Datum = datum;
@@ -20,6 +20,7 @@ namespace Gip.Models
             this.Nummer = nummer;
             this.Userid = userid;
             this.LessenLijst = lessenLijst;
+            this.Eindmoment = eindmoment;
         }
 
         private string userid;
@@ -223,6 +224,8 @@ namespace Gip.Models
             }
         }
 
+        private DateTime eindmoment;
+        public DateTime Eindmoment;
         public virtual Room Room { get; set; }
         public virtual Schedule Schedule { get; set; }
         public virtual User User { get; set; }

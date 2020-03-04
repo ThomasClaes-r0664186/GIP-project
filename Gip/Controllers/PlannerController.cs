@@ -151,9 +151,10 @@ namespace Gip.Controllers
 
         [HttpPost]
         [Route("planner/delete")]
-        public ActionResult Delete(string vakcode, DateTime datum, DateTime startMoment, string gebouw, int verdiep, string nummer) {
+        public ActionResult Delete(string vakcode, DateTime datum, DateTime startMoment, string gebouw, int verdiep, string nummer/*,double duratie*/) {
             DateTime newStartMoment = new DateTime(1800, 1, 1, startMoment.Hour, startMoment.Minute, startMoment.Second);
-            CourseMoment moment = db.CourseMoment.Find(vakcode, datum, newStartMoment, gebouw, verdiep, nummer, "r0664186");
+            //DateTime eindmoment = newStartMoment.AddHours(Convert.ToDouble(duratie););
+            CourseMoment moment = db.CourseMoment.Find(vakcode, datum, newStartMoment, gebouw, verdiep, nummer, "r0664186"/*,eindmoment*/);
             if (moment == null) {
                 TempData["error"] = "deleteError" + "/" + "Er is geen overeenkomend moment gevonden.";
                 return RedirectToAction("Index", "Planner");
@@ -218,7 +219,7 @@ namespace Gip.Controllers
                     db.SaveChanges();
                 }
 
-                CourseMoment newMoment = new CourseMoment(newVakcode, datum, tijd, newGebouw, newVerdiep, newNummer, "r0664186", newLessenlijst);
+                CourseMoment newMoment = new CourseMoment(newVakcode, datum, tijd, newGebouw, newVerdiep, newNummer, "r0664186", newLessenlijst,eindmoment);
                 db.CourseMoment.Add(newMoment);
             }
             catch (Exception e) {
@@ -243,10 +244,10 @@ namespace Gip.Controllers
 
                 DateTime newStartMoment = new DateTime(1800, 1, 1, startMoment.Hour, startMoment.Minute, startMoment.Second);
                 nummer = nummer += " ";
-                CourseMoment moment = db.CourseMoment.Find(vakcode, dt, newStartMoment, gebouw, verdiep, nummer, "r0664186");
                 //double _duratie = Convert.ToDouble(duratie);
                 //DateTime eindmoment = newStartMoment.AddHours(_duratie);
                 //Schedule schedule = db.Schedule.Find(dt, newStartMoment,eindmoment);
+                CourseMoment moment = db.CourseMoment.Find(vakcode, dt, newStartMoment, gebouw, verdiep, nummer, "r0664186"/*,duratie*/);
                 Schedule schedule = db.Schedule.Find(dt, newStartMoment); //delete deze code wanneer duratie gefxt is
                 Course course = db.Course.Find(vakcode);
                 Planner planner = new Planner(moment.Datum, schedule.Startmoment, moment.Gebouw, moment.Verdiep, moment.Nummer, course.Vakcode, course.Titel, schedule.Eindmoment, moment.LessenLijst);

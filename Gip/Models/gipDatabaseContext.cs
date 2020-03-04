@@ -47,7 +47,7 @@ namespace Gip.Models
 
             modelBuilder.Entity<CourseMoment>(entity =>
             {
-                entity.HasKey(e => new { e.Vakcode, e.Datum, e.Startmoment, e.Gebouw, e.Verdiep, e.Nummer, e.Userid });
+                entity.HasKey(e => new { e.Vakcode, e.Datum, e.Startmoment, e.Gebouw, e.Verdiep, e.Nummer, e.Userid,e.Eindmoment });
 
                 entity.Property(e => e.Vakcode)
                     .HasMaxLength(50)
@@ -59,6 +59,8 @@ namespace Gip.Models
                 entity.Property(e => e.Datum).HasColumnType("date");
 
                 entity.Property(e => e.Startmoment).HasColumnType("datetime");
+
+                entity.Property(e => e.Eindmoment).HasColumnType("datetime");
 
                 entity.Property(e => e.Gebouw)
                     .HasMaxLength(10)
