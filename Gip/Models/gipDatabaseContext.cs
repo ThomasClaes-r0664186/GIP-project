@@ -146,7 +146,7 @@ namespace Gip.Models
 
             modelBuilder.Entity<Schedule>(entity =>
             {
-                entity.HasKey(e => new { e.Datum, e.Startmoment });
+                entity.HasKey(e => new { e.Datum, e.Startmoment,e.Eindmoment });
 
                 entity.Property(e => e.Datum).HasColumnType("date");
 
