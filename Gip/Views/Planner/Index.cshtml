@@ -29,10 +29,24 @@
                 <small>Gelieve het lokaal aan te duiden</small>
             </div>
             <div class="form-group">
-                <label>Een tweede lokaal toevoegen?</label> <br>
+                <label>Een tweede lokaal toevoegen? (Gelieve de checkbox aan te duiden)</label> <br>
                 <input id="checkbox" type=checkbox>
             </div>
-
+            <div id="delivery" style="display:none;">
+                <div class="form-group">
+                    <label>Lokaal 2:</label>
+                    <select class="form-control" name="lokaal2Id" required="required">
+                        @foreach (var planner in Model)
+                        {
+                            if (@planner.Gebouw != null)
+                            {
+                                <option value="@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer">@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer@planner.Capaciteit</option>
+                            }
+                        }
+                    </select>
+                    <small>Gelieve het tweede lokaal aan te duiden</small>
+                </div>
+            </div>
             <div class="form-group">
                 <label>Vak:</label>
                 <select class="form-control" name="vakcode" required="required">
@@ -62,9 +76,9 @@
                 <label for="lessenlijst">Beschrijving</label>
                 <textarea class="form-control" name="lessenlijst" rows="4" cols="50"></textarea>
                 <small>Geef een eventuele beschrijving</small>
-            </div>
 
-            <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
         </form>
 
 
