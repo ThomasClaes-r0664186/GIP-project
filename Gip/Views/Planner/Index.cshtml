@@ -16,13 +16,13 @@
                 <small>Openingstijden van 06:00 tot 22:00</small>
             </div>
             <div class="form-group">
-                <label>Lokaal:</label>
+                <label>Lokaal / capaciteit:</label>
                 <select class="form-control" name="lokaalId" required="required">
                     @foreach (var planner in Model)
                     {
                         if (@planner.Gebouw != null)
                         {
-                    <option value="@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer">@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer @planner.Capaciteit</option>
+                    <option value="@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer">@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer / @planner.Capaciteit</option>
                         }
                     }
                 </select>
@@ -34,13 +34,13 @@
             </div>
             <div id="delivery" style="display:none;">
                 <div class="form-group">
-                    <label>Lokaal 2:</label>
+                    <label>Lokaal 2 / capaciteit:</label>
                     <select class="form-control" name="lokaal2Id" required="required">
                         @foreach (var planner in Model)
                         {
                             if (@planner.Gebouw != null)
                             {
-                                <option value="@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer">@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer@planner.Capaciteit</option>
+                                <option value="@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer">@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer / @planner.Capaciteit</option>
                             }
                         }
                     </select>
