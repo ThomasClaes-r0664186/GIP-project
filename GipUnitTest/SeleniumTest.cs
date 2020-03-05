@@ -5,7 +5,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using Xunit;
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
-
+using Gip;
 namespace GipUnitTest
 {
     [TestClass]
@@ -16,7 +16,7 @@ namespace GipUnitTest
 
         public void SetUp()
         {
-            CourseTest.Program.main();
+            Gip.Program.Main(null);
         }
         
         public SeleniumTest()
