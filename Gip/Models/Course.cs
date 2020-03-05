@@ -91,7 +91,7 @@ namespace Gip.Models
                 }
                 else
                 {
-                    string pattern = @"^\d$";
+                    string pattern = @"^[1-9]{0,1}\d$";
                     if (Regex.IsMatch(value.ToString(), pattern))
                     {
                         studiepunten = value;
