@@ -19,13 +19,17 @@ namespace GipUnitTest
         [SetUp]
         public void SetUp()
         {
-            //Gip.Program.Main(null);    
-            try{
-                driver = new ChromeDriver();
+            Gip.Program.Main(null);
+            try
+            {
+                var relativePath = @".\dist\chromedriver.exe";
+                var pathdriver = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),relativePath));
+                driver = new ChromeDriver(pathdriver);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+
             }
         }
         [TearDown]
@@ -44,9 +48,9 @@ namespace GipUnitTest
         [Test]
         public void TitleOfPageShouldBeCorrect()
         {
-            driver.Url = "http://www.google.com";
-            //driver.Navigate().GoToUrl("https://localhost:"+poortNummer+"/");
+            driver.Navigate().GoToUrl("https://localhost:"+poortNummer+"/");
             Assert.Equals("Home Page - Gip", driver.Title);
         }
+
     }
 }
