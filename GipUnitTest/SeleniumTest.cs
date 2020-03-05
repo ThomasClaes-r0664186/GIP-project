@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NUnit.Framework;
 using OpenQA.Selenium;
@@ -20,8 +22,9 @@ namespace GipUnitTest
             Gip.Program.Main(null);
             try
             {
+                var relativePath = @".\dist\chromedriver.exe";
+                Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),relativePath));
                 driver = new ChromeDriver();
-
             }
             catch (Exception e)
             {
@@ -45,7 +48,7 @@ namespace GipUnitTest
         [Test]
         public void TitleOfPageShouldBeCorrect()
         {
-            driver.Navigate().GoToUrl("localhost:"+poortNummer+"/");
+            driver.Navigate().GoToUrl("https://localhost:"+poortNummer+"/");
             Assert.Equals("Home Page - Gip", driver.Title);
         }
     }
