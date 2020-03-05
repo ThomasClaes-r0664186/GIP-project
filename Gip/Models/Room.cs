@@ -9,16 +9,29 @@ namespace Gip.Models
 {
     public partial class Room
     {
+        private string gebouw;
+        private int verdiep;
+        private string nummer;
+        private string type;
+        private int capaciteit;
+        private string middelen;
 
-
-        // public string Gebouw { get; set; } //if(value.toLower.trim().length <= 0) throw new exeption, else gebouw = value
-        // public int Verdiep { get; set; }
-        // public string Nummer { get; set; }
-        // public string Type { get; set; }
-        // public int Capaciteit { get; set; }
         public virtual ICollection<CourseMoment> CourseMoment { get; set; }
 
-        private string middelen;
+        public Room(string middelen, string gebouw, int verdiep, string nummer, string type, int capaciteit)
+        {
+            this.Capaciteit = capaciteit;
+            this.Gebouw = gebouw;
+            this.Verdiep = verdiep;
+            this.Nummer = nummer;
+            this.Middelen = middelen;
+            this.Type = type;
+        }
+        public Room()
+        {
+            CourseMoment = new HashSet<CourseMoment>();
+        }
+
         public string Middelen
         {
             get
@@ -56,7 +69,8 @@ namespace Gip.Models
                     {
                         gevonden++;
                     }
-                    if (middelen1.Contains("geen middelen")) {
+                    if (middelen1.Contains("geen middelen"))
+                    {
                         gevonden++;
                     }
                     if (gevonden != aantal)
@@ -74,18 +88,17 @@ namespace Gip.Models
                 }
 
             }
-        } 
+        }
 
-        private string gebouw;
-        public string Gebouw 
+        public string Gebouw
         {
             get { return gebouw; }
 
-            set 
+            set
             {
                 if (value.Trim().Length <= 0 || value.Trim().Length > 1)
                 {
-                    
+
                     throw new DatabaseException("U heeft niets meegegeven als gebouwcharacter.");
                 }
                 else
@@ -103,7 +116,6 @@ namespace Gip.Models
             }
         }
 
-        private int verdiep;
         public int Verdiep
         {
             get { return verdiep; }
@@ -128,7 +140,6 @@ namespace Gip.Models
             }
         }
 
-        private string nummer;
         public string Nummer
         {
             get { return nummer; }
@@ -153,7 +164,6 @@ namespace Gip.Models
             }
         }
 
-        private string type;
         public string Type //is dropdown
         {
             get { return type; }
@@ -170,12 +180,10 @@ namespace Gip.Models
             }
         }
 
-        private int capaciteit;
-
-        public int Capaciteit   
+        public int Capaciteit
         {
             get { return capaciteit; }
-            set 
+            set
             {
                 if (value > 400)
                 {
@@ -188,7 +196,7 @@ namespace Gip.Models
                 else
                 {
                     string pattern = @"^\d$";
-                    if (!Regex.IsMatch(value+"", pattern))
+                    if (!Regex.IsMatch(value + "", pattern))
                     {
                         capaciteit = value;
                     }
@@ -200,19 +208,6 @@ namespace Gip.Models
             }
         }
 
-        public Room(string middelen, string gebouw, int verdiep, string nummer, string type, int capaciteit)
-        {
-            this.Capaciteit = capaciteit;
-            this.Gebouw = gebouw;
-            this.Verdiep = verdiep;
-            this.Nummer = nummer;
-            this.Middelen = middelen;
-            this.Type = type;
-        }
-        public Room()
-        {
-            CourseMoment = new HashSet<CourseMoment>();
-        }
 
     }
 }
