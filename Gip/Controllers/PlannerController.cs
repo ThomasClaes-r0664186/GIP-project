@@ -58,7 +58,6 @@ namespace Gip.Controllers
                 {
                     ViewBag.error = "indexLokaalGood";
                 }
-
                 return View("../Planning/Index",planners);
             }
             catch (Exception e)
@@ -68,15 +67,15 @@ namespace Gip.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
-
         [HttpPost]
         [Route("planner/add")]
-        public ActionResult Add(string dat, string uur, string lokaalId, double duratie, string vakcode, string lessenlijst)
+        public ActionResult Add(string dat, string uur, string lokaalId, double duratie, string vakcode, string lessenlijst,string? lokaal2Id)
         {
             double _duratie = Convert.ToDouble(duratie);
             DateTime datum = DateTime.ParseExact(dat, "yyyy-MM-dd", CultureInfo.InvariantCulture);
             DateTime tijd = new DateTime(1800, 1, 1, int.Parse(uur.Split(":")[0]), int.Parse(uur.Split(":")[1]), 0);
             lokaalId = lokaalId.Trim() + " ";
+            lokaal2Id = lokaalId.Trim() + " ";
             string gebouw = lokaalId.Substring(0, 1);
             int verdieping = int.Parse(lokaalId.Substring(1, 1));
             string nummer = lokaalId.Substring(2, (lokaalId.Length - 2));
@@ -93,17 +92,30 @@ namespace Gip.Controllers
                     db.SaveChanges();
                 }
 
+                
                 CourseMoment moment = new CourseMoment();
+                if (lokaal2Id.Trim()!="")
+                {
+                    CourseMoment moment2 = new CourseMoment();
+                    moment2.Vakcode = vakcode;
+                    moment2.Datum = datum;
+                    moment2.Startmoment = schedule.Startmoment;
+                    moment2.Eindmoment = schedule.Eindmoment;
+                    moment2.Gebouw = gebouw;
+                    moment2.Verdiep = verdieping;
+                    moment2.Userid = "r0664186";
+                    moment2.LessenLijst = lessenlijst;
+                    db.CourseMoment.Add(moment2);
+                }
+                moment.Nummer = nummer;
                 moment.Vakcode = vakcode;
                 moment.Datum = datum;
                 moment.Startmoment = schedule.Startmoment;
                 moment.Eindmoment = schedule.Eindmoment;
                 moment.Gebouw = gebouw;
                 moment.Verdiep = verdieping;
-                moment.Nummer = nummer;
                 moment.Userid = "r0664186";
                 moment.LessenLijst = lessenlijst;
-
                 db.CourseMoment.Add(moment);
             }
             catch (Exception e)
@@ -116,6 +128,7 @@ namespace Gip.Controllers
             db.SaveChanges();
             return RedirectToAction("Index", "Planner");
         }
+
 
         [HttpGet]
         [Route("planner/add")]
@@ -133,7 +146,7 @@ namespace Gip.Controllers
                 List < Planner > planners = new List<Planner>();
                 foreach (var qry in lokaalQry)
                 {
-                    Planner planner = new Planner(qry.Gebouw, qry.Verdiep, qry.Nummer);
+                    Planner planner = new Planner(qry.Gebouw, qry.Verdiep, qry.Nummer, qry.Capaciteit);
                     planners.Add(planner);
                 }
                 foreach (var qry in vakQry) {
