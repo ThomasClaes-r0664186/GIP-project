@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Gip.Models
 {
@@ -14,8 +16,8 @@ namespace Gip.Models
         }
 
         public virtual DbSet<Course> Course { get; set; }
-        public virtual DbSet<CourseMoment> CourseMoment { get; set; }
         public virtual DbSet<CourseUser> CourseUser { get; set; }
+        public virtual DbSet<CourseMoment> CourseMoment { get; set; }
         public virtual DbSet<Room> Room { get; set; }
         public virtual DbSet<Schedule> Schedule { get; set; }
         public virtual DbSet<User> User { get; set; }
@@ -45,59 +47,6 @@ namespace Gip.Models
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<CourseMoment>(entity =>
-            {
-                entity.HasKey(e => new { e.Vakcode, e.Datum, e.Startmoment, e.Gebouw, e.Verdiep, e.Nummer, e.Userid });
-
-                entity.Property(e => e.Vakcode)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-                
-                entity.Property(e => e.LessenLijst)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Datum).HasColumnType("date");
-
-                entity.Property(e => e.Startmoment).HasColumnType("datetime");
-
-                entity.Property(e => e.Gebouw)
-                    .HasMaxLength(10)
-                    .IsUnicode(false)
-                    .IsFixedLength();
-
-                entity.Property(e => e.Nummer)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Userid)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.CourseMoment)
-                    .HasForeignKey(d => d.Userid)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_CourseMoment_User");
-
-                entity.HasOne(d => d.VakcodeNavigation)
-                    .WithMany(p => p.CourseMoment)
-                    .HasForeignKey(d => d.Vakcode)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_CourseMoment_Course");
-
-                entity.HasOne(d => d.Schedule)
-                    .WithMany(p => p.CourseMoment)
-                    .HasForeignKey(d => new { d.Datum, d.Startmoment })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_CourseMoment_Schedule");
-
-                entity.HasOne(d => d.Room)
-                    .WithMany(p => p.CourseMoment)
-                    .HasForeignKey(d => new {d.Gebouw, d.Verdiep, d.Nummer})
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_CourseMoment_Room");
-            });
-
             modelBuilder.Entity<CourseUser>(entity =>
             {
                 entity.HasKey(e => new { e.Vakcode, e.Userid });
@@ -123,6 +72,62 @@ namespace Gip.Models
                     .HasConstraintName("FK_CourseUser_Course");
             });
 
+            modelBuilder.Entity<CourseMoment>(entity =>
+            {
+                entity.HasKey(e => new { e.Vakcode, e.Datum, e.Gebouw, e.Verdiep, e.Nummer, e.Userid, e.Startmoment, e.Eindmoment });
+
+                entity.Property(e => e.Vakcode)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Datum).HasColumnType("date");
+
+                entity.Property(e => e.Gebouw)
+                    .HasMaxLength(10)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Nummer)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Userid)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Startmoment).HasColumnType("datetime");
+
+                entity.Property(e => e.Eindmoment).HasColumnType("datetime");
+
+                entity.Property(e => e.LessenLijst)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.CourseMoment)
+                    .HasForeignKey(d => d.Userid)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Coursemoment_User");
+
+                entity.HasOne(d => d.VakcodeNavigation)
+                    .WithMany(p => p.CourseMoment)
+                    .HasForeignKey(d => d.Vakcode)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Coursemoment_Course");
+
+                entity.HasOne(d => d.Schedule)
+                    .WithMany(p => p.CourseMoment)
+                    .HasForeignKey(d => new { d.Datum, d.Startmoment, d.Eindmoment })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Coursemoment_Schedule");
+
+                entity.HasOne(d => d.Room)
+                    .WithMany(p => p.CourseMoment)
+                    .HasForeignKey(d => new { d.Gebouw, d.Verdiep, d.Nummer })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Coursemoment_Room");
+            });
+
             modelBuilder.Entity<Room>(entity =>
             {
                 entity.HasKey(e => new { e.Gebouw, e.Verdiep, e.Nummer });
@@ -146,7 +151,7 @@ namespace Gip.Models
 
             modelBuilder.Entity<Schedule>(entity =>
             {
-                entity.HasKey(e => new { e.Datum, e.Startmoment });
+                entity.HasKey(e => new { e.Datum, e.Startmoment, e.Eindmoment });
 
                 entity.Property(e => e.Datum).HasColumnType("date");
 

@@ -16,10 +16,14 @@ namespace Gip.Models
             this.Startmoment = startmoment;
             this.Eindmoment = eindmoment;
             CourseMoment = new HashSet<CourseMoment>();
-
         }
 
         private DateTime datum;
+        private DateTime startmoment;
+        private DateTime eindmoment;
+
+        public virtual ICollection<CourseMoment> CourseMoment { get; set; }
+
         public DateTime Datum
         {
             get { return datum; }
@@ -30,21 +34,21 @@ namespace Gip.Models
                 {
                     throw new DatabaseException("De gekozen datum is te ver in de toekomst.");
                 }
+                else if (value.DayOfWeek == DayOfWeek.Saturday || value.DayOfWeek == DayOfWeek.Sunday)
+                {
+                    throw new DatabaseException("De school is gesloten in het weekend.");
+                }
+                else if (value < DateTime.Now.AddDays(-1))
+                {
+                    throw new DatabaseException("Je kan het moment niet vroeger dan vandaag plannen.");
+                }
                 else
                 {
-                    if (value.DayOfWeek > DayOfWeek.Saturday && value.DayOfWeek > DayOfWeek.Sunday)
-                    {
-                        throw new DatabaseException("De school is gesloten in het weekend.");
-                    }
-                    else
-                    {
-                        datum = value;
-                    }
+                    datum = value;
                 }
             }
         }
 
-        private DateTime startmoment;
         public DateTime Startmoment
         {
             get { return startmoment; }
@@ -62,11 +66,10 @@ namespace Gip.Models
             }
         }
 
-        private DateTime eindmoment;
         public DateTime Eindmoment
         {
             get { return eindmoment; }
-            set 
+            set
             {
                 if (value.Hour > 22)
                 {
@@ -79,8 +82,5 @@ namespace Gip.Models
                 }
             }
         }
-
-
-        public virtual ICollection<CourseMoment> CourseMoment { get; set; }
     }
 }

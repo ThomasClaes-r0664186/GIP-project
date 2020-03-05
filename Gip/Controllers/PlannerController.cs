@@ -24,8 +24,7 @@ namespace Gip.Controllers
                            join s in db.Schedule
                                 on new { cm.Datum, cm.Startmoment }
                                 equals new { s.Datum, s.Startmoment }
-                                //we hebben aan week 52+1 gedacht, maar vonden het niet en het was al laat op den dag
-                           where (cm.Datum.DayOfYear / 7) == weekToUse
+                           where (int)((cm.Datum.DayOfYear / 7.0) + 0.2) == weekToUse
                            select new
                            {
                                datum = cm.Datum,
@@ -49,12 +48,23 @@ namespace Gip.Controllers
                 }
                 ViewBag.nextWeek = week += 1;
                 ViewBag.prevWeek = week -= 2;
+
+                if (TempData["error"] != null)
+                {
+                    ViewBag.error = TempData["error"].ToString();
+                    TempData["error"] = null;
+                }
+                if (ViewBag.error == null || !ViewBag.error.Contains("addError") && !ViewBag.error.Contains("addGood") && !ViewBag.error.Contains("deleteError") && !ViewBag.error.Contains("deleteGood") && !ViewBag.error.Contains("editError") && !ViewBag.error.Contains("editGood") && !ViewBag.error.Contains("topicError"))
+                {
+                    ViewBag.error = "indexLokaalGood";
+                }
+
                 return View("../Planning/Index",planners);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ViewBag.error = "indexVakError" + "/" + "Er liep iets mis bij het ophalen van de planner.";
+                TempData["error"] = "indexVakError" + "/" + "Er liep iets mis bij het ophalen van de planner.";
                 return RedirectToAction("Index", "Home");
             }
         }
@@ -70,16 +80,15 @@ namespace Gip.Controllers
             string gebouw = lokaalId.Substring(0, 1);
             int verdieping = int.Parse(lokaalId.Substring(1, 1));
             string nummer = lokaalId.Substring(2, (lokaalId.Length - 2));
-
+            DateTime eindmoment = tijd.AddHours(_duratie);
             try
             {
-                Schedule schedule = db.Schedule.Find(datum, tijd);
+                Schedule schedule = db.Schedule.Find(datum, tijd,eindmoment);
                 if (schedule == null) {
                     schedule = new Schedule();
                     schedule.Datum = datum;
                     schedule.Startmoment = tijd;
-                    schedule.Eindmoment = tijd.AddHours(_duratie);
-
+                    schedule.Eindmoment = eindmoment;
                     db.Schedule.Add(schedule);
                     db.SaveChanges();
                 }
@@ -88,6 +97,7 @@ namespace Gip.Controllers
                 moment.Vakcode = vakcode;
                 moment.Datum = datum;
                 moment.Startmoment = schedule.Startmoment;
+                moment.Eindmoment = schedule.Eindmoment;
                 moment.Gebouw = gebouw;
                 moment.Verdiep = verdieping;
                 moment.Nummer = nummer;
@@ -99,10 +109,10 @@ namespace Gip.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ViewBag.error = "addError" + "/" + e.Message;
+                TempData["error"] = "addError" + "/" + e.Message;
                 return RedirectToAction("Index", "Planner");
             }
-            ViewBag.error = "addGood";
+            TempData["error"] = "addGood";
             db.SaveChanges();
             return RedirectToAction("Index", "Planner");
         }
@@ -135,18 +145,18 @@ namespace Gip.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ViewBag.error = "indexVakError" + "/" + e.Message;
+                TempData["error"] = "indexVakError" + "/" + e.Message;
                 return RedirectToAction("Index", "Home");
             }
         }
 
         [HttpPost]
         [Route("planner/delete")]
-        public ActionResult Delete(string vakcode, DateTime datum, DateTime startMoment, string gebouw, int verdiep, string nummer) {
+        public ActionResult Delete(string vakcode, DateTime datum, DateTime startMoment, string gebouw, int verdiep, string nummer, DateTime eindMoment) {
             DateTime newStartMoment = new DateTime(1800, 1, 1, startMoment.Hour, startMoment.Minute, startMoment.Second);
-            CourseMoment moment = db.CourseMoment.Find(vakcode, datum, newStartMoment, gebouw, verdiep, nummer, "r0664186");
+            CourseMoment moment = db.CourseMoment.Find(vakcode, datum, newStartMoment, eindMoment,gebouw, verdiep, nummer, "r0664186");
             if (moment == null) {
-                ViewBag.error = "deleteError" + "/" + "Er is geen overeenkomend moment gevonden.";
+                TempData["error"] = "deleteError" + "/" + "Er is geen overeenkomend moment gevonden.";
                 return RedirectToAction("Index", "Planner");
             }
             try
@@ -157,10 +167,10 @@ namespace Gip.Controllers
             catch(Exception e)
             {
                 Console.WriteLine(e);
-                ViewBag.error = "coursemomentsDeleteError" + "/" + "Er is een databank probleem opgetreden.";
+                TempData["error"] = "deleteError" + "/" + "Er is een databank probleem opgetreden.";
                 return RedirectToAction("Index", "Planner");
             }
-            ViewBag.error = "coursemomentDeletedCorrectly";
+            TempData["error"] = "deleteGood";
             return RedirectToAction("Index", "Planner");
         }
 
@@ -170,8 +180,8 @@ namespace Gip.Controllers
             DateTime oldDatum, DateTime oldStartMoment, 
             string oldGebouw, int oldVerdiep, string oldNummer, 
             string newVakcode, 
-            string newDatum, string newStartMoment, double duratie,
-            string newGebouw, int newVerdiep, string newNummer, string newLessenlijst) {
+            string newDatum, string newStartMoment, double newDuratie,
+            string newLokaalid, string newLessenlijst) {
             //new vakcode => dropdown met lokalen, datetime => checken of bestaat anders aanmaken.
 
             try
@@ -179,53 +189,73 @@ namespace Gip.Controllers
                 CourseMoment oldMoment = db.CourseMoment.Find(oldVakcode, oldDatum, oldStartMoment, oldGebouw, oldVerdiep, oldNummer, "r0664186");
                 if (oldMoment == null)
                 {
-                    ViewBag.error = "deleteError" + "/" + "Er is geen overeenkomend moment gevonden in de databank.";
+                    TempData["error"] = "deleteError" + "/" + "Er is geen overeenkomend moment gevonden in de databank.";
                     return RedirectToAction("Index", "Planner");
                 }
                 else
                 {
                     db.CourseMoment.Remove(oldMoment);
                 }
+                newLokaalid = newLokaalid.Trim() + " ";
+                string newGebouw = newLokaalid.Substring(0, 1);
+                int newVerdiep = int.Parse(newLokaalid.Substring(1, 1));
+                string newNummer = newLokaalid.Substring(2, (newLokaalid.Length - 2));
+
+                double _duratie = Convert.ToDouble(newDuratie);
 
                 DateTime datum = DateTime.ParseExact(newDatum, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 DateTime tijd = new DateTime(1800, 1, 1, int.Parse(newStartMoment.Split(":")[0]), int.Parse(newStartMoment.Split(":")[1]), 0);
-                Schedule schedule = db.Schedule.Find(datum, tijd);
+                DateTime eindmoment = tijd.AddHours(_duratie);
+                Schedule schedule = db.Schedule.Find(datum, tijd,eindmoment);
 
                 if (schedule == null)
                 {
                     schedule = new Schedule();
                     schedule.Datum = datum;
                     schedule.Startmoment = tijd;
-                    schedule.Eindmoment = tijd.AddHours(duratie);
+                    schedule.Eindmoment = eindmoment;
 
                     db.Schedule.Add(schedule);
                     db.SaveChanges();
                 }
 
-                CourseMoment newMoment = new CourseMoment(newVakcode, datum, tijd, newGebouw, newVerdiep, newNummer, "r0664186", newLessenlijst);
+                CourseMoment newMoment = new CourseMoment(newVakcode, datum, tijd, newGebouw, newVerdiep, newNummer, "r0664186", newLessenlijst,eindmoment);
                 db.CourseMoment.Add(newMoment);
             }
             catch (Exception e) {
                 Console.WriteLine(e);
-                ViewBag.error = "coursemomentEditError" + "/" + e.Message;
+                TempData["error"] = "editError" + "/" + e.Message;
                 return RedirectToAction("Index","Planner");
             }
-            ViewBag.error = "addGood";
+            TempData["error"] = "addGood";
             db.SaveChanges();
             return RedirectToAction("Index", "Planner");
         }
 
         [HttpGet]
         [Route("planner/viewTopic")]
-        public ActionResult ViewTopic(string vakcode, DateTime datum, DateTime startMoment, string gebouw, int verdiep, string nummer)
+        public ActionResult ViewTopic(string vakcode, DateTime datum, DateTime startMoment/*,double duratie*/, string gebouw, int verdiep, string nummer)
         {
             try {
-                CourseMoment oldMoment = db.CourseMoment.Find(vakcode, datum, startMoment, gebouw, verdiep, nummer, "r0664186");
-                return View("../Planning/ViewTopi", oldMoment);
+                int Year = Convert.ToInt32(datum.ToString("dd/MM/yyyy").Split('/')[2]);
+                int Month = Convert.ToInt32(datum.ToString("dd/MM/yyyy").Split('/')[0]);
+                int Day = Convert.ToInt32(datum.ToString("dd/MM/yyyy").Split('/')[1]);
+                DateTime dt = new DateTime(Year, Month, Day, datum.Hour, datum.Minute, datum.Second);
+
+                DateTime newStartMoment = new DateTime(1800, 1, 1, startMoment.Hour, startMoment.Minute, startMoment.Second);
+                nummer = nummer += " ";
+                //double _duratie = Convert.ToDouble(duratie);
+                //DateTime eindmoment = newStartMoment.AddHours(_duratie);
+                //Schedule schedule = db.Schedule.Find(dt, newStartMoment,eindmoment);
+                CourseMoment moment = db.CourseMoment.Find(vakcode, dt, newStartMoment, gebouw, verdiep, nummer, "r0664186"/*,duratie*/);
+                Schedule schedule = db.Schedule.Find(dt, newStartMoment); //delete deze code wanneer duratie gefxt is
+                Course course = db.Course.Find(vakcode);
+                Planner planner = new Planner(moment.Datum, schedule.Startmoment, moment.Gebouw, moment.Verdiep, moment.Nummer, course.Vakcode, course.Titel, schedule.Eindmoment, moment.LessenLijst);
+                return View("../Planning/ViewTopi", planner);
             }
             catch (Exception e) {
                 Console.WriteLine(e);
-                ViewBag.error = "coursemomentViewTopicError" + "/" + "Databank fout.";
+                TempData["error"] = "topicError" + "/" + "Databank fout.";
                 return RedirectToAction("Index", "Planner");
             }
         }
@@ -236,16 +266,38 @@ namespace Gip.Controllers
         {
             try
             {
-                var qry = from cm in db.CourseMoment
+                var _qry = from cm in db.CourseMoment
+                          join c in db.Course on cm.Vakcode equals c.Vakcode
+                          join s in db.Schedule
+                               on new { cm.Datum, cm.Startmoment }
+                               equals new { s.Datum, s.Startmoment }
                           where cm.Vakcode == vakcode
-                          select cm;
+                          select new
+                          {
+                              datum = cm.Datum,
+                              startmoment = cm.Startmoment,
+                              gebouw = cm.Gebouw,
+                              verdiep = cm.Verdiep,
+                              nummer = cm.Nummer,
+                              vakcode = c.Vakcode,
+                              titel = c.Titel,
+                              eindmoment = s.Eindmoment
+                          };
+
+                List<Planner> planners = new List<Planner>();
+                foreach (var qry in _qry)
+                {
+                    Planner planner = new Planner(qry.datum, qry.startmoment, qry.gebouw, qry.verdiep, qry.nummer, qry.vakcode, qry.titel, qry.eindmoment);
+                    planners.Add(planner);
+                }
+
                 ViewBag.error = "coursemomentsGood";
-                return View("../Planning/courseMomentsOffTopic", qry);
+                return View("../Planning/courseMomentsOffTopic", planners);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                ViewBag.error = "coursemomentViewCourseMomentsError" + "/" + "Databank fout.";
+                TempData["error"] = "topicError" + "/" + "Databank fout.";
                 return RedirectToAction("Index", "Planner");
             }
         }

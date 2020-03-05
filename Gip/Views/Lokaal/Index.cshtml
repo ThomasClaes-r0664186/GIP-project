@@ -4,6 +4,12 @@
             ViewData["Title"] = "Index";
         }
         <h1>Overzicht van de lokalen</h1>
+
+        @if (ViewBag.error == null)
+        {
+            ViewBag.error = " ";
+        }
+
         @if (ViewBag.error.Contains("addError"))
 
         {
@@ -13,7 +19,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-         }
+        }
 
 
         @if (ViewBag.error.Contains("editError"))
@@ -37,12 +43,12 @@
         }
         @if (ViewBag.error.Contains("deleteGood"))
         {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <strong>@ViewBag.error.Split("/")[0]</strong>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>@ViewBag.error.Split("/")[0]</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
         }
         @if (ViewBag.error.Contains("addGood"))
         {
@@ -209,7 +215,7 @@
                                                 <label for="nummer" class="col-form-label">Nummer:</label>
                                                 <input required="required" type="text" class="form-control" id="nummer" name="nummer" value="@lokaal.Nummer">
                                             </div>
-                                                <div class="form-group">
+                                            <div class="form-group">
                                                 <label for="type" class="col-form-label">Type:</label>
                                                 <select id="type" class="form-control" name="type">
                                                     <option value="Aula">Aula</option>
@@ -251,19 +257,19 @@
             }
         </table>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-          <script type="text/javascript">
-            function nulErbij(){
+        <script type="text/javascript">
+            function nulErbij() {
                 var val = document.getElementById('nummer').value;
                 var numbers = Number(val.replace(/[a-zA-Z]/g, ''));
                 var letter = val.replace(/[0-9]/g, '');
-                if(val!==""){
-                  var letter = val.replace(/[0-9]/g, '');
-                  var numbers = Number(val.replace(/[a-zA-Z]/g, ''));
-                  if(numbers.toString().length===1&&val!==0){
-                    document.getElementById('nummer').value="0"+numbers+letter ;
-                  }
+                if (val !== "") {
+                    var letter = val.replace(/[0-9]/g, '');
+                    var numbers = Number(val.replace(/[a-zA-Z]/g, ''));
+                    if (numbers.toString().length === 1 && val !== 0) {
+                        document.getElementById('nummer').value = "0" + numbers + letter;
+                    }
                 }
             }
-          </script>
+        </script>
         <script src="~/js/site.js" |></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>

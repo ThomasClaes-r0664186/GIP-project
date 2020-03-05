@@ -18,9 +18,7 @@ namespace Gip.Models
             this.Titel = titel;
             this.Studiepunten = studiepunten;
         }
-        //public string Vakcode { get; set; }
-        //public string Titel { get; set; }
-        //public int Studiepunten { get; set; }
+
         public virtual ICollection<CourseMoment> CourseMoment { get; set; }
         public virtual ICollection<CourseUser> CourseUser { get; set; }
 
@@ -28,7 +26,7 @@ namespace Gip.Models
         public string Vakcode
         {
             get { return vakcode; }
-            set 
+            set
             {
                 if (value.Trim() == "")
                 {
@@ -53,7 +51,7 @@ namespace Gip.Models
         public string Titel
         {
             get { return titel; }
-            set 
+            set
             {
                 if (value.Trim() == "")
                 {
@@ -80,9 +78,9 @@ namespace Gip.Models
         public int Studiepunten
         {
             get { return studiepunten; }
-            set 
+            set
             {
-                if (value <=0)
+                if (value <= 0)
                 {
                     throw new DatabaseException("Het aantal studiepunten mag niet negatief zijn.");
 
@@ -105,8 +103,5 @@ namespace Gip.Models
                 }
             }
         }
-
-
-       
     }
 }

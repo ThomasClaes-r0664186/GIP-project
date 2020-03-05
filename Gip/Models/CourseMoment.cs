@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Gip.Models.Exceptions;
 using System.Text.RegularExpressions;
+
 namespace Gip.Models
 {
     public partial class CourseMoment
@@ -10,7 +11,7 @@ namespace Gip.Models
         {
 
         }
-        public CourseMoment(string vakcode, DateTime datum, DateTime startmoment, string gebouw, int verdiep, string nummer, string userid, string lessenLijst)
+        public CourseMoment(string vakcode, DateTime datum, DateTime startmoment, string gebouw, int verdiep, string nummer, string userid, string lessenLijst, DateTime eindmoment)
         {
             this.Vakcode = vakcode;
             this.Datum = datum;
@@ -20,9 +21,25 @@ namespace Gip.Models
             this.Nummer = nummer;
             this.Userid = userid;
             this.LessenLijst = lessenLijst;
+            this.Eindmoment = eindmoment;
         }
 
+        private string vakcode;
+        private DateTime datum;
+        private string gebouw;
+        private int verdiep;
+        private string nummer;
         private string userid;
+        private DateTime startmoment;
+        public DateTime Eindmoment { get; set; }
+        private string lessenLijst;
+
+        public virtual Room Room { get; set; }
+        public virtual Schedule Schedule { get; set; }
+        public virtual User User { get; set; }
+        public virtual Course VakcodeNavigation { get; set; }
+
+
         public string Userid
         {
             get { return userid; }
@@ -50,7 +67,6 @@ namespace Gip.Models
             }
         }
 
-        private string vakcode;
         public string Vakcode
         {
             get { return vakcode; }
@@ -75,7 +91,6 @@ namespace Gip.Models
             }
         }
 
-        private int verdiep;
         public int Verdiep
         {
             get { return verdiep; }
@@ -100,7 +115,6 @@ namespace Gip.Models
             }
         }
 
-        private string nummer;
         public string Nummer
         {
             get { return nummer; }
@@ -125,7 +139,6 @@ namespace Gip.Models
             }
         }
 
-        private string gebouw;
         public string Gebouw
         {
             get { return gebouw; }
@@ -152,8 +165,6 @@ namespace Gip.Models
             }
         }
 
-        private string lessenLijst;
-
         public string LessenLijst
         {
             get { return lessenLijst; }
@@ -178,15 +189,13 @@ namespace Gip.Models
             }
         }
 
-        private DateTime datum;
-
         public DateTime Datum
         {
             get { return datum; }
-            set 
+            set
             {
-              
-                if (value.Year > DateTime.Now.Year +1)
+
+                if (value.Year > DateTime.Now.Year + 1)
                 {
                     throw new DatabaseException("De gekozen datum is te ver in de toekomst.");
                 }
@@ -204,12 +213,10 @@ namespace Gip.Models
             }
         }
 
-        private DateTime startmoment;
-
         public DateTime Startmoment
         {
             get { return startmoment; }
-            set 
+            set
             {
                 if (value.Hour < 6 || value.Hour > 22)
                 {
@@ -219,13 +226,8 @@ namespace Gip.Models
                 {
                     startmoment = value;
                 }
-                
+
             }
         }
-
-        public virtual Room Room { get; set; }
-        public virtual Schedule Schedule { get; set; }
-        public virtual User User { get; set; }
-        public virtual Course VakcodeNavigation { get; set; }
     }
 }

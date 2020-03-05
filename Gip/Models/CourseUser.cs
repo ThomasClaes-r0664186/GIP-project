@@ -2,12 +2,17 @@
 using System.Collections.Generic;
 using Gip.Models.Exceptions;
 using System.Text.RegularExpressions;
+
 namespace Gip.Models
 {
     public partial class CourseUser
     {
-        //public string Vakcode { get; set; }
+        private string vakcode;
         private string userid;
+
+        public virtual User User { get; set; }
+        public virtual Course VakcodeNavigation { get; set; }
+
         public string Userid
         {
             get { return userid; }
@@ -35,7 +40,6 @@ namespace Gip.Models
             }
         }
 
-        private string vakcode;
         public string Vakcode
         {
             get { return vakcode; }
@@ -59,14 +63,5 @@ namespace Gip.Models
                 }
             }
         }
-
-        public CourseUser(string userid, string vakcode)
-        {
-            this.Userid = userid;
-            this.Vakcode = vakcode; 
-        }
-
-        public virtual User User { get; set; }
-        public virtual Course VakcodeNavigation { get; set; }
     }
 }

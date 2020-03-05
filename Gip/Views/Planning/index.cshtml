@@ -27,6 +27,79 @@
 
         <h1>Planning van week @ViewBag.maandag tot @ViewBag.vrijdag</h1>
 
+        @if (ViewBag.error == null)
+        {
+            ViewBag.error = " ";
+        }
+
+        @if (ViewBag.error.Contains("addError"))
+        {
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>@ViewBag.error.Split("/")[1]</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
+
+        @if (ViewBag.error.Contains("editError"))
+        {
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>@ViewBag.error.Split("/")[1]</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
+
+        @if (ViewBag.error.Contains("deleteError"))
+        {
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>@ViewBag.error.Split("/")[1]</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
+
+        @if (ViewBag.error.Contains("topicError"))
+        {
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>@ViewBag.error.Split("/")[1]</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
+
+        @if (ViewBag.error.Contains("deleteGood"))
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>@ViewBag.error.Split("/")[0]</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
+        @if (ViewBag.error.Contains("addGood"))
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>@ViewBag.error.Split("/")[0]</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
+        @if (ViewBag.error.Contains("editGood"))
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>@ViewBag.error.Split("/")[0]</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
+
         @if ((ViewBag.prevWeek + 1) > 0)
         {
             <a role="button" class="btn btn-default btn-lg" asp-area="" asp-controller="Planner" asp-action="Index" asp-route-week="@ViewBag.prevWeek">
@@ -55,12 +128,12 @@
                 @foreach (var planner in Model)
                 {
                     <tr>
-                        <td id="datumClick" onclick="window.location = 'planner/viewTopic';" class="veranderDatum">@planner.Datum.ToString("dd/MM/yyyy")</td>
+                        <td id="datumClick" onclick="window.location = 'planner/viewTopic?vakcode=@planner.Vakcode&datum=@planner.Datum&startMoment=@planner.Startmoment&gebouw=@planner.Gebouw&verdiep=@planner.Verdiep&nummer=@planner.Nummer';" class="veranderDatum">@planner.Datum.ToString("dd/MM/yyyy")</td>
                         <td>@planner.Startmoment.ToString("HH:mm") / @planner.Eindmoment.ToString("HH:mm")</td>
                         <td id="vakClick" onclick="window.location = 'planner/viewCourseMoments?vakcode=@planner.Vakcode';">@planner.Titel</td>
                         <td>@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer</td>
                         <td>
-                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deletePlanning-@planner.Vakcode.Trim()@planner.Datum.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Startmoment.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer.Trim()">Delete</button>
+                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deletePlanning-@planner.Vakcode@planner.Datum.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Startmoment.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer.Trim()">Delete</button>
                             <div class="modal fade" id="deletePlanning-@planner.Vakcode.Trim()@planner.Datum.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Startmoment.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer.Trim()" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
@@ -103,7 +176,7 @@
                                             </button>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="/planning/edit" method="post">
+                                            <form action="/planner/edit" method="post">
                                                 <div>
                                                     <input type="text" name="oldVakcode" style="display: none" value="@planner.Vakcode">
                                                     <input type="text" name="oldDatum" style="display: none" value="@planner.Datum">
@@ -203,11 +276,7 @@
             </tbody>
         </table>
 
-        <style>
-        #datumClick:hover{
-            cursor: pointer;
-        }
-        #vakClick:hover{
-            cursor: pointer;
-        }
-        </style>
+        <p>Als u op de <b>datum klikt</b>, krijgt u het lesoverzicht te zien.</p>
+        <p>Als u op de <b>vakcode klikt</b>, krijgt u alle lesmomenten van dit vak te zien.</p>
+
+        <!--Add on hover cursor = pointer.. at Joni-->

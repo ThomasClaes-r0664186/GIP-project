@@ -1,19 +1,25 @@
-﻿
+﻿@model IEnumerable<Gip.Models.Planner>
 @{
     ViewData["Title"] = "courseMomentsOffTopic";
 }
 
 <h1>Overzicht van de vakmomenten</h1>
-<!--Location meegeven in de window.location voor terug te gaan naar de planning page-->
-<button type="button" class="btn btn-sm btn-primary" onclick="window.location = '';">Klik hier voor terug te gaan naar de planning</button>
+<button type="button" class="btn btn-sm btn-info" onclick="window.location = '../planner';">Klik hier voor terug te gaan naar de planning</button>
 <table class="table table-bordered table-hover table-striped">
     <tr>
         <th>Datum</th>
+        <th>Start/einde</th>
         <th>Vak</th>
+        <th>Lokaal</th>
     </tr>
-    <tr>
-        <td>        </td>
-        <td>        </td>
-    </tr>
+    @foreach (var planner in Model)
+    {
+        <tr>
+            <td>@planner.Datum.ToString("dd/MM/yyyy")</td>
+            <td>@planner.Startmoment.ToString("HH:mm") / @planner.Eindmoment.ToString("HH:mm")</td>
+            <td>@planner.Titel</td>
+            <td>@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer</td>
+        </tr>
+    }
 </table>
 
