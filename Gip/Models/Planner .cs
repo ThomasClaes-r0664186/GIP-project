@@ -40,7 +40,6 @@ namespace Gip.Models
             LessenLijst = lessenLijst;
         }
 
-
         public Planner(string gebouw, int verdiep, string nummer, int capaciteit) {
             Datum = new DateTime();
             Startmoment = new DateTime();
