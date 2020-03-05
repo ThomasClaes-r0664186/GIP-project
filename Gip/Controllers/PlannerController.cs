@@ -22,8 +22,8 @@ namespace Gip.Controllers
                 var _qry = from cm in db.CourseMoment
                            join c in db.Course on cm.Vakcode equals c.Vakcode
                            join s in db.Schedule
-                                on new { cm.Datum, cm.Startmoment }
-                                equals new { s.Datum, s.Startmoment }
+                                on new { cm.Datum, cm.Startmoment, cm.Eindmoment}
+                                equals new { s.Datum, s.Startmoment, s.Eindmoment}
                            where (int)((cm.Datum.DayOfYear / 7.0) + 0.2) == weekToUse
                            select new
                            {
@@ -97,6 +97,7 @@ namespace Gip.Controllers
                 moment.Vakcode = vakcode;
                 moment.Datum = datum;
                 moment.Startmoment = schedule.Startmoment;
+                moment.Eindmoment = schedule.Eindmoment;
                 moment.Gebouw = gebouw;
                 moment.Verdiep = verdieping;
                 moment.Nummer = nummer;
@@ -151,10 +152,9 @@ namespace Gip.Controllers
 
         [HttpPost]
         [Route("planner/delete")]
-        public ActionResult Delete(string vakcode, DateTime datum, DateTime startMoment, string gebouw, int verdiep, string nummer/*,double duratie*/) {
+        public ActionResult Delete(string vakcode, DateTime datum, DateTime startMoment, string gebouw, int verdiep, string nummer, DateTime eindMoment) {
             DateTime newStartMoment = new DateTime(1800, 1, 1, startMoment.Hour, startMoment.Minute, startMoment.Second);
-            //DateTime eindmoment = newStartMoment.AddHours(Convert.ToDouble(duratie););
-            CourseMoment moment = db.CourseMoment.Find(vakcode, datum, newStartMoment, gebouw, verdiep, nummer, "r0664186"/*,eindmoment*/);
+            CourseMoment moment = db.CourseMoment.Find(vakcode, datum,gebouw, verdiep, nummer, "r0664186", newStartMoment, eindMoment);
             if (moment == null) {
                 TempData["error"] = "deleteError" + "/" + "Er is geen overeenkomend moment gevonden.";
                 return RedirectToAction("Index", "Planner");
