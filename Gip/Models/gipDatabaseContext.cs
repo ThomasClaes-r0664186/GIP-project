@@ -17,7 +17,7 @@ namespace Gip.Models
 
         public virtual DbSet<Course> Course { get; set; }
         public virtual DbSet<CourseUser> CourseUser { get; set; }
-        public virtual DbSet<Coursemoment> Coursemoment { get; set; }
+        public virtual DbSet<CourseMoment> CourseMoment { get; set; }
         public virtual DbSet<Room> Room { get; set; }
         public virtual DbSet<Schedule> Schedule { get; set; }
         public virtual DbSet<User> User { get; set; }
@@ -72,7 +72,7 @@ namespace Gip.Models
                     .HasConstraintName("FK_CourseUser_Course");
             });
 
-            modelBuilder.Entity<Coursemoment>(entity =>
+            modelBuilder.Entity<CourseMoment>(entity =>
             {
                 entity.HasKey(e => new { e.Vakcode, e.Datum, e.Gebouw, e.Verdiep, e.Nummer, e.Userid, e.Startmoment, e.Eindmoment });
 
@@ -99,30 +99,30 @@ namespace Gip.Models
 
                 entity.Property(e => e.Eindmoment).HasColumnType("datetime");
 
-                entity.Property(e => e.Lessenlijst)
+                entity.Property(e => e.LessenLijst)
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.Coursemoment)
+                    .WithMany(p => p.CourseMoment)
                     .HasForeignKey(d => d.Userid)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Coursemoment_User");
 
                 entity.HasOne(d => d.VakcodeNavigation)
-                    .WithMany(p => p.Coursemoment)
+                    .WithMany(p => p.CourseMoment)
                     .HasForeignKey(d => d.Vakcode)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Coursemoment_Course");
 
                 entity.HasOne(d => d.Schedule)
-                    .WithMany(p => p.Coursemoment)
+                    .WithMany(p => p.CourseMoment)
                     .HasForeignKey(d => new { d.Datum, d.Startmoment, d.Eindmoment })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Coursemoment_Schedule");
 
                 entity.HasOne(d => d.Room)
-                    .WithMany(p => p.Coursemoment)
+                    .WithMany(p => p.CourseMoment)
                     .HasForeignKey(d => new { d.Gebouw, d.Verdiep, d.Nummer })
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Coursemoment_Room");
