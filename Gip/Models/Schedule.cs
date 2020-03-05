@@ -38,7 +38,7 @@ namespace Gip.Models
                 {
                     throw new DatabaseException("De school is gesloten in het weekend.");
                 }
-                else if (value < DateTime.Now)
+                else if (value < DateTime.Now.AddDays(-1))
                 {
                     throw new DatabaseException("Je kan het moment niet vroeger dan vandaag plannen.");
                 }
