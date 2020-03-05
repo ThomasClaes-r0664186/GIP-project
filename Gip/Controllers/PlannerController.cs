@@ -97,6 +97,7 @@ namespace Gip.Controllers
                 moment.Vakcode = vakcode;
                 moment.Datum = datum;
                 moment.Startmoment = schedule.Startmoment;
+                moment.Eindmoment = schedule.Eindmoment;
                 moment.Gebouw = gebouw;
                 moment.Verdiep = verdieping;
                 moment.Nummer = nummer;
@@ -151,10 +152,9 @@ namespace Gip.Controllers
 
         [HttpPost]
         [Route("planner/delete")]
-        public ActionResult Delete(string vakcode, DateTime datum, DateTime startMoment, string gebouw, int verdiep, string nummer/*,double duratie*/) {
+        public ActionResult Delete(string vakcode, DateTime datum, DateTime startMoment, string gebouw, int verdiep, string nummer, DateTime eindMoment) {
             DateTime newStartMoment = new DateTime(1800, 1, 1, startMoment.Hour, startMoment.Minute, startMoment.Second);
-            //DateTime eindmoment = newStartMoment.AddHours(Convert.ToDouble(duratie););
-            CourseMoment moment = db.CourseMoment.Find(vakcode, datum, newStartMoment, gebouw, verdiep, nummer, "r0664186"/*,eindmoment*/);
+            CourseMoment moment = db.CourseMoment.Find(vakcode, datum, newStartMoment, eindMoment,gebouw, verdiep, nummer, "r0664186");
             if (moment == null) {
                 TempData["error"] = "deleteError" + "/" + "Er is geen overeenkomend moment gevonden.";
                 return RedirectToAction("Index", "Planner");
