@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using Gip.Models.Exceptions;
+
 namespace Gip.Models
 {
     public partial class User
@@ -17,15 +16,18 @@ namespace Gip.Models
             this.Mail = mail;
             this.Userid = userid;
         }
-        //public string Userid { get; set; }
-        //public string Naam { get; set; }
-        //public string Mail { get; set; }
 
+        private string userid;
         private string naam;
+        private string mail;
+
+        public virtual ICollection<CourseUser> CourseUser { get; set; }
+        public virtual ICollection<CourseMoment> CourseMoment { get; set; }
+
         public string Naam
         {
             get { return naam; }
-            set 
+            set
             {
                 if (value == "")
                 {
@@ -48,12 +50,10 @@ namespace Gip.Models
             }
         }
 
-        private string mail;
-
         public string Mail
         {
             get { return mail; }
-            set 
+            set
             {
                 if (value.Trim() == "")
                 {
@@ -64,7 +64,7 @@ namespace Gip.Models
                     string pattern = @"^([a-zA-Z0-9_-.]+)@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.)|(([a-zA-Z0-9-]+.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(]?)$";
                     if (Regex.IsMatch(value, pattern))
                     {
-                            mail = value;
+                        mail = value;
                     }
                     else
                     {
@@ -76,11 +76,10 @@ namespace Gip.Models
             }
         }
 
-        private string userid;
         public string Userid
         {
             get { return userid; }
-            set 
+            set
             {
                 if (value == "")
                 {
@@ -101,11 +100,7 @@ namespace Gip.Models
 
                     }
                 }
-            } 
+            }
         }
-
-
-        public virtual ICollection<CourseMoment> CourseMoment { get; set; }
-        public virtual ICollection<CourseUser> CourseUser { get; set; }
     }
 }
