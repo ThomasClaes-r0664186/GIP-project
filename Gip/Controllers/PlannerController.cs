@@ -133,7 +133,7 @@ namespace Gip.Controllers
                 List < Planner > planners = new List<Planner>();
                 foreach (var qry in lokaalQry)
                 {
-                    Planner planner = new Planner(qry.Gebouw, qry.Verdiep, qry.Nummer);
+                    Planner planner = new Planner(qry.Gebouw, qry.Verdiep, qry.Nummer, qry.Capaciteit);
                     planners.Add(planner);
                 }
                 foreach (var qry in vakQry) {
