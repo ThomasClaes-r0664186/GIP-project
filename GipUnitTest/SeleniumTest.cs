@@ -1,4 +1,6 @@
 ﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using Xunit;
@@ -6,10 +8,16 @@ using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 
 namespace GipUnitTest
 {
+    [TestClass]
     public class SeleniumTest : IDisposable
     {
         public IWebDriver driver;
         string poortNummer = "5001";
+
+        public void SetUp()
+        {
+            CourseTest.Program.main();
+        }
         
         public SeleniumTest()
         {
@@ -23,7 +31,7 @@ namespace GipUnitTest
                 Console.WriteLine(e.Message);
             }
         }
-        [Fact]
+        [Test]
         public void TitleOfPageShouldBeCorrect()
         {
             driver.Navigate().GoToUrl("localhost:"+poortNummer+"/");
