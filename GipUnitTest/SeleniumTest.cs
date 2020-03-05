@@ -23,8 +23,8 @@ namespace GipUnitTest
             try
             {
                 var relativePath = @".\dist\chromedriver.exe";
-                Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),relativePath));
-                driver = new ChromeDriver();
+                var pathdriver = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),relativePath));
+                driver = new ChromeDriver(pathdriver);
             }
             catch (Exception e)
             {
@@ -51,5 +51,6 @@ namespace GipUnitTest
             driver.Navigate().GoToUrl("https://localhost:"+poortNummer+"/");
             Assert.Equals("Home Page - Gip", driver.Title);
         }
+
     }
 }

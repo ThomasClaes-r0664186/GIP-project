@@ -1,23 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Xunit;
 using Gip.Models;
+using NUnit.Framework;
 namespace GipUnitTest
 {
+    [TestFixture]
     public class CourseTest
     {
-        public CourseTest()
+      
+
+        [SetUp]
+        public void TestRegexVakCode()
         {
-            TestCourseRegex();
+            Course course = new Course("lll22z", "programmeren 3", 10);
         }
-        [Fact]
-        public void TestCourseRegex()
-        {
-            
-            Course course = new Course("mgp09b", "jaime", 10);
-            Assert.Equal("mgp09b", course.Vakcode);
-        }
-        
+
     }
 }
