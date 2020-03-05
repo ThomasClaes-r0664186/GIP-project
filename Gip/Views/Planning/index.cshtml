@@ -128,7 +128,7 @@
                 @foreach (var planner in Model)
                 {
                     <tr>
-                        <td id="datumClick" onclick="window.location = 'planner/viewTopic?vakcode=@planner.Vakcode&datum=@planner.Datum&startMoment=@planner.Startmoment&gebouw=@planner.Gebouw&verdiep=@planner.Verdiep&nummer=@planner.Nummer';" class="veranderDatum">@planner.Datum.ToString("dd/MM/yyyy")</td>
+                        <td id="datumClick" onclick="window.location = 'planner/viewTopic?vakcode=@planner.Vakcode&datum=@planner.Datum&startMoment=@planner.Startmoment&eindMoment=@planner.Eindmoment&gebouw=@planner.Gebouw&verdiep=@planner.Verdiep&nummer=@planner.Nummer';" class="veranderDatum">@planner.Datum.ToString("dd/MM/yyyy")</td>
                         <td>@planner.Startmoment.ToString("HH:mm") / @planner.Eindmoment.ToString("HH:mm")</td>
                         <td id="vakClick" onclick="window.location = 'planner/viewCourseMoments?vakcode=@planner.Vakcode';">@planner.Titel</td>
                         <td>@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer</td>
