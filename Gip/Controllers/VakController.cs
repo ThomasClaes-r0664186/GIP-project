@@ -125,6 +125,7 @@ namespace Gip.Controllers
                 if (course.Vakcode.Equals(newCourse.Vakcode)) {
                     db.Course.Find(vakcodeOld).Titel = newCourse.Titel;
                     db.Course.Find(vakcodeOld).Studiepunten = newCourse.Studiepunten;
+                    db.SaveChanges();
                 }
                 else
                 {

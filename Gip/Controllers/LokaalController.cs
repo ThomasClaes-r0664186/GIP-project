@@ -151,11 +151,12 @@ namespace Gip.Controllers
                 newRoom.Capaciteit = capaciteit;
                 newRoom.Middelen = middelen;
 
-                if (room.Gebouw.Equals(newRoom.Gebouw) && room.Verdiep.Equals(newRoom.Verdiep) && room.Nummer.Equals(newRoom.Nummer))
+                if (room.Gebouw.Trim().Equals(newRoom.Gebouw) && room.Verdiep.Equals(newRoom.Verdiep) && room.Nummer.Equals(newRoom.Nummer))
                 {
                     db.Room.Find(room.Gebouw, room.Verdiep, room.Nummer).Type = newRoom.Type;
                     db.Room.Find(room.Gebouw, room.Verdiep, room.Nummer).Capaciteit = newRoom.Capaciteit;
-                    db.Room.Find(room.Gebouw, room.Verdiep, room.Nummer).Type = newRoom.Middelen;
+                    db.Room.Find(room.Gebouw, room.Verdiep, room.Nummer).Middelen = newRoom.Middelen;
+                    db.SaveChanges();
                 }
                 else 
                 {
