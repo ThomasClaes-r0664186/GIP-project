@@ -83,7 +83,7 @@ namespace Gip.Controllers
 
             try
             {
-                Schedule schedule = db.Schedule.Find(datum, tijd,eindmoment);
+                Schedule schedule = db.Schedule.Find(datum, tijd, eindmoment);
                 if (schedule == null) {
                     schedule = new Schedule();
                     schedule.Datum = datum;
@@ -103,7 +103,16 @@ namespace Gip.Controllers
                 moment.Nummer = nummer;
                 moment.Userid = "r0664186";
                 moment.LessenLijst = lessenlijst;
-                db.CourseMoment.Add(moment);
+
+                if (db.CourseMoment.Find(moment.Vakcode, moment.Datum, moment.Gebouw, moment.Verdiep, moment.Nummer, moment.Userid = "r0664186", moment.Startmoment, moment.Eindmoment) != null)
+                {
+                    TempData["error"] = "addError" + "/" + "Dit lesmoment staat reeds in de planning.";
+                    return RedirectToAction("Index", "Planner");
+                }
+                else {
+                    db.CourseMoment.Add(moment);
+                    db.SaveChanges();
+                }
 
                 if (checkbox != null && checkbox == true)
                 {
@@ -122,7 +131,17 @@ namespace Gip.Controllers
                     moment2.Nummer = nummer2;
                     moment2.Userid = "r0664186";
                     moment2.LessenLijst = lessenlijst;
-                    db.CourseMoment.Add(moment2);
+
+                    if (db.CourseMoment.Find(moment2.Vakcode, moment2.Datum, moment2.Gebouw, moment2.Verdiep, moment2.Nummer, moment2.Userid = "r0664186", moment2.Startmoment, moment2.Eindmoment) != null)
+                    {
+                        TempData["error"] = "addError" + "/" + "Uw tweede lokaal is hetzelfde als het eerste lokaal, enkel het lesmoment in het eerste lokaal werd toegevoegd.";
+                        return RedirectToAction("Index", "Planner");
+                    }
+                    else
+                    {
+                        db.CourseMoment.Add(moment2);
+                        db.SaveChanges();
+                    }
                 }
             }
             catch (Exception e)
@@ -132,7 +151,6 @@ namespace Gip.Controllers
                 return RedirectToAction("Index", "Planner");
             }
             TempData["error"] = "addGood";
-            db.SaveChanges();
             return RedirectToAction("Index", "Planner");
         }
 
