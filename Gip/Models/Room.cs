@@ -96,10 +96,14 @@ namespace Gip.Models
 
             set
             {
-                if (value.Trim().Length <= 0 || value.Trim().Length > 1)
+                if (value.Trim().Length <= 0)
                 {
 
                     throw new DatabaseException("U heeft niets meegegeven als gebouwcharacter.");
+                }
+                if(value.Trim().Length > 1)
+                {
+                    throw new DatabaseException("U heeft meer als 1 character meegegeven voor gebouw, gelieve u te beperken to 1 letter.");
                 }
                 else
                 {

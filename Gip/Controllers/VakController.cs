@@ -52,6 +52,11 @@ namespace Gip.Controllers
             }
             catch (Exception e)
             {
+                if (e.InnerException != null && e.InnerException.Message.ToLower().Contains("primary"))
+                {
+                    TempData["error"] = "addError" + "/" + "De vakcode die u heeft ingegeven, is reeds in gebruik. Gelieve een andere vakcode te gebruiken.";
+                    return RedirectToAction("Index", "Vak");
+                }
                 Console.WriteLine(e);
                 TempData["error"] = "addError" + "/" + e.Message;
                 return RedirectToAction("Index", "Vak");
@@ -92,7 +97,7 @@ namespace Gip.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                TempData["error"] = "deleteError" + "/" + "Databank error.";
+                TempData["error"] = "deleteError" + "/" + "Dit vak is gebruikt in een lesmoment, pas dat eerst aan voordat je dit kan verwijderen.";
                 return RedirectToAction("Index", "Vak");
             }
 
@@ -104,23 +109,60 @@ namespace Gip.Controllers
         [Route("vak/edit")]
         public ActionResult Edit(string vakcodeOld, string vakcodeNew, string titel, int studiepunten)
         {
+            TempData["error"] = "";
             if (vakcodeOld == null || vakcodeOld.Trim().Equals(""))
             {
                 TempData["error"] = "editError" + "/" + "De oude vakcode is niet goed doorgegeven want deze is leeg.";
                 return RedirectToAction("Index", "Vak");
             }
             try{
-                
                 Course course = db.Course.Find(vakcodeOld);
-                Delete(vakcodeOld);
-                course.Vakcode = vakcodeNew;
-                course.Titel = titel;
-                course.Studiepunten = studiepunten;
-                db.Course.Add(course);
-                db.SaveChanges();
-            }catch (Exception e) {
+                Course newCourse = new Course();
+                newCourse.Vakcode = vakcodeNew;
+                newCourse.Titel = titel;
+                newCourse.Studiepunten = studiepunten;
+
+                if (course.Vakcode.Equals(newCourse.Vakcode)) {
+                    db.Course.Find(vakcodeOld).Titel = newCourse.Titel;
+                    db.Course.Find(vakcodeOld).Studiepunten = newCourse.Studiepunten;
+                }
+                else
+                {
+                    db.Course.Add(newCourse);
+                    db.SaveChanges();
+                    Delete(vakcodeOld);
+                }
+                if (TempData["error"].ToString().Contains("deleteError"))
+                {
+                    TempData["error"] = "editError" + "/" + "Dit vak werd gebruikt in een lesmoment. Er werd een nieuw vak aangemaakt met de nieuwe waarden, gelieve dit aan te passen in de planning.";
+                    return RedirectToAction("Index", "Vak");
+                }
+            }
+            catch (Exception e) {
+                if (e.InnerException != null && e.InnerException.Message.ToLower().Contains("primary"))
+                {
+                    TempData["error"] = "editError" + "/" + "De vakcode die u heeft ingegeven, is reeds in gebruik. Gelieve een andere vakcode te gebruiken.";
+                    return RedirectToAction("Index", "Vak");
+                }
+                Console.WriteLine(e.Message);
                 TempData["error"] = "editError" + "/" + e.Message;
                 return RedirectToAction("Index", "Vak");
+
+                /**
+                 * lesmoment mee updaten met verandering lokaal, poging 1:
+                 * 
+                 * if (e.Message.ToLower().Contains("updating")) {
+                    Course newVak = db.Course.Find(vakcodeNew);
+
+                    var query = db.CourseMoment.Where(l => l.Vakcode == vakcodeOld);
+                    foreach (var q in query) {
+                        db.CourseMoment.Find(q.Vakcode, q.Datum, q.Gebouw, q.Verdiep, q.Nummer, q.Userid, q.Startmoment, q.Eindmoment).Vakcode = newVak.Vakcode;
+
+                        PlannerController.Edit(q.Vakcode, q.Datum, q.Startmoment, q.Gebouw, q.Verdiep, q.Nummer, newVak.Vakcode, );
+                    }
+
+                    db.SaveChanges();
+                }*/
             }
             TempData["error"] = "editGood";
             return RedirectToAction("Index", "Vak");

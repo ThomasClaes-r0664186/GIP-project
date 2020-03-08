@@ -44,7 +44,7 @@
         @if (ViewBag.error.Contains("deleteGood"))
         {
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>@ViewBag.error.Split("/")[0]</strong>
+                <strong>Het lokaal is correct verwijderd.</strong>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -53,7 +53,7 @@
         @if (ViewBag.error.Contains("addGood"))
         {
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>@ViewBag.error.Split("/")[0]</strong>
+                <strong>Het lokaal is correct toegevoegd.</strong>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -62,7 +62,7 @@
         @if (ViewBag.error.Contains("editGood"))
         {
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>@ViewBag.error.Split("/")[0]</strong>
+                <strong>Het lokaal is correct gewijzigd.</strong>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

@@ -197,16 +197,14 @@ namespace Gip.Controllers
         [HttpPost]
         [Route("planner/edit")]
         public ActionResult Edit(string oldVakcode, 
-            DateTime oldDatum, DateTime oldStartMoment, 
+            DateTime oldDatum, DateTime oldStartMoment, DateTime oldEindmoment,
             string oldGebouw, int oldVerdiep, string oldNummer, 
             string newVakcode, 
             string newDatum, string newStartMoment, double newDuratie,
             string newLokaalid, string newLessenlijst) {
-            //new vakcode => dropdown met lokalen, datetime => checken of bestaat anders aanmaken.
-
             try
             {
-                CourseMoment oldMoment = db.CourseMoment.Find(oldVakcode, oldDatum, oldStartMoment, oldGebouw, oldVerdiep, oldNummer, "r0664186");
+                CourseMoment oldMoment = db.CourseMoment.Find(oldVakcode, oldDatum, oldGebouw, oldVerdiep, oldNummer, "r0664186", oldStartMoment, oldEindmoment);
                 if (oldMoment == null)
                 {
                     TempData["error"] = "deleteError" + "/" + "Er is geen overeenkomend moment gevonden in de databank.";
@@ -247,7 +245,7 @@ namespace Gip.Controllers
                 TempData["error"] = "editError" + "/" + e.Message;
                 return RedirectToAction("Index","Planner");
             }
-            TempData["error"] = "addGood";
+            TempData["error"] = "editGood";
             db.SaveChanges();
             return RedirectToAction("Index", "Planner");
         }
