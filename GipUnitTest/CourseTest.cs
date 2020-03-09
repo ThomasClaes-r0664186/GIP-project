@@ -93,8 +93,8 @@ namespace GipUnitTest
             Assert.AreEqual("Het aantal studiepunten mag niet hoger zijn dan 60.", ex.Message);
         }
 
-
-
+       
+        
     }   
 
 

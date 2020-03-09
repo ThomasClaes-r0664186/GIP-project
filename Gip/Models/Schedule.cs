@@ -56,7 +56,7 @@ namespace Gip.Models
             {
                 if (value.Hour < 6 || value.Hour > 22)
                 {
-                    throw new DatabaseException("De school is enkel open tussen 6:00 en 22:00");
+                    throw new DatabaseException("Uw eindmoment is te laat, de school is dan reeds gesloten.");
                 }
                 else
                 {
