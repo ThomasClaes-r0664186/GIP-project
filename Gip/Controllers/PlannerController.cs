@@ -90,7 +90,7 @@ namespace Gip.Controllers
         }
         [HttpPost]
         [Route("planner/add")]
-        public ActionResult Add(string dat, string uur, string lokaalId, double duratie, string vakcode, string lessenlijst,bool? checkbox, string lokaal2Id)
+        public ActionResult Add(string dat, string uur, string lokaalId, double duratie, string vakcode, string? lessenlijst,bool? checkbox, string lokaal2Id)
         {
             DateTime datum = DateTime.ParseExact(dat, "yyyy-MM-dd", CultureInfo.InvariantCulture);
             DateTime tijd = new DateTime(1800, 1, 1, int.Parse(uur.Split(":")[0]), int.Parse(uur.Split(":")[1]), 0);
