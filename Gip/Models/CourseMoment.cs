@@ -78,6 +78,7 @@ namespace Gip.Models
                 }
                 else
                 {
+                                         
                     string pattern = @"^[a-zA-Z]{0,3}\d\d[a-zA-Z]$";
                     if (Regex.IsMatch(value, pattern))
                     {
