@@ -71,10 +71,12 @@ namespace Gip.Models
             get { return eindmoment; }
             set
             {
-                if (value.Hour > 22)
+                if (value.Hour == 22 && value.Minute > 0) {
+                    throw new DatabaseException("Uw eindmoment is te laat, de school is dan reeds gesloten.");
+                }
+                else if (value.Hour > 22)
                 {
                     throw new DatabaseException("Uw eindmoment is te laat, de school is dan reeds gesloten.");
-
                 }
                 else
                 {

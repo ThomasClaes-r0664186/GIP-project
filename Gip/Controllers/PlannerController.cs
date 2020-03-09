@@ -25,6 +25,7 @@ namespace Gip.Controllers
                                 on new { cm.Datum, cm.Startmoment, cm.Eindmoment}
                                 equals new { s.Datum, s.Startmoment, s.Eindmoment}
                            where (int)((cm.Datum.DayOfYear / 7.0) + 0.2) == weekToUse
+                           orderby cm.Datum, cm.Startmoment, cm.Eindmoment, cm.Gebouw, cm.Verdiep, cm.Nummer
                            select new
                            {
                                datum = cm.Datum,
@@ -94,6 +95,12 @@ namespace Gip.Controllers
             DateTime datum = DateTime.ParseExact(dat, "yyyy-MM-dd", CultureInfo.InvariantCulture);
             DateTime tijd = new DateTime(1800, 1, 1, int.Parse(uur.Split(":")[0]), int.Parse(uur.Split(":")[1]), 0);
             double _duratie = Convert.ToDouble(duratie);
+
+            if (_duratie <=0) {
+                TempData["error"] = "addError" + "/" + "De duratie mag niet negatief zijn, noch 0.";
+                return RedirectToAction("Index", "Planner");
+            }
+
             DateTime eindmoment = tijd.AddHours(_duratie);
 
             lokaalId = lokaalId.Trim() + " ";
