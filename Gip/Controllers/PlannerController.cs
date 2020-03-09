@@ -36,16 +36,36 @@ namespace Gip.Controllers
                                titel = c.Titel,
                                eindmoment = s.Eindmoment
                            };
+                var lokaalQry = from lok in db.Room
+                                orderby lok.Gebouw, lok.Verdiep, lok.Nummer
+                                select lok;
+                var vakQry = from vak in db.Course
+                             orderby vak.Vakcode
+                             select vak;
 
                 ViewBag.maandag = FirstDayOfWeek(weekToUse).ToString("dd-MM-yyyy");
                 ViewBag.vrijdag = FirstDayOfWeek(weekToUse).AddDays(4).ToString("dd-MM-yyyy");
 
                 List<Planner> planners = new List<Planner>();
+
                 foreach (var qry in _qry)
                 {
                     Planner planner = new Planner(qry.datum, qry.startmoment, qry.gebouw, qry.verdiep, qry.nummer, qry.vakcode, qry.titel, qry.eindmoment);
                     planners.Add(planner);
                 }
+
+                foreach (var qry in lokaalQry)
+                {
+                    Planner planner = new Planner(qry.Gebouw, qry.Verdiep, qry.Nummer, qry.Capaciteit);
+                    planners.Add(planner);
+                }
+
+                foreach (var qry in vakQry)
+                {
+                    Planner planner = new Planner(qry.Vakcode, qry.Titel);
+                    planners.Add(planner);
+                }
+
                 ViewBag.nextWeek = week += 1;
                 ViewBag.prevWeek = week -= 2;
 
