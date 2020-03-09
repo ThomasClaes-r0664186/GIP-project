@@ -127,14 +127,16 @@
             <tbody>
                 @foreach (var planner in Model)
                 {
+                    @if (planner.Vakcode != null && planner.Gebouw != null)
+                    {
                     <tr>
                         <td id="datumClick" onclick="window.location = 'planner/viewTopic?vakcode=@planner.Vakcode&datum=@planner.Datum&startMoment=@planner.Startmoment&eindMoment=@planner.Eindmoment&gebouw=@planner.Gebouw&verdiep=@planner.Verdiep&nummer=@planner.Nummer';" class="veranderDatum">@planner.Datum.ToString("dd/MM/yyyy")</td>
                         <td>@planner.Startmoment.ToString("HH:mm") / @planner.Eindmoment.ToString("HH:mm")</td>
                         <td id="vakClick" onclick="window.location = 'planner/viewCourseMoments?vakcode=@planner.Vakcode';">@planner.Titel</td>
                         <td>@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer</td>
                         <td>
-                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deletePlanning-@planner.Vakcode@planner.Datum.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Startmoment.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer.Trim()">Delete</button>
-                            <div class="modal fade" id="deletePlanning-@planner.Vakcode.Trim()@planner.Datum.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Startmoment.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer.Trim()" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deletePlanning-@planner.Vakcode@planner.Datum.ToString().Replace(" ", "").Replace("/", "").Replace(":", "")@planner.Startmoment.ToString().Replace(" ", "").Replace("/", "").Replace(":", "")@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer.Trim()">Delete</button>
+                            <div class="modal fade" id="deletePlanning-@planner.Vakcode.Trim()@planner.Datum.ToString().Replace(" ", "").Replace("/", "").Replace(":", "")@planner.Startmoment.ToString().Replace(" ", "").Replace("/", "").Replace(":", "")@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer.Trim()" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -166,8 +168,8 @@
 
                         </td>
                         <td>
-                            <button type="button" class="btn btn-sm btn-dark" data-toggle="modal" data-target="#editPlanning-@planner.Vakcode.Trim()@planner.Datum.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Startmoment.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer.Trim()">Edit</button>
-                            <div class="modal fade" id="editPlanning-@planner.Vakcode.Trim()@planner.Datum.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Startmoment.ToString().Replace(" ","").Replace("/","").Replace(":","")@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer.Trim()" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <button type="button" class="btn btn-sm btn-dark" data-toggle="modal" data-target="#editPlanning-@planner.Vakcode.Trim()@planner.Datum.ToString().Replace(" ", "").Replace("/", "").Replace(":", "")@planner.Startmoment.ToString().Replace(" ", "").Replace("/", "").Replace(":", "")@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer.Trim()">Edit</button>
+                            <div class="modal fade" id="editPlanning-@planner.Vakcode.Trim()@planner.Datum.ToString().Replace(" ", "").Replace("/", "").Replace(":", "")@planner.Startmoment.ToString().Replace(" ", "").Replace("/", "").Replace(":", "")@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer.Trim()" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -201,9 +203,9 @@
                                                     <select class="form-control" name="newLokaalid" required="required">
                                                         @foreach (var plannerLokaal in Model)
                                                         {
-                                                            if (@planner.Gebouw != null)
+                                                            if (@plannerLokaal.Gebouw != null && @plannerLokaal.Vakcode == null)
                                                             {
-                                                                <option value="@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer">@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer</option>
+                                                        <option value="@plannerLokaal.Gebouw.Trim()@plannerLokaal.Verdiep@plannerLokaal.Nummer">@plannerLokaal.Gebouw.Trim()@plannerLokaal.Verdiep@plannerLokaal.Nummer</option>
                                                             }
                                                         }
                                                     </select>
@@ -214,9 +216,9 @@
                                                     <select class="form-control" name="newVakcode" required="required">
                                                         @foreach (var plannerVak in Model)
                                                         {
-                                                            if (@planner.Vakcode != null)
+                                                            if (@plannerVak.Vakcode != null && @plannerVak.Gebouw == null)
                                                             {
-                                                                <option value="@planner.Vakcode">@planner.Vakcode @planner.Titel</option>
+                                                        <option value="@plannerVak.Vakcode">@plannerVak.Vakcode @plannerVak.Titel</option>
                                                             }
                                                         }
                                                     </select>
@@ -273,7 +275,8 @@
                             </div>
                         </td>
                     </tr>
-                }
+                        }
+                    }
             </tbody>
         </table>
 
