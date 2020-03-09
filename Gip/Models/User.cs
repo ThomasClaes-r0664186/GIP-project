@@ -63,7 +63,8 @@ namespace Gip.Models
                 }
                 else
                 {
-                    string pattern = @"^([a-zA-Z0-9_-.]+)@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.)|(([a-zA-Z0-9-]+.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(]?)$";
+                    //@"^([a-zA-Z0-9_-.]+)@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.)|(([a-zA-Z0-9-]+.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(]?)$"
+                    string pattern = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
                     if (Regex.IsMatch(value, pattern))
                     {
                         mail = value;
@@ -98,7 +99,7 @@ namespace Gip.Models
                     }
                     else
                     {
-                        throw new DatabaseException("Deze user id heeft verbode characters, gelieve dit niet te doen.");
+                        throw new DatabaseException("Deze user id heeft verbode characters, of is te lang! Probeer opnieuw.");
 
                     }
                 }
