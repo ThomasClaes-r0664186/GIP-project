@@ -48,7 +48,7 @@ namespace Gip.Models
                 }
                 if (aantal > 3)
                 {
-                    throw new DatabaseException("Het aantal middelen voor het lokaal is te hoog!" + Environment.NewLine + "Probeer opnieuw!");
+                    throw new DatabaseException("Het aantal middelen voor het lokaal is te hoog! Probeer opnieuw!");
                 }
                 int gevonden = 0;
                 if (!middelen1.Trim().Equals(""))
@@ -75,7 +75,7 @@ namespace Gip.Models
                     }
                     if (gevonden != aantal)
                     {
-                        throw new DatabaseException("De middelen die u heeft aangeduid zijn niet beschikbaar" + Environment.NewLine + "Probeer opnieuw!");
+                        throw new DatabaseException("De middelen die u heeft aangeduid zijn niet beschikbaar Probeer opnieuw!");
                     }
                     else
                     {
@@ -179,7 +179,7 @@ namespace Gip.Models
                 }
                 else
                 {
-                    throw new DatabaseException("Het type lokaal bestaat niet!" + Environment.NewLine + "Probeer opnieuw");
+                    throw new DatabaseException("Het type lokaal bestaat niet! Probeer opnieuw");
                 }
             }
         }
