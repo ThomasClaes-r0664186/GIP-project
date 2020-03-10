@@ -54,9 +54,13 @@ namespace Gip.Models
             get { return startmoment; }
             set
             {
-                if (value.Hour < 6 || value.Hour > 22)
+                if (value.Hour < 6)
                 {
-                    throw new DatabaseException("De school is enkel open tussen 6:00 en 22:00");
+                    throw new DatabaseException("Uw beginmoment is te vroeg, de school is nog niet open.");
+                }
+                else if (value.Hour > 22)
+                {
+                    throw new DatabaseException("Uw beginmoment is te laat, de school is dan reeds gesloten.");
                 }
                 else
                 {
@@ -71,10 +75,12 @@ namespace Gip.Models
             get { return eindmoment; }
             set
             {
-                if (value.Hour > 22)
+                if (value.Hour == 22 && value.Minute > 0) {
+                    throw new DatabaseException("Uw eindmoment is te laat, de school is dan reeds gesloten.");
+                }
+                else if (value.Hour > 22)
                 {
                     throw new DatabaseException("Uw eindmoment is te laat, de school is dan reeds gesloten.");
-
                 }
                 else
                 {

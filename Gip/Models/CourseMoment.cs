@@ -171,10 +171,7 @@ namespace Gip.Models
             get { return lessenLijst; }
             set
             {
-                if (value == "")
-                {
-                    throw new DatabaseException("De lessenlijst mag niet leeg zijn.");
-                }
+                if (value == null || value.Trim() == ""){}
                 else
                 {
                     string pattern = @"[\\\/\<\>\;]";
