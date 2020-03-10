@@ -74,6 +74,68 @@ namespace GipUnitTest
         }
 
 
-       
+        [Test]
+        [ExpectedException(typeof(DatabaseException))]
+        public void VerdiepTeHoog()
+        {
+            Exception ex = Assert.Throws<DatabaseException>(() => new Room("Wifi/projectorsetup", "a", 10, "10k", "Computerlokaal", 30));
+            Assert.AreEqual("Het verdiep mag niet negatief zijn noch boven 9.", ex.Message);
+        }
+        [Test]
+        [ExpectedException(typeof(DatabaseException))]
+        public void VerdiepTeLaag()
+        {
+            Exception ex = Assert.Throws<DatabaseException>(() => new Room("Wifi/projectorsetup", "a", -1, "10k", "Computerlokaal", 30));
+            Assert.AreEqual("Het verdiep mag niet negatief zijn noch boven 9.", ex.Message);
+        }
+
+        [Test]
+        [ExpectedException(typeof(DatabaseException))]
+        public void NummerLeeg()
+        {
+            Exception ex = Assert.Throws<DatabaseException>(() => new Room("Wifi/projectorsetup", "a", 1, "", "Computerlokaal", 30));
+            Assert.AreEqual("Het nummer mag niet langer zijn dan 3 characters of u heeft een leeg nummer meegegeven.", ex.Message);
+        }
+
+        [Test]
+        [ExpectedException(typeof(DatabaseException))]
+        public void NummerTeHoog()
+        {
+            Exception ex = Assert.Throws<DatabaseException>(() => new Room("Wifi/projectorsetup", "a", 1, "100k", "Computerlokaal", 30));
+            Assert.AreEqual("Het nummer mag niet langer zijn dan 3 characters of u heeft een leeg nummer meegegeven.", ex.Message);
+        }
+
+
+        [Test]
+        [ExpectedException(typeof(DatabaseException))]
+        public void NummerFoutieveCharacters()
+        {
+            Exception ex = Assert.Throws<DatabaseException>(() => new Room("Wifi/projectorsetup", "a", 1, "1<k", "Computerlokaal", 30));
+            Assert.AreEqual("U heeft een verboden character ingegeven, gelieve dit niet te doen.", ex.Message);
+        }
+
+        [Test]
+        [ExpectedException(typeof(DatabaseException))]
+        public void TypeFout()
+        {
+            Exception ex = Assert.Throws<DatabaseException>(() => new Room("Wifi/projectorsetup", "a", 1, "10k", "niks", 30));
+            Assert.AreEqual("Het type lokaal bestaat niet!" + Environment.NewLine + "Probeer opnieuw", ex.Message);
+        }
+
+        [Test]
+        [ExpectedException(typeof(DatabaseException))]
+        public void CapaciteitTeHoog()
+        {
+            Exception ex = Assert.Throws<DatabaseException>(() => new Room("Wifi/projectorsetup", "a", 1, "10k", "Computerlokaal", 3000));
+            Assert.AreEqual("De capaciteit mag niet hoger zijn dan 400.", ex.Message);
+        }
+
+        [Test]
+        [ExpectedException(typeof(DatabaseException))]
+        public void CapaciteitTeLaag()
+        {
+            Exception ex = Assert.Throws<DatabaseException>(() => new Room("Wifi/projectorsetup", "a", 1, "10k", "Computerlokaal", -1));
+            Assert.AreEqual("De capaciteit mag niet negatief zijn.", ex.Message);
+        }
     }
 }
