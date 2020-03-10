@@ -330,8 +330,8 @@ namespace Gip.Controllers
                 var _qry = from cm in db.CourseMoment
                           join c in db.Course on cm.Vakcode equals c.Vakcode
                           join s in db.Schedule
-                               on new { cm.Datum, cm.Startmoment }
-                               equals new { s.Datum, s.Startmoment }
+                               on new { cm.Datum, cm.Startmoment, cm.Eindmoment }
+                               equals new { s.Datum, s.Startmoment, s.Eindmoment}
                           where cm.Vakcode == vakcode
                           select new
                           {
