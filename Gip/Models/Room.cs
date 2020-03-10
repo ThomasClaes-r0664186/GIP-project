@@ -149,7 +149,7 @@ namespace Gip.Models
             get { return nummer; }
             set
             {
-                if (value.Trim().Length > 3 || value.Trim().Length < 0)
+                if (value.Trim().Length > 3 || value.Trim().Length <= 0) //aangepast
                 {
                     throw new DatabaseException("Het nummer mag niet langer zijn dan 3 characters of u heeft een leeg nummer meegegeven.");
                 }
@@ -179,7 +179,7 @@ namespace Gip.Models
                 }
                 else
                 {
-                    throw new DatabaseException("the type of room you wish to select does not exist!" + Environment.NewLine + "Please try again.");
+                    throw new DatabaseException("Het type lokaal bestaat niet!" + Environment.NewLine + "Probeer opnieuw");
                 }
             }
         }
