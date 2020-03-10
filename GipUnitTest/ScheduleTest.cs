@@ -62,7 +62,7 @@ namespace GipUnitTest
             Exception ex = Assert.Throws<DatabaseException>(() => new Schedule(datum, start, eind));
             Assert.AreEqual("Je kan het moment niet vroeger dan vandaag plannen.", ex.Message);
         }
-        /*
+        
         [Test]
         [ExpectedException(typeof(DatabaseException))]
         public void StartMomentTeVroeg()
@@ -71,10 +71,10 @@ namespace GipUnitTest
             DateTime start = new DateTime(2020, 03, 10, 05, 00, 00);
             DateTime eind = new DateTime(2020, 03, 10, 15, 00, 00);
             Exception ex = Assert.Throws<DatabaseException>(() => new Schedule(datum, start, eind));
-            Assert.AreEqual("De school is enkel open tussen 6:00 en 22:00", ex.Message);
+            Assert.AreEqual("Uw eindmoment is te laat, de school is dan reeds gesloten.", ex.Message);
             
         }
-        */
+        
         [Test]
         [ExpectedException(typeof(DatabaseException))]
         public void StartMomentTeLaat()
