@@ -20,12 +20,12 @@ namespace Gip.Models
 
         public Room(string middelen, string gebouw, int verdiep, string nummer, string type, int capaciteit)
         {
-            this.Capaciteit = capaciteit;
+            this.Middelen = middelen;
             this.Gebouw = gebouw;
             this.Verdiep = verdiep;
             this.Nummer = nummer;
-            this.Middelen = middelen;
             this.Type = type;
+            this.Capaciteit = capaciteit;
         }
         public Room()
         {
@@ -48,7 +48,7 @@ namespace Gip.Models
                 }
                 if (aantal > 3)
                 {
-                    throw new DatabaseException("The amount of resources for a single room is to high!" + Environment.NewLine + "Please try again!");
+                    throw new DatabaseException("Het aantal middelen voor het lokaal is te hoog!" + Environment.NewLine + "Probeer opnieuw!");
                 }
                 int gevonden = 0;
                 if (!middelen1.Trim().Equals(""))
@@ -75,7 +75,7 @@ namespace Gip.Models
                     }
                     if (gevonden != aantal)
                     {
-                        throw new DatabaseException("The resources you selected are not available!" + Environment.NewLine + "Please try again!");
+                        throw new DatabaseException("De middelen die u heeft aangeduid zijn niet beschikbaar" + Environment.NewLine + "Probeer opnieuw!");
                     }
                     else
                     {
@@ -199,15 +199,7 @@ namespace Gip.Models
                 }
                 else
                 {
-                    string pattern = @"^\d$";
-                    if (!Regex.IsMatch(value + "", pattern))
-                    {
-                        capaciteit = value;
-                    }
-                    else
-                    {
-                        throw new DatabaseException("U heeft een verboden character ingegeven, gelieve dit niet te doen.");
-                    }
+                    capaciteit = value;
                 }
             }
         }
