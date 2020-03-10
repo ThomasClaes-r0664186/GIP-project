@@ -54,9 +54,13 @@ namespace Gip.Models
             get { return startmoment; }
             set
             {
-                if (value.Hour < 6 || value.Hour > 22)
+                if (value.Hour < 6)
                 {
-                    throw new DatabaseException("Uw eindmoment is te laat, de school is dan reeds gesloten.");
+                    throw new DatabaseException("Uw beginmoment is te vroeg, de school is nog niet open.");
+                }
+                else if (value.Hour > 22)
+                {
+                    throw new DatabaseException("Uw beginmoment is te laat, de school is dan reeds gesloten.");
                 }
                 else
                 {
