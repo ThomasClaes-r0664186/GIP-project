@@ -297,13 +297,17 @@ namespace Gip.Controllers
 
         [HttpGet]
         [Route("planner/viewTopic")]
-        public ActionResult ViewTopic(string vakcode, DateTime datum, DateTime startMoment ,DateTime eindMoment, string gebouw, int verdiep, string nummer)
+        public ActionResult ViewTopic(string vakcode, DateTime datum, DateTime startMoment ,DateTime eindMoment, string gebouw, int verdiep, string nummer, int datumY, int datumM, int datumD)
         {
             try {
+                /*
                 int Year = Convert.ToInt32(datum.ToString("dd/MM/yyyy").Split('/')[2]);
                 int Month = Convert.ToInt32(datum.ToString("dd/MM/yyyy").Split('/')[0]);
                 int Day = Convert.ToInt32(datum.ToString("dd/MM/yyyy").Split('/')[1]);
                 DateTime dt = new DateTime(Year, Month, Day, datum.Hour, datum.Minute, datum.Second);
+                */
+
+                DateTime dt = new DateTime(datumY, datumM, datumD, datum.Hour, datum.Minute, datum.Second);
 
                 DateTime newStartMoment = new DateTime(1800, 1, 1, startMoment.Hour, startMoment.Minute, startMoment.Second);
                 

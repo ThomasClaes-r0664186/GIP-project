@@ -130,7 +130,7 @@
                     @if (planner.Vakcode != null && planner.Gebouw != null)
                     {
                     <tr>
-                        <td id="datumClick" onclick="window.location = 'planner/viewTopic?vakcode=@planner.Vakcode&datum=@planner.Datum&startMoment=@planner.Startmoment&eindMoment=@planner.Eindmoment&gebouw=@planner.Gebouw&verdiep=@planner.Verdiep&nummer=@planner.Nummer';" class="veranderDatum">@planner.Datum.ToString("dd/MM/yyyy")</td>
+                        <td id="datumClick" onclick="window.location = 'planner/viewTopic?vakcode=@planner.Vakcode&datum=@planner.Datum&startMoment=@planner.Startmoment&eindMoment=@planner.Eindmoment&gebouw=@planner.Gebouw&verdiep=@planner.Verdiep&nummer=@planner.Nummer&datumY=@planner.Datum.ToString("yyyy")&datumM=@planner.Datum.ToString("MM")&datumD=@planner.Datum.ToString("dd")';" class="veranderDatum">@planner.Datum.ToString("dd/MM/yyyy")</td>
                         <td>@planner.Startmoment.ToString("HH:mm") / @planner.Eindmoment.ToString("HH:mm")</td>
                         <td id="vakClick" onclick="window.location = 'planner/viewCourseMoments?vakcode=@planner.Vakcode';">@planner.Titel</td>
                         <td>@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer</td>
@@ -227,7 +227,7 @@
                                                 <div class="form-group">
                                                     <label>Lesduur:</label>
                                                     <select class="form-control" name="newDuratie" required="required">
-                                                        <option value="0.5">30 minuten</option>
+                                                        <option value="0,5">30 minuten</option>
                                                         @for (double i = 1.0; i <= 16.0; i += 0.5)
                                                         {
                                                             <option value="@i">@i uur</option>
