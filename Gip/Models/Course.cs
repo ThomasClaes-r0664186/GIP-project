@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Gip.Models.Exceptions;
 using System.Text.RegularExpressions;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Gip.Models
 {
@@ -23,6 +24,8 @@ namespace Gip.Models
         public virtual ICollection<CourseUser> CourseUser { get; set; }
 
         private string vakcode;
+
+        [Key]
         public string Vakcode
         {
             get { return vakcode; }

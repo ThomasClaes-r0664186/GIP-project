@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Gip.Models.Exceptions;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Gip.Models
 {
@@ -24,6 +26,7 @@ namespace Gip.Models
 
         public virtual ICollection<CourseMoment> CourseMoment { get; set; }
 
+        [Key, Column(Order = 0)]
         public DateTime Datum
         {
             get { return datum; }
@@ -49,6 +52,7 @@ namespace Gip.Models
             }
         }
 
+        [Key, Column(Order = 1)]
         public DateTime Startmoment
         {
             get { return startmoment; }
@@ -70,6 +74,7 @@ namespace Gip.Models
             }
         }
 
+        [Key, Column(Order = 2)]
         public DateTime Eindmoment
         {
             get { return eindmoment; }

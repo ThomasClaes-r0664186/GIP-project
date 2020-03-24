@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using Gip.Models.Exceptions;
 using System.Text.RegularExpressions;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Gip.Models
 {
@@ -31,15 +32,20 @@ namespace Gip.Models
         private string nummer;
         private string userid;
         private DateTime startmoment;
+        [Column(Order = 7), Key]
         public DateTime Eindmoment { get; set; }
         private string lessenLijst;
 
+
+        [ForeignKey("Gebouw, Verdiep, Nummer")]
         public virtual Room Room { get; set; }
+        [ForeignKey("Datum, Startmoment, Eindmoment")]
         public virtual Schedule Schedule { get; set; }
         public virtual User User { get; set; }
         public virtual Course VakcodeNavigation { get; set; }
 
 
+        [Column(Order = 5), Key, ForeignKey("User")]
         public string Userid
         {
             get { return userid; }
@@ -67,6 +73,7 @@ namespace Gip.Models
             }
         }
 
+        [Column(Order = 0), Key, ForeignKey("VakcodeNavigation")]
         public string Vakcode
         {
             get { return vakcode; }
@@ -92,6 +99,7 @@ namespace Gip.Models
             }
         }
 
+        [Column(Order = 3), Key]
         public int Verdiep
         {
             get { return verdiep; }
@@ -116,6 +124,7 @@ namespace Gip.Models
             }
         }
 
+        [Column(Order = 4), Key]
         public string Nummer
         {
             get { return nummer; }
@@ -140,6 +149,7 @@ namespace Gip.Models
             }
         }
 
+        [Column(Order = 2), Key]
         public string Gebouw
         {
             get { return gebouw; }
@@ -166,7 +176,7 @@ namespace Gip.Models
             }
         }
 
-        public string LessenLijst
+        public string? LessenLijst
         {
             get { return lessenLijst; }
             set
@@ -187,6 +197,7 @@ namespace Gip.Models
             }
         }
 
+        [Column(Order = 1), Key]
         public DateTime Datum
         {
             get { return datum; }
@@ -211,6 +222,7 @@ namespace Gip.Models
             }
         }
 
+        [Column(Order = 6), Key]
         public DateTime Startmoment
         {
             get { return startmoment; }

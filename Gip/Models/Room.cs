@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Gip.Models.Exceptions;
 using System.Text.RegularExpressions;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Gip.Models
 {
@@ -90,6 +89,7 @@ namespace Gip.Models
             }
         }
 
+        [Key, Column(Order = 0)]
         public string Gebouw
         {
             get { return gebouw; }
@@ -120,6 +120,7 @@ namespace Gip.Models
             }
         }
 
+        [Key, Column(Order = 1)]
         public int Verdiep
         {
             get { return verdiep; }
@@ -144,6 +145,7 @@ namespace Gip.Models
             }
         }
 
+        [Key, Column(Order = 2)]
         public string Nummer
         {
             get { return nummer; }

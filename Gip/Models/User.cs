@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using Gip.Models.Exceptions;
 
@@ -22,6 +23,7 @@ namespace Gip.Models
         private string userid;
         private string naam;
         private string mail;
+        public Rol Rol { get; set; }
 
         public virtual ICollection<CourseUser> CourseUser { get; set; }
         public virtual ICollection<CourseMoment> CourseMoment { get; set; }
@@ -79,6 +81,7 @@ namespace Gip.Models
             }
         }
 
+        [Key]
         public string Userid
         {
             get { return userid; }

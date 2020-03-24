@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using Gip.Models.Exceptions;
 using System.Text.RegularExpressions;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Gip.Models
 {
@@ -13,6 +15,7 @@ namespace Gip.Models
         public virtual User User { get; set; }
         public virtual Course VakcodeNavigation { get; set; }
 
+        [Column(Order = 0), Key, ForeignKey("User")]
         public string Userid
         {
             get { return userid; }
@@ -40,6 +43,7 @@ namespace Gip.Models
             }
         }
 
+        [Column(Order = 1), Key, ForeignKey("VakcodeNavigation")]
         public string Vakcode
         {
             get { return vakcode; }
