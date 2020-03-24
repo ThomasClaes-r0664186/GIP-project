@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Gip.Models
+namespace RegistrationFormCore.ViewModels
 {
     public class RegisterViewModel
     {
@@ -21,5 +21,6 @@ namespace Gip.Models
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Your password and confirm password do not match")]
         public string ConfirmPassword { get; set; }
+
     }
 }

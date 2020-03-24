@@ -1,9 +1,12 @@
-﻿using Gip.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+using RegistrationFormCore.ViewModels;
 
-namespace Gip.Controllers
+namespace RegistrationFormCore.Controllers
 {
     public class AccountController : Controller
     {
@@ -44,7 +47,6 @@ namespace Gip.Controllers
                 }
             }
             return View();
-
         }
     }
 }
