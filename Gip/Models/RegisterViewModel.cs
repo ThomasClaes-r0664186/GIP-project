@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RegistrationFormCore.ViewModels
+namespace Gip.Models
 {
     public class RegisterViewModel
     {
