@@ -25,7 +25,7 @@ namespace Gip.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=diskstation.desmet.net,32850;Database=gipDatabase;User Id=SA;Password=Str0ngP4ssw0rd");
+                optionsBuilder.UseSqlServer("Server=diskstation.desmet.net,32850;Database=gipDatabase;User Id=SA;Password=Str0ngP4ssw0rd;MultipleActiveResultSets=true;");
             }
         }
 

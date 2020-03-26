@@ -2,15 +2,18 @@ using Gip.Models;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gip.Controllers
 {
+    [Authorize]
     public class LokaalController : Controller
     {
         private gipDatabaseContext db = new gipDatabaseContext();
         // GET
         [HttpGet]
         [Route("lokaal")]
+        [AllowAnonymous]
         public ActionResult Index()
         {
             try

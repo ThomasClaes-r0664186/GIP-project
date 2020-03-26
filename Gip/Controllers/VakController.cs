@@ -2,9 +2,11 @@ using Gip.Models;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gip.Controllers
 {
+    [Authorize]
     public class VakController : Controller
     {
         private gipDatabaseContext db = new gipDatabaseContext();
@@ -12,6 +14,7 @@ namespace Gip.Controllers
         // GET
         [HttpGet]
         [Route("vak")]
+        [AllowAnonymous]
         public ActionResult Index()
         {
             try{

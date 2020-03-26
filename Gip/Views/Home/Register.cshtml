@@ -8,7 +8,7 @@
     <div class="col-md-6 mx-auto">
         <div class="card">
             <div class="card-header bg-danger text-white">
-                <h5 class="text-uppercase text-center">Regirtation Form</h5>
+                <h5 class="text-uppercase text-center">Registration Form</h5>
             </div>
             <div class="card-body">
                 <form asp-action="Register">
@@ -18,7 +18,6 @@
                         <input asp-for="RNum" class="form-control" />
                         <span asp-validation-for="RNum" class="text-danger"></span>
                     </div>
-                    <div asp-validation-summary="All" class="text-danger"></div>
                     <div class="form-group">
                         <label asp-for="Email"></label>
                         <input asp-for="Email" class="form-control" />

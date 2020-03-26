@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Gip.Utils;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,10 +11,13 @@ namespace Gip.Models
     public class RegisterViewModel
     {
         [Required]
+        [ValidRNum(ErrorMessage = "R nummer moet aan het juist formaat voldoen. Vb: R0000001")]
+        //[Remote(action: "RNumInUse", controller: "Account")]
         public string RNum { get; set; }
 
         [Required]
         [EmailAddress]
+        //[Remote(action:"IsEmailInUse", controller: "Account")]
         public string Email { get; set; }
 
         [Required]

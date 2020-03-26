@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Globalization;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Gip.Controllers
 {
@@ -14,6 +15,7 @@ namespace Gip.Controllers
         // GET /planner
         [HttpGet]
         [Route("planner")]
+        [AllowAnonymous]
         public ActionResult Index(int week)
         {
             int weekToUse = GetIso8601WeekOfYear(DateTime.Now)+week;
@@ -297,6 +299,7 @@ namespace Gip.Controllers
 
         [HttpGet]
         [Route("planner/viewTopic")]
+        [AllowAnonymous]
         public ActionResult ViewTopic(string vakcode, DateTime datum, DateTime startMoment ,DateTime eindMoment, string gebouw, int verdiep, string nummer, int datumY, int datumM, int datumD)
         {
             try {
@@ -327,6 +330,7 @@ namespace Gip.Controllers
 
         [HttpGet]
         [Route("planner/viewCourseMoments")]
+        [AllowAnonymous]
         public ActionResult ViewCourseMoments(string vakcode)
         {
             try
