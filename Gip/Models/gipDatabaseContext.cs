@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gip.Models
 {
-    public partial class gipDatabaseContext : DbContext
+    public partial class gipDatabaseContext : IdentityDbContext
     {
         public gipDatabaseContext()
         {
@@ -30,6 +31,8 @@ namespace Gip.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Room>().HasKey(x => new {
                 x.Gebouw,
                 x.Verdiep,

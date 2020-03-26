@@ -18,7 +18,7 @@ namespace Gip.Controllers
 
         public IActionResult Register()
         {
-            return View();
+            return View("../Home/Register");
         }
 
         [HttpPost]
@@ -28,7 +28,7 @@ namespace Gip.Controllers
             {
                 var user = new IdentityUser
                 {
-                    UserName = model.Email,
+                    UserName = model.RNum,
                     Email = model.Email
                 };
                 var result = await userManager.CreateAsync(user, model.Password);

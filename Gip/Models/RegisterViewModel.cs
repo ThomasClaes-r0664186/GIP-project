@@ -9,6 +9,9 @@ namespace Gip.Models
     public class RegisterViewModel
     {
         [Required]
+        public string RNum { get; set; }
+
+        [Required]
         [EmailAddress]
         public string Email { get; set; }
 
