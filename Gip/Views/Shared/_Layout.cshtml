@@ -75,27 +75,30 @@
                               }
                               
                          }
-                        <ul class="navbar-nav ml-auto">
-                            @if (signInManager.IsSignedIn(User))
-                            {
-                                <li class="nav-item">
-                                    <form method="post" asp-action="logout" asp-controller="Account">
-                                        <button type="submit" class="nav-link btn btn-link py-0" style="width:auto">
-                                            Logout @User.Identity.Name
-                                        </button>
-                                    </form>
-                                </li>
-                            }
-                            else
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
-                                </li>
-                            }
-                        </ul>
+                    <ul class="navbar-nav ml-auto">
+                        @if (signInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item">
+                                <form method="post" asp-action="logout" asp-controller="Account">
+                                    <button type="submit" class="nav-link btn btn-link py-0" style="width:auto">
+                                        Logout @User.Identity.Name
+                                    </button>
+                                </form>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Account" asp-action="ChangePassword">Verander wachtwoord</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
+                            </li>
+                        }
+                    </ul>
                     </ul>
                 </div>
                 <div id="clock"></div>
