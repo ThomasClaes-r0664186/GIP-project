@@ -23,7 +23,6 @@ namespace Gip.Models
         private string userid;
         private string naam;
         private string mail;
-        public Rol Rol { get; set; }
 
         public virtual ICollection<CourseUser> CourseUser { get; set; }
         public virtual ICollection<CourseMoment> CourseMoment { get; set; }

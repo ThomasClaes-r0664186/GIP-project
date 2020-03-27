@@ -181,7 +181,7 @@ namespace Gip.Models
             get { return lessenLijst; }
             set
             {
-                if (value == null || value.Trim() == ""){}
+                if (value == null || value.Trim() == "") { }
                 else
                 {
                     string pattern = @"[\\\/\<\>\;]";
