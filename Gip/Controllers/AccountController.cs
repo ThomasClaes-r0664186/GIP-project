@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Gip.Models;
 using Gip.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -9,6 +10,8 @@ namespace Gip.Controllers
 {
     public class AccountController : Controller
     {
+        private gipDatabaseContext db = new gipDatabaseContext();
+
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
 
@@ -46,6 +49,17 @@ namespace Gip.Controllers
 
                     if (result.Succeeded && email == null)
                     {
+                        try
+                        {
+                            User user2 = new User(model.SurName, model.Name, model.Email, model.RNum);
+                            db.User.Add(user2);
+                            db.SaveChanges();
+                        }
+                        catch (Exception e) 
+                        {
+                            ModelState.AddModelError("", e.Message + " " +e.InnerException.Message);
+                            return View("../Home/Register");
+                        }
                         if (signInManager.IsSignedIn(User) && User.IsInRole("Admin")) 
                         {
                             return RedirectToAction("ListUsers", "Administration");

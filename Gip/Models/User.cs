@@ -13,15 +13,17 @@ namespace Gip.Models
             CourseMoment = new HashSet<CourseMoment>();
             CourseUser = new HashSet<CourseUser>();
         }
-        public User(string naam, string mail, string userid)
+        public User(string naam, string voorNaam, string mail, string userid)
         {
             this.Naam = naam;
+            this.VoorNaam = voorNaam;
             this.Mail = mail;
             this.Userid = userid;
         }
 
         private string userid;
         private string naam;
+        private string voorNaam;
         private string mail;
 
         public virtual ICollection<CourseUser> CourseUser { get; set; }
@@ -43,6 +45,32 @@ namespace Gip.Models
                     if (Regex.IsMatch(value, pattern))
                     {
                         naam = value;
+                    }
+                    else
+                    {
+                        throw new DatabaseException("U heeft verboden characters ingegeven voor de naam, gelieve dit niet te doen.");
+
+                    }
+                }
+            }
+        }
+
+        public string VoorNaam
+        {
+            get { return voorNaam; }
+            set
+            {
+                if (value == "")
+                {
+                    throw new DatabaseException("The chosen name is empty!" + Environment.NewLine + "Please try again.");
+
+                }
+                else
+                {
+                    string pattern = @"^[a-zA-Z&àáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ]+$";
+                    if (Regex.IsMatch(value, pattern))
+                    {
+                        voorNaam = value;
                     }
                     else
                     {
