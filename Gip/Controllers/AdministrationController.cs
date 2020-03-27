@@ -113,6 +113,52 @@ namespace Gip.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> EditUser(EditUserViewModel model)
+        {
+            var user = await userManager.FindByIdAsync(model.Id);
+
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"User with Id = {model.Id} cannot be found";
+                return View("NotFound");
+            }
+            else 
+            {
+                var emailUser = await userManager.FindByEmailAsync(model.Email);
+
+                if (emailUser != null)
+                {
+                    ModelState.AddModelError("", "Email " + model.Email + " is already in use.");
+                }
+                else
+                {
+                    user.UserName = model.RNum;
+                    user.Email = model.Email;
+
+                    var result = await userManager.UpdateAsync(user);
+
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("ListUsers");
+                    }
+
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                }
+                return View(model);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            //bezig
+            return View();
+        }
+
         [HttpGet]
         public async Task<IActionResult> EditUsersInRole(string roleId)
         {

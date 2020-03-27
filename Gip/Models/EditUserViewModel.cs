@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Gip.Utils;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace Gip.Models
         public string Id { get; set; }
 
         [Required]
+        [ValidRNum(ErrorMessage = "R nummer moet aan het juist formaat voldoen. Vb: R0000001")]
         public string RNum { get; set; }
 
         [Required][EmailAddress]

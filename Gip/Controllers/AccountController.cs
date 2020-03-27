@@ -80,7 +80,6 @@ namespace Gip.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 var result = await signInManager.PasswordSignInAsync(model.RNum, model.Password, model.RememberMe, false);
 
                 if (result.Succeeded)
