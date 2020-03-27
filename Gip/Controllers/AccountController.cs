@@ -29,14 +29,19 @@ namespace Gip.Controllers
         {
             if (ModelState.IsValid)
             {
+                var email = await userManager.FindByEmailAsync(model.Email);
                 var user = new IdentityUser
                 {
                     UserName = model.RNum,
                     Email = model.Email
                 };
+                if (email != null)
+                {
+                    ModelState.AddModelError("","Email "+email+" is already in use.");
+                }
                 var result = await userManager.CreateAsync(user, model.Password);
 
-                if (result.Succeeded)
+                if (result.Succeeded && email==null)
                 {
                     await signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("Index", "Home");
@@ -45,6 +50,7 @@ namespace Gip.Controllers
                 {
                     ModelState.AddModelError("", error.Description);
                 }
+                
             }
             return View("../Home/Register");
         }
