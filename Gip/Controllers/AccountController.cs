@@ -45,6 +45,10 @@ namespace Gip.Controllers
 
                     if (result.Succeeded && email == null)
                     {
+                        if (signInManager.IsSignedIn(User) && User.IsInRole("Admin")) 
+                        {
+                            return RedirectToAction("ListUsers", "Administration");
+                        }
                         await signInManager.SignInAsync(user, isPersistent: false);
                         return RedirectToAction("Index", "Home");
                     }

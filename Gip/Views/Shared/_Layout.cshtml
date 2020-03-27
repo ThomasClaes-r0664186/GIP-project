@@ -31,24 +31,49 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Vak" asp-action="Index">Vakken</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Lokaal" asp-action="Index">Lokalen</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Planner" asp-action="Add">Planner</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Planner" asp-action="Index">Planning</a>
-                        </li>
-                        @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin")) 
+                        @if (signInManager.IsSignedIn(User))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Administration" asp-action="ListRoles">Roles bewerken</a>
-                            </li> 
-                        }
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Vak" asp-action="Index">Vakken</a>
+                            </li>
+                            @if (User.IsInRole("Lector") || User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Lokaal" asp-action="Index">Lokalen</a>
+                                </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Planner" asp-action="Add">Planner</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Planner" asp-action="Index">Planning</a>
+                            </li>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Administration" asp-action="ListUsers">Users</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Administration" asp-action="ListRoles">Roles</a>
+                                </li>
+
+                                <!-- dropdown menu voor de admin, werkt niet, Joni nakijken?
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Manage
+                                        </a>
+                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                            <a class="dropdown-item text-dark" asp-controller="Administration"
+                                               asp-action="ListUsers">Users</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item text-dark" asp-controller="Administration"
+                                               asp-action="ListRoles">Roles</a>
+                                        </div>
+                                    </li>
+                                -->
+                              }
+                             } 
+                         }
                         <ul class="navbar-nav ml-auto">
                             @if (signInManager.IsSignedIn(User))
                             {
@@ -69,7 +94,7 @@
                                     <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
                                 </li>
                             }
-                        </ul>                     
+                        </ul>
                     </ul>
                 </div>
                 <div id="clock"></div>

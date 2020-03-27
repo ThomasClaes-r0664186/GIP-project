@@ -83,6 +83,37 @@ namespace Gip.Controllers
         }
 
         [HttpGet]
+        public ActionResult ListUsers()
+        {
+            var users = userManager.Users;
+            return View(users);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditUser(string id)
+        {
+            var user = await userManager.FindByIdAsync(id);
+
+            if (user == null) 
+            {
+                ViewBag.ErrorMessage = $"User with Id = {id} cannot be found";
+                return View("NotFound");
+            }
+
+            var userRoles = await userManager.GetRolesAsync(user);
+
+            var model = new EditUserViewModel
+            {
+                Id = user.Id,
+                RNum = user.UserName,
+                Email = user.Email,
+                Roles = userRoles
+            };
+
+            return View(model);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> EditUsersInRole(string roleId)
         {
             ViewBag.roleId = roleId;
