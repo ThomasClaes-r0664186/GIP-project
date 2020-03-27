@@ -3,6 +3,7 @@ using Gip.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ namespace Gip.Controllers
     [Authorize(Roles = "Admin")]
     public class AdministrationController : Controller
     {
+        private gipDatabaseContext db = new gipDatabaseContext();
+
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly UserManager<IdentityUser> userManager;
 
@@ -104,15 +107,27 @@ namespace Gip.Controllers
 
             var userRoles = await userManager.GetRolesAsync(user);
 
-            var model = new EditUserViewModel
+            try
             {
-                Id = user.Id,
-                RNum = user.UserName,
-                Email = user.Email,
-                Roles = userRoles
-            };
+                var userForNames = db.User.Find(user.UserName);
 
-            return View(model);
+                var model = new EditUserViewModel
+                {
+                    Id = user.Id,
+                    Name = userForNames.VoorNaam,
+                    SurName = userForNames.Naam,
+                    RNum = user.UserName,
+                    Email = user.Email,
+                    Roles = userRoles
+                };
+
+                return View(model);
+            }
+            catch (Exception e) 
+            {
+                ModelState.AddModelError("", e.Message + " " + e.InnerException.Message);
+                return View("../Home/Register");
+            }
         }
 
         [HttpPost]
