@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Gip.Controllers
 {
-    [Authorize(Roles ="Admin, Lector")]
+    [Authorize(Roles ="Admin, Lector, Student")]
     public class PlannerController : Controller
     {
         private gipDatabaseContext db = new gipDatabaseContext();
@@ -92,6 +92,7 @@ namespace Gip.Controllers
         }
         [HttpPost]
         [Route("planner/add")]
+        [Authorize(Roles = "Admin, Lector")]
         public ActionResult Add(string dat, string uur, string lokaalId, double duratie, string vakcode, string? lessenlijst,bool? checkbox, string lokaal2Id)
         {
             DateTime datum = DateTime.ParseExact(dat, "yyyy-MM-dd", CultureInfo.InvariantCulture);
@@ -186,6 +187,7 @@ namespace Gip.Controllers
 
         [HttpGet]
         [Route("planner/add")]
+        [Authorize(Roles = "Admin, Lector")]
         public ActionResult Add()
         {
             try
@@ -219,6 +221,7 @@ namespace Gip.Controllers
 
         [HttpPost]
         [Route("planner/delete")]
+        [Authorize(Roles = "Admin, Lector")]
         public ActionResult Delete(string vakcode, DateTime datum, DateTime startMoment, string gebouw, int verdiep, string nummer, DateTime eindMoment) {
             DateTime newStartMoment = new DateTime(1800, 1, 1, startMoment.Hour, startMoment.Minute, startMoment.Second);
             CourseMoment moment = db.CourseMoment.Find(vakcode, datum,gebouw, verdiep, nummer, "r0664186", newStartMoment, eindMoment);
@@ -243,6 +246,7 @@ namespace Gip.Controllers
 
         [HttpPost]
         [Route("planner/edit")]
+        [Authorize(Roles = "Admin, Lector")]
         public ActionResult Edit(string oldVakcode, 
             DateTime oldDatum, DateTime oldStartMoment, DateTime oldEindmoment,
             string oldGebouw, int oldVerdiep, string oldNummer, 
@@ -299,7 +303,6 @@ namespace Gip.Controllers
 
         [HttpGet]
         [Route("planner/viewTopic")]
-        [Authorize(Roles = "Admin, Lector, Student")]
         public ActionResult ViewTopic(string vakcode, DateTime datum, DateTime startMoment ,DateTime eindMoment, string gebouw, int verdiep, string nummer, int datumY, int datumM, int datumD)
         {
             try {
@@ -330,7 +333,6 @@ namespace Gip.Controllers
 
         [HttpGet]
         [Route("planner/viewCourseMoments")]
-        [Authorize(Roles = "Admin, Lector, Student")]
         public ActionResult ViewCourseMoments(string vakcode)
         {
             try

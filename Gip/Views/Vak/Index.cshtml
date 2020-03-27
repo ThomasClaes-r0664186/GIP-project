@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Gip.Models.Course>
+﻿@inject SignInManager<IdentityUser> signInManager;
+@model IEnumerable<Gip.Models.Course>
     <Gip.Models.Course>
         @{
             ViewData["Title"] = "Index";
@@ -70,7 +71,11 @@
                 </button>
             </div>
         }
-        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addVak" style="float:right">Vak toevoegen</button>
+
+        @if (signInManager.IsSignedIn(User) && User.IsInRole("Lector") || User.IsInRole("Admin"))
+        {
+
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addVak" style="float:right">Vak toevoegen</button>
         <div class="modal fade" id="addVak" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -101,15 +106,21 @@
                 </div>
             </div>
         </div>
+        }
         <table class="table table-bordered table-hover table-striped">
             <tr>
-
                 <th>Vakcode</th>
                 <th>Titel</th>
                 <th>Studiepunten</th>
-                <th>Delete</th>
-                <th>Edit</th>
-
+                @if (signInManager.IsSignedIn(User) && User.IsInRole("Lector") || User.IsInRole("Admin"))
+                {
+                    <th>Delete</th>
+                    <th>Edit</th>
+                }
+                else 
+                {
+                    <th>Inschrijven/Uitschrijven</th>
+                }
             </tr>
             @foreach (var vak in Model)
             {
@@ -117,68 +128,74 @@
                     <td>@vak.Vakcode</td>
                     <td>@vak.Titel</td>
                     <td>@vak.Studiepunten</td>
-                    <td>
-                        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteVakModal-@vak.Vakcode">Delete</button>
-                        <div class="modal fade" id="deleteVakModal-@vak.Vakcode" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Vak verwijderen</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form action="/vak/delete" method="post">
-                                            <div>
-                                                <input type="text" name="vakcode" style="display: none" value="@vak.Vakcode">
-                                            </div>
-                                            Ben je zeker dat je het vak @vak.Titel wilt verwijderen?
-                                            <div class="modal-footer">
-                                                <button type="submit" class="btn btn-sm btn-danger">Verwijder vak</button>
-                                            </div>
-                                        </form>
+                    @if (signInManager.IsSignedIn(User) && User.IsInRole("Lector") || User.IsInRole("Admin"))
+                    {
+                        <td>
+                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteVakModal-@vak.Vakcode">Delete</button>
+                            <div class="modal fade" id="deleteVakModal-@vak.Vakcode" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Vak verwijderen</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="/vak/delete" method="post">
+                                                <div>
+                                                    <input type="text" name="vakcode" style="display: none" value="@vak.Vakcode">
+                                                </div>
+                                                Ben je zeker dat je het vak @vak.Titel wilt verwijderen?
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-sm btn-danger">Verwijder vak</button>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-sm btn-dark" data-toggle="modal" data-target="#editVak-@vak.Vakcode">Edit</button>
-                        <div class="modal fade" id="editVak-@vak.Vakcode" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Vak wijzigen</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form action="/vak/edit" method="post">
-                                            <div>
-                                                <input type="text" name="vakcodeOld" style="display:none" value="@vak.Vakcode">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="vakcode" class="col-form-label">Vakcode:</label>
-                                                <input required="required" type="text" class="form-control" id="vakcode" name="vakcodeNew" value="@vak.Vakcode">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="titel" class="col-form-label">Titel:</label>
-                                                <input required="required" type="text" class="form-control" id="titel" name="titel" value="@vak.Titel">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="studiepunten" class="col-form-label">Studiepunten:</label>
-                                                <input required="required" type="number" max="60" class="form-control" id="studiepunten" name="studiepunten" value="@vak.Studiepunten">
-                                            </div>
-                                            <button type="submit" class="btn btn-dark">Wijzig vak</button>
-                                        </form>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-dark" data-toggle="modal" data-target="#editVak-@vak.Vakcode">Edit</button>
+                            <div class="modal fade" id="editVak-@vak.Vakcode" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Vak wijzigen</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="/vak/edit" method="post">
+                                                <div>
+                                                    <input type="text" name="vakcodeOld" style="display:none" value="@vak.Vakcode">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="vakcode" class="col-form-label">Vakcode:</label>
+                                                    <input required="required" type="text" class="form-control" id="vakcode" name="vakcodeNew" value="@vak.Vakcode">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="titel" class="col-form-label">Titel:</label>
+                                                    <input required="required" type="text" class="form-control" id="titel" name="titel" value="@vak.Titel">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="studiepunten" class="col-form-label">Studiepunten:</label>
+                                                    <input required="required" type="number" max="60" class="form-control" id="studiepunten" name="studiepunten" value="@vak.Studiepunten">
+                                                </div>
+                                                <button type="submit" class="btn btn-dark">Wijzig vak</button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>  
-                        </div>
-                    </td>
-                </tr>
-
+                            </div>
+                        </td>
+                    }
+                    else 
+                    {
+                        <td><button type="button" class="btn btn-sm btn-dark" href="#">Schrijf in/uit</button></td>
+                    }
+                    </tr>
             }
         </table>
