@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Gip.Controllers
 {
+    [Authorize(Roles ="Admin, Lector")]
     public class PlannerController : Controller
     {
         private gipDatabaseContext db = new gipDatabaseContext();
@@ -15,7 +16,6 @@ namespace Gip.Controllers
         // GET /planner
         [HttpGet]
         [Route("planner")]
-        [AllowAnonymous]
         public ActionResult Index(int week)
         {
             int weekToUse = GetIso8601WeekOfYear(DateTime.Now)+week;
@@ -299,7 +299,7 @@ namespace Gip.Controllers
 
         [HttpGet]
         [Route("planner/viewTopic")]
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin, Lector, Student")]
         public ActionResult ViewTopic(string vakcode, DateTime datum, DateTime startMoment ,DateTime eindMoment, string gebouw, int verdiep, string nummer, int datumY, int datumM, int datumD)
         {
             try {
@@ -330,7 +330,7 @@ namespace Gip.Controllers
 
         [HttpGet]
         [Route("planner/viewCourseMoments")]
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin, Lector, Student")]
         public ActionResult ViewCourseMoments(string vakcode)
         {
             try

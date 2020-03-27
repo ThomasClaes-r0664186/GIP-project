@@ -95,6 +95,13 @@ namespace Gip.Controllers
             return View("../Home/Login", model);
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult AccessDenied(string ReturnUrl) 
+        {
+            return View("../Shared/AccessDenied");
+        }
+
         //Werkt niet omdat de Json dit wilt returnen naar view: account/register, deze bestaat niet, moet op een manier gereturned worden naar Home/register
         //[AcceptVerbs("Get", "Post")]
         //[AllowAnonymous]

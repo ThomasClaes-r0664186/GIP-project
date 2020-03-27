@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Gip.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin, Lector, Student")]
     public class VakController : Controller
     {
         private gipDatabaseContext db = new gipDatabaseContext();
@@ -14,7 +14,6 @@ namespace Gip.Controllers
         // GET
         [HttpGet]
         [Route("vak")]
-        [AllowAnonymous]
         public ActionResult Index()
         {
             try{

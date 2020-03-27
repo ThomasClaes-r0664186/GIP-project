@@ -6,14 +6,13 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Gip.Controllers
 {
-    [Authorize]
+    [Authorize(Roles="Admin,Lector")]
     public class LokaalController : Controller
     {
         private gipDatabaseContext db = new gipDatabaseContext();
         // GET
         [HttpGet]
         [Route("lokaal")]
-        [AllowAnonymous]
         public ActionResult Index()
         {
             try

@@ -43,6 +43,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Planner" asp-action="Index">Planning</a>
                         </li>
+                        @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin")) 
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Administration" asp-action="ListRoles">Roles bewerken</a>
+                            </li> 
+                        }
                         <ul class="navbar-nav ml-auto">
                             @if (signInManager.IsSignedIn(User))
                             {
