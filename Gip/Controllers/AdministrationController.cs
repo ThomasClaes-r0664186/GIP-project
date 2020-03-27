@@ -1,13 +1,15 @@
 ﻿using Gip.Models;
+using Gip.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Gip.Controllers
 {
-    [Authorize(Roles="Admin")]
+    [Authorize(Roles = "Admin")]
     public class AdministrationController : Controller
     {
         private readonly RoleManager<IdentityRole> roleManager;
@@ -94,7 +96,7 @@ namespace Gip.Controllers
         {
             var user = await userManager.FindByIdAsync(id);
 
-            if (user == null) 
+            if (user == null)
             {
                 ViewBag.ErrorMessage = $"User with Id = {id} cannot be found";
                 return View("NotFound");
@@ -123,7 +125,7 @@ namespace Gip.Controllers
                 ViewBag.ErrorMessage = $"User with Id = {model.Id} cannot be found";
                 return View("NotFound");
             }
-            else 
+            else
             {
                 var emailUser = await userManager.FindByEmailAsync(model.Email);
 
@@ -162,7 +164,7 @@ namespace Gip.Controllers
                 ViewBag.ErrorMessage = $"User with Id = {id} cannot be found";
                 return View("NotFound");
             }
-            else 
+            else
             {
                 var result = await userManager.DeleteAsync(user);
 
@@ -229,7 +231,7 @@ namespace Gip.Controllers
                 return View("NotFound");
             }
 
-            for (int i = 0; i < model.Count; i++) 
+            for (int i = 0; i < model.Count; i++)
             {
                 var user = await userManager.FindByIdAsync(model[i].UserId);
 
@@ -243,12 +245,12 @@ namespace Gip.Controllers
                 {
                     result = await userManager.RemoveFromRoleAsync(user, role.Name);
                 }
-                else 
+                else
                 {
                     continue;
                 }
 
-                if (result.Succeeded) 
+                if (result.Succeeded)
                 {
                     if (i < (model.Count - 1))
                         continue;
@@ -258,6 +260,83 @@ namespace Gip.Controllers
             }
 
             return RedirectToAction("EditRole", new { Id = roleId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ManageUserRoles(string userId)
+        {
+            ViewBag.userId = userId;
+
+            var user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"User with Id = {userId} cannot be found";
+                return View("NotFound");
+            }
+
+            var model = new List<UserRolesViewModel>();
+
+            foreach (var role in roleManager.Roles)
+            {
+                var userRolesViewModel = new UserRolesViewModel
+                {
+                    RoleId = role.Id,
+                    RoleName = role.Name
+                };
+
+                if (await userManager.IsInRoleAsync(user, role.Name))
+                {
+                    userRolesViewModel.IsSelected = true;
+                }
+                else
+                {
+                    userRolesViewModel.IsSelected = false;
+                }
+
+                model.Add(userRolesViewModel);
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ManageUserRoles(List<UserRolesViewModel> model, string userId)
+        {
+            bool failed = false;
+            var user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"User with Id = {userId} cannot be found";
+                return View("NotFound");
+            }
+
+            var roles = await userManager.GetRolesAsync(user);
+            foreach (var role in roles) 
+            {
+                var result = await userManager.RemoveFromRoleAsync(user, role);
+
+                if (!result.Succeeded) 
+                {
+                    failed = true;
+                    ModelState.AddModelError("", "Cannot remove user existing roles");
+                }
+            }
+            if (failed) 
+            {
+                return View(model);
+            }
+
+            var result1 = await userManager.AddToRolesAsync(user, model.Where(x=>x.IsSelected).Select(y=>y.RoleName));
+
+            if (!result1.Succeeded) 
+            {
+                ModelState.AddModelError("", "Cannot add selected roles to user");
+                return View(model);
+            }
+
+            return RedirectToAction("EditUser", new { id = userId});
         }
     }
 }
