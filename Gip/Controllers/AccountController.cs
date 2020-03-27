@@ -37,20 +37,22 @@ namespace Gip.Controllers
                 };
                 if (email != null)
                 {
-                    ModelState.AddModelError("","Email "+email+" is already in use.");
+                    ModelState.AddModelError("", "Email " + model.Email + " is already in use.");
                 }
-                var result = await userManager.CreateAsync(user, model.Password);
+                else
+                {
+                    var result = await userManager.CreateAsync(user, model.Password);
 
-                if (result.Succeeded && email==null)
-                {
-                    await signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
+                    if (result.Succeeded && email == null)
+                    {
+                        await signInManager.SignInAsync(user, isPersistent: false);
+                        return RedirectToAction("Index", "Home");
+                    }
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
                 }
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError("", error.Description);
-                }
-                
             }
             return View("../Home/Register");
         }
@@ -93,7 +95,7 @@ namespace Gip.Controllers
             return View("../Home/Login", model);
         }
 
-        //Werkt niet omdat de Json dit wilt returnen naar view account register, deze bestaat niet, moet op een manier gereturned worden naar Home/register
+        //Werkt niet omdat de Json dit wilt returnen naar view: account/register, deze bestaat niet, moet op een manier gereturned worden naar Home/register
         //[AcceptVerbs("Get", "Post")]
         //[AllowAnonymous]
         //public async Task<IActionResult> IsEmailInUse(string email)
