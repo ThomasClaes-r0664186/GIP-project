@@ -27,59 +27,124 @@ namespace Gip.Controllers
         // GET /planner
         [HttpGet]
         [Route("planner")]
-        public ActionResult Index(int week)
+        public async Task<ActionResult> Index(int week)
         {
             int weekToUse = GetIso8601WeekOfYear(DateTime.Now)+week;
             try
             {
-                var _qry = from cm in db.CourseMoment
-                           join c in db.Course on cm.Vakcode equals c.Vakcode
-                           join s in db.Schedule
-                                on new { cm.Datum, cm.Startmoment, cm.Eindmoment}
-                                equals new { s.Datum, s.Startmoment, s.Eindmoment}
-                           where (int)((cm.Datum.DayOfYear / 7.0) + 0.2) == weekToUse
-                           orderby cm.Datum, cm.Startmoment, cm.Eindmoment, cm.Gebouw, cm.Verdiep, cm.Nummer
-                           select new
-                           {
-                               datum = cm.Datum,
-                               startmoment = cm.Startmoment,
-                               gebouw = cm.Gebouw,
-                               verdiep = cm.Verdiep,
-                               nummer = cm.Nummer,
-                               vakcode = c.Vakcode,
-                               titel = c.Titel,
-                               eindmoment = s.Eindmoment,
-                               rNummer = cm.Userid
-                           };
-                var lokaalQry = from lok in db.Room
-                                orderby lok.Gebouw, lok.Verdiep, lok.Nummer
-                                select lok;
-                var vakQry = from vak in db.Course
-                             orderby vak.Vakcode
-                             select vak;
+                List<Planner> planners = new List<Planner>();
+                var user = await userManager.GetUserAsync(User);
+
+                if (User.IsInRole("Student"))
+                {
+                    var qry2 = from c in db.CourseUser
+                               orderby c.Vakcode
+                               where c.Userid == user.UserName
+                               select c;
+
+                    List<string> vakMetStud = new List<string>();
+                    
+                    foreach (var cu in qry2) 
+                    {
+                        if (cu.GoedGekeurd) 
+                        {
+                            vakMetStud.Add(cu.Vakcode);
+                        }
+                    }
+
+                    var _qry = from cm in db.CourseMoment
+                               join c in db.Course on cm.Vakcode equals c.Vakcode
+                               join s in db.Schedule
+                                    on new { cm.Datum, cm.Startmoment, cm.Eindmoment }
+                                    equals new { s.Datum, s.Startmoment, s.Eindmoment }
+                               where (int)((cm.Datum.DayOfYear / 7.0) + 0.2) == weekToUse
+                               where vakMetStud.Contains(cm.Vakcode)
+                               orderby cm.Datum, cm.Startmoment, cm.Eindmoment, cm.Gebouw, cm.Verdiep, cm.Nummer
+                               select new
+                               {
+                                   datum = cm.Datum,
+                                   startmoment = cm.Startmoment,
+                                   gebouw = cm.Gebouw,
+                                   verdiep = cm.Verdiep,
+                                   nummer = cm.Nummer,
+                                   vakcode = c.Vakcode,
+                                   titel = c.Titel,
+                                   eindmoment = s.Eindmoment,
+                                   rNummer = cm.Userid
+                               };
+                    var lokaalQry = from lok in db.Room
+                                    orderby lok.Gebouw, lok.Verdiep, lok.Nummer
+                                    select lok;
+                    var vakQry = from vak in db.Course
+                                 orderby vak.Vakcode
+                                 select vak;
+
+                    foreach (var qry in _qry)
+                    {
+                        Planner planner = new Planner(qry.datum, qry.startmoment, qry.gebouw, qry.verdiep, qry.nummer, qry.rNummer, qry.vakcode, qry.titel, qry.eindmoment);
+                        planners.Add(planner);
+                    }
+
+                    foreach (var qry in lokaalQry)
+                    {
+                        Planner planner = new Planner(qry.Gebouw, qry.Verdiep, qry.Nummer, qry.Capaciteit);
+                        planners.Add(planner);
+                    }
+
+                    foreach (var qry in vakQry)
+                    {
+                        Planner planner = new Planner(qry.Vakcode, qry.Titel);
+                        planners.Add(planner);
+                    }
+                }
+                else {
+                    var _qry = from cm in db.CourseMoment
+                               join c in db.Course on cm.Vakcode equals c.Vakcode
+                               join s in db.Schedule
+                                    on new { cm.Datum, cm.Startmoment, cm.Eindmoment }
+                                    equals new { s.Datum, s.Startmoment, s.Eindmoment }
+                               where (int)((cm.Datum.DayOfYear / 7.0) + 0.2) == weekToUse
+                               orderby cm.Datum, cm.Startmoment, cm.Eindmoment, cm.Gebouw, cm.Verdiep, cm.Nummer
+                               select new
+                               {
+                                   datum = cm.Datum,
+                                   startmoment = cm.Startmoment,
+                                   gebouw = cm.Gebouw,
+                                   verdiep = cm.Verdiep,
+                                   nummer = cm.Nummer,
+                                   vakcode = c.Vakcode,
+                                   titel = c.Titel,
+                                   eindmoment = s.Eindmoment,
+                                   rNummer = cm.Userid
+                               };
+                    var lokaalQry = from lok in db.Room
+                                    orderby lok.Gebouw, lok.Verdiep, lok.Nummer
+                                    select lok;
+                    var vakQry = from vak in db.Course
+                                 orderby vak.Vakcode
+                                 select vak;
+
+                    foreach (var qry in _qry)
+                    {
+                        Planner planner = new Planner(qry.datum, qry.startmoment, qry.gebouw, qry.verdiep, qry.nummer, qry.rNummer, qry.vakcode, qry.titel, qry.eindmoment);
+                        planners.Add(planner);
+                    }
+
+                    foreach (var qry in lokaalQry)
+                    {
+                        Planner planner = new Planner(qry.Gebouw, qry.Verdiep, qry.Nummer, qry.Capaciteit);
+                        planners.Add(planner);
+                    }
+
+                    foreach (var qry in vakQry)
+                    {
+                        Planner planner = new Planner(qry.Vakcode, qry.Titel);
+                        planners.Add(planner);
+                    }
+                }
 
                 ViewBag.maandag = FirstDayOfWeek(weekToUse).ToString("dd-MM-yyyy");
                 ViewBag.vrijdag = FirstDayOfWeek(weekToUse).AddDays(4).ToString("dd-MM-yyyy");
-
-                List<Planner> planners = new List<Planner>();
-
-                foreach (var qry in _qry)
-                {
-                    Planner planner = new Planner(qry.datum, qry.startmoment, qry.gebouw, qry.verdiep, qry.nummer, qry.rNummer, qry.vakcode, qry.titel, qry.eindmoment);
-                    planners.Add(planner);
-                }
-
-                foreach (var qry in lokaalQry)
-                {
-                    Planner planner = new Planner(qry.Gebouw, qry.Verdiep, qry.Nummer, qry.Capaciteit);
-                    planners.Add(planner);
-                }
-
-                foreach (var qry in vakQry)
-                {
-                    Planner planner = new Planner(qry.Vakcode, qry.Titel);
-                    planners.Add(planner);
-                }
 
                 ViewBag.nextWeek = week += 1;
                 ViewBag.prevWeek = week -= 2;

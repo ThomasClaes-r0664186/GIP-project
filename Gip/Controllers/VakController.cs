@@ -27,7 +27,7 @@ namespace Gip.Controllers
         // GET
         [HttpGet]
         [Route("vak")]
-        public async Task<ActionResult> IndexAsync()
+        public async Task<ActionResult> Index()
         {
             try{
                 //aflopen databank en alle vakken in een list<Course> qry steken
@@ -47,7 +47,7 @@ namespace Gip.Controllers
                                orderby c.Vakcode
                                where c.Userid == user.UserName
                                select c;
-
+                    
                     //alle vakken aflopen
                     foreach (var vak in qry) 
                     {
