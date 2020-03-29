@@ -65,7 +65,7 @@ namespace Gip.Controllers
 
                 foreach (var qry in _qry)
                 {
-                    Planner planner = new Planner(qry.datum, qry.startmoment, qry.gebouw, qry.verdiep, qry.nummer, qry.vakcode, qry.titel, qry.eindmoment, qry.rNummer);
+                    Planner planner = new Planner(qry.datum, qry.startmoment, qry.gebouw, qry.verdiep, qry.nummer, qry.rNummer, qry.vakcode, qry.titel, qry.eindmoment);
                     planners.Add(planner);
                 }
 

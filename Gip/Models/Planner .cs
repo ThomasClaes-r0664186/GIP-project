@@ -41,7 +41,20 @@ namespace Gip.Models
             LessenLijst = lessenLijst;
         }
 
-        public Planner(DateTime datum, DateTime startmoment, string gebouw, int verdiep, string nummer, string vakcode, string titel, DateTime eindmoment, string lessenLijst, string rNummer)
+        public Planner(DateTime datum, DateTime startmoment, string gebouw, int verdiep, string nummer, string rNummer, string vakcode, string titel, DateTime eindmoment)
+        {
+            Datum = datum;
+            Startmoment = startmoment;
+            Gebouw = gebouw;
+            Verdiep = verdiep;
+            Nummer = nummer;
+            Vakcode = vakcode;
+            Titel = titel;
+            Eindmoment = eindmoment;
+            RNummer = rNummer;
+        }
+
+        public Planner(DateTime datum, DateTime startmoment, string gebouw, int verdiep, string nummer, string rNummer, string vakcode, string titel, DateTime eindmoment, string lessenLijst)
         {
             Datum = datum;
             Startmoment = startmoment;
