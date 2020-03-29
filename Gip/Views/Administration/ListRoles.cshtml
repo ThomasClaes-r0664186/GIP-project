@@ -8,7 +8,7 @@
 
 @if (Model.Any())
 {
-    <a class="btn btn-primary mb-3" style="width:auto" asp-action="CreateRole"
+    <a class="btn btn-sm btn-success" style="width:auto" asp-action="CreateRole"
        asp-controller="Administration">Add new role</a>
 
     foreach (var role in Model)
@@ -21,7 +21,7 @@
                 <h5 class="card-title">@role.Name</h5>
             </div>
             <div class="card-footer">
-                <a class="btn btn-primary" asp-action="EditRole" asp-controller="Administration" asp-route-id="@role.Id">Edit</a>
+                <a class="btn btn-sm btn-dark" asp-action="EditRole" asp-controller="Administration" asp-route-id="@role.Id">Edit</a>
             </div>
         </div>
     }
