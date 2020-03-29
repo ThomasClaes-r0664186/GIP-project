@@ -5,6 +5,8 @@ using System.Linq;
 using System.Globalization;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
 
 namespace Gip.Controllers
 {
@@ -12,6 +14,15 @@ namespace Gip.Controllers
     public class PlannerController : Controller
     {
         private gipDatabaseContext db = new gipDatabaseContext();
+
+        private readonly UserManager<IdentityUser> userManager;
+        private readonly SignInManager<IdentityUser> signInManager;
+
+        public PlannerController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        {
+            this.userManager = userManager;
+            this.signInManager = signInManager;
+        }
 
         // GET /planner
         [HttpGet]
@@ -37,7 +48,8 @@ namespace Gip.Controllers
                                nummer = cm.Nummer,
                                vakcode = c.Vakcode,
                                titel = c.Titel,
-                               eindmoment = s.Eindmoment
+                               eindmoment = s.Eindmoment,
+                               rNummer = cm.Userid
                            };
                 var lokaalQry = from lok in db.Room
                                 orderby lok.Gebouw, lok.Verdiep, lok.Nummer
@@ -53,7 +65,7 @@ namespace Gip.Controllers
 
                 foreach (var qry in _qry)
                 {
-                    Planner planner = new Planner(qry.datum, qry.startmoment, qry.gebouw, qry.verdiep, qry.nummer, qry.vakcode, qry.titel, qry.eindmoment);
+                    Planner planner = new Planner(qry.datum, qry.startmoment, qry.gebouw, qry.verdiep, qry.nummer, qry.vakcode, qry.titel, qry.eindmoment, qry.rNummer);
                     planners.Add(planner);
                 }
 
@@ -93,7 +105,7 @@ namespace Gip.Controllers
         [HttpPost]
         [Route("planner/add")]
         [Authorize(Roles = "Admin, Lector")]
-        public ActionResult Add(string dat, string uur, string lokaalId, double duratie, string vakcode, string? lessenlijst,bool? checkbox, string lokaal2Id)
+        public async Task<IActionResult> Add(string dat, string uur, string lokaalId, double duratie, string vakcode, string? lessenlijst,bool? checkbox, string lokaal2Id)
         {
             DateTime datum = DateTime.ParseExact(dat, "yyyy-MM-dd", CultureInfo.InvariantCulture);
             DateTime tijd = new DateTime(1800, 1, 1, int.Parse(uur.Split(":")[0]), int.Parse(uur.Split(":")[1]), 0);
@@ -123,6 +135,8 @@ namespace Gip.Controllers
                     db.SaveChanges();
                 }
 
+                var user = await userManager.GetUserAsync(User);
+
                 CourseMoment moment = new CourseMoment();
                 moment.Vakcode = vakcode;
                 moment.Datum = datum;
@@ -131,10 +145,10 @@ namespace Gip.Controllers
                 moment.Gebouw = gebouw;
                 moment.Verdiep = verdieping;
                 moment.Nummer = nummer;
-                moment.Userid = "r0664186";
+                moment.Userid = user.UserName;
                 moment.LessenLijst = lessenlijst;
 
-                if (db.CourseMoment.Find(moment.Vakcode, moment.Datum, moment.Gebouw, moment.Verdiep, moment.Nummer, moment.Userid = "r0664186", moment.Startmoment, moment.Eindmoment) != null)
+                if (db.CourseMoment.Find(moment.Vakcode, moment.Datum, moment.Gebouw, moment.Verdiep, moment.Nummer, moment.Userid = user.UserName,moment.Startmoment, moment.Eindmoment) != null)
                 {
                     TempData["error"] = "addError" + "/" + "Dit lesmoment staat reeds in de planning.";
                     return RedirectToAction("Index", "Planner");
@@ -159,10 +173,10 @@ namespace Gip.Controllers
                     moment2.Gebouw = gebouw2;
                     moment2.Verdiep = verdieping2;
                     moment2.Nummer = nummer2;
-                    moment2.Userid = "r0664186";
+                    moment2.Userid = user.UserName;
                     moment2.LessenLijst = lessenlijst;
 
-                    if (db.CourseMoment.Find(moment2.Vakcode, moment2.Datum, moment2.Gebouw, moment2.Verdiep, moment2.Nummer, moment2.Userid = "r0664186", moment2.Startmoment, moment2.Eindmoment) != null)
+                    if (db.CourseMoment.Find(moment2.Vakcode, moment2.Datum, moment2.Gebouw, moment2.Verdiep, moment2.Nummer, moment2.Userid = user.UserName, moment2.Startmoment, moment2.Eindmoment) != null)
                     {
                         TempData["error"] = "addError" + "/" + "Uw tweede lokaal is hetzelfde als het eerste lokaal, enkel het lesmoment in het eerste lokaal werd toegevoegd.";
                         return RedirectToAction("Index", "Planner");
@@ -222,9 +236,9 @@ namespace Gip.Controllers
         [HttpPost]
         [Route("planner/delete")]
         [Authorize(Roles = "Admin, Lector")]
-        public ActionResult Delete(string vakcode, DateTime datum, DateTime startMoment, string gebouw, int verdiep, string nummer, DateTime eindMoment) {
+        public ActionResult Delete(string vakcode, DateTime datum, DateTime startMoment, string gebouw, int verdiep, string nummer, string rNummer, DateTime eindMoment) {
             DateTime newStartMoment = new DateTime(1800, 1, 1, startMoment.Hour, startMoment.Minute, startMoment.Second);
-            CourseMoment moment = db.CourseMoment.Find(vakcode, datum,gebouw, verdiep, nummer, "r0664186", newStartMoment, eindMoment);
+            CourseMoment moment = db.CourseMoment.Find(vakcode, datum,gebouw, verdiep, nummer, rNummer, newStartMoment, eindMoment);
             if (moment == null) {
                 TempData["error"] = "deleteError" + "/" + "Er is geen overeenkomend moment gevonden.";
                 return RedirectToAction("Index", "Planner");
@@ -237,7 +251,7 @@ namespace Gip.Controllers
             catch(Exception e)
             {
                 Console.WriteLine(e);
-                TempData["error"] = "deleteError" + "/" + "Er is een databank probleem opgetreden.";
+                TempData["error"] = "deleteError" + "/" + "Er is een databank probleem opgetreden. " + e.InnerException.Message;
                 return RedirectToAction("Index", "Planner");
             }
             TempData["error"] = "deleteGood";
@@ -247,15 +261,15 @@ namespace Gip.Controllers
         [HttpPost]
         [Route("planner/edit")]
         [Authorize(Roles = "Admin, Lector")]
-        public ActionResult Edit(string oldVakcode, 
+        public async Task<ActionResult> EditAsync(string oldVakcode, 
             DateTime oldDatum, DateTime oldStartMoment, DateTime oldEindmoment,
-            string oldGebouw, int oldVerdiep, string oldNummer, 
+            string oldGebouw, int oldVerdiep, string oldNummer, string OldRNummer,
             string newVakcode, 
             string newDatum, string newStartMoment, double newDuratie,
             string newLokaalid, string newLessenlijst) {
             try
             {
-                CourseMoment oldMoment = db.CourseMoment.Find(oldVakcode, oldDatum, oldGebouw, oldVerdiep, oldNummer, "r0664186", oldStartMoment, oldEindmoment);
+                CourseMoment oldMoment = db.CourseMoment.Find(oldVakcode, oldDatum, oldGebouw, oldVerdiep, oldNummer, OldRNummer, oldStartMoment, oldEindmoment);
                 if (oldMoment == null)
                 {
                     TempData["error"] = "deleteError" + "/" + "Er is geen overeenkomend moment gevonden in de databank.";
@@ -288,12 +302,14 @@ namespace Gip.Controllers
                     db.SaveChanges();
                 }
 
-                CourseMoment newMoment = new CourseMoment(newVakcode, datum, tijd, newGebouw, newVerdiep, newNummer, "r0664186", newLessenlijst,eindmoment);
+                var user = await userManager.GetUserAsync(User);
+
+                CourseMoment newMoment = new CourseMoment(newVakcode, datum, tijd, newGebouw, newVerdiep, newNummer, user.UserName, newLessenlijst,eindmoment);
                 db.CourseMoment.Add(newMoment);
             }
             catch (Exception e) {
                 Console.WriteLine(e);
-                TempData["error"] = "editError" + "/" + e.Message;
+                TempData["error"] = "editError" + "/" + e.Message + " " + e.InnerException.Message;
                 return RedirectToAction("Index","Planner");
             }
             TempData["error"] = "editGood";
@@ -303,10 +319,12 @@ namespace Gip.Controllers
 
         [HttpGet]
         [Route("planner/viewTopic")]
-        public ActionResult ViewTopic(string vakcode, DateTime datum, DateTime startMoment ,DateTime eindMoment, string gebouw, int verdiep, string nummer, int datumY, int datumM, int datumD)
+        public ActionResult ViewTopic(string vakcode, DateTime datum, DateTime startMoment ,DateTime eindMoment, string gebouw, int verdiep, string nummer, string rNummer, int datumY, int datumM, int datumD)
         {
             try {
                 /*
+                 * om de één of andere reden wordt datum niet meer deftig doorgegeven, deze is dus vervangen door datumY, M, D
+                 * 
                 int Year = Convert.ToInt32(datum.ToString("dd/MM/yyyy").Split('/')[2]);
                 int Month = Convert.ToInt32(datum.ToString("dd/MM/yyyy").Split('/')[0]);
                 int Day = Convert.ToInt32(datum.ToString("dd/MM/yyyy").Split('/')[1]);
@@ -318,7 +336,7 @@ namespace Gip.Controllers
                 DateTime newStartMoment = new DateTime(1800, 1, 1, startMoment.Hour, startMoment.Minute, startMoment.Second);
                 
                 Schedule schedule = db.Schedule.Find(dt, newStartMoment,eindMoment);
-                CourseMoment moment = db.CourseMoment.Find(vakcode, dt, gebouw, verdiep, nummer, "r0664186", newStartMoment, eindMoment);
+                CourseMoment moment = db.CourseMoment.Find(vakcode, dt, gebouw, verdiep, nummer, rNummer, newStartMoment, eindMoment);
                 /* db.CourseMoment.Find(vakcode, datum,gebouw, verdiep, nummer, "r0664186", newStartMoment, eindMoment); */
                 Course course = db.Course.Find(vakcode);
                 Planner planner = new Planner(moment.Datum, schedule.Startmoment, moment.Gebouw, moment.Verdiep, moment.Nummer, course.Vakcode, course.Titel, schedule.Eindmoment, moment.LessenLijst);

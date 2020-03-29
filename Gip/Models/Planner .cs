@@ -11,6 +11,7 @@ namespace Gip.Models
         private string _nummer;
         private string _vakcode;
         private string _titel;
+        private string _rNummer;
         private DateTime _eindmoment;
         private string _lessenLijst;
         private int _capaciteit;
@@ -38,6 +39,20 @@ namespace Gip.Models
             Titel = titel;
             Eindmoment = eindmoment;
             LessenLijst = lessenLijst;
+        }
+
+        public Planner(DateTime datum, DateTime startmoment, string gebouw, int verdiep, string nummer, string vakcode, string titel, DateTime eindmoment, string lessenLijst, string rNummer)
+        {
+            Datum = datum;
+            Startmoment = startmoment;
+            Gebouw = gebouw;
+            Verdiep = verdiep;
+            Nummer = nummer;
+            Vakcode = vakcode;
+            Titel = titel;
+            Eindmoment = eindmoment;
+            LessenLijst = lessenLijst;
+            RNummer = rNummer;
         }
 
         public Planner(string gebouw, int verdiep, string nummer, int capaciteit) {
@@ -96,6 +111,12 @@ namespace Gip.Models
         public string Titel {
             get { return _titel;  }
             set { this._titel = value; }
+        }
+
+        public string RNummer
+        {
+            get { return _rNummer; }
+            set { this._rNummer = value; }
         }
 
         public DateTime Eindmoment {
