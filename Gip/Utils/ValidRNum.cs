@@ -17,7 +17,7 @@ namespace Gip.Utils
             }
             else
             {
-                string pattern = @"^[cru]\d{7}$";
+                string pattern = @"^[crusmx]\d{7}$";
                 if (Regex.IsMatch(value.ToString(), pattern))
                 {
                     return true;

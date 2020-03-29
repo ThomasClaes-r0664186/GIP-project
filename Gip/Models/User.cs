@@ -92,18 +92,22 @@ namespace Gip.Models
                 }
                 else
                 {
-                    //@"^([a-zA-Z0-9_-.]+)@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.)|(([a-zA-Z0-9-]+.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(]?)$"
-                    //@"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
-                    string pattern = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
-                    if (Regex.IsMatch(value, pattern))
-                    {
-                        mail = value;
-                    }
-                    else
-                    {
-                        throw new DatabaseException("Het email-adres heeft een verkeerd formaat of een verkeerd character. Gelieve een deftig email-adres in te geven.");
+                    mail = value;
 
-                    }
+                    //Deze setter hieronder staat in comment omdat de email reeds gecontroleerd wordt door IdentityUser met een officiële check of het een correcte mail is.
+
+                    ////@"^([a-zA-Z0-9_-.]+)@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.)|(([a-zA-Z0-9-]+.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(]?)$"
+                    ////@"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$"
+                    //string pattern = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
+                    //if (Regex.IsMatch(value, pattern))
+                    //{
+                    //    mail = value;
+                    //}
+                    //else
+                    //{
+                    //    throw new DatabaseException("Het email-adres heeft een verkeerd formaat of een verkeerd character. Gelieve een deftig email-adres in te geven.");
+
+                    //}
 
                 }
             }
@@ -122,7 +126,7 @@ namespace Gip.Models
                 }
                 else
                 {
-                    string pattern = @"^[cru]\d{7}$";
+                    string pattern = @"^[crusmx]\d{7}$";
 
                     if (Regex.IsMatch(value, pattern))
                     {
