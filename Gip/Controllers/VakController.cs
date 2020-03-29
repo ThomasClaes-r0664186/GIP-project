@@ -3,6 +3,10 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
+using Gip.Models.ViewModels;
+using System.Collections.Generic;
 
 namespace Gip.Controllers
 {
@@ -10,16 +14,71 @@ namespace Gip.Controllers
     public class VakController : Controller
     {
         private gipDatabaseContext db = new gipDatabaseContext();
-        
+
+        private readonly UserManager<IdentityUser> userManager;
+        private readonly SignInManager<IdentityUser> signInManager;
+
+        public VakController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        {
+            this.userManager = userManager;
+            this.signInManager = signInManager;
+        }
+
         // GET
         [HttpGet]
         [Route("vak")]
-        public ActionResult Index()
+        public async Task<ActionResult> IndexAsync()
         {
             try{
+                //aflopen databank en alle vakken in een list<Course> qry steken
                 var qry = from d in db.Course
                           orderby d.Vakcode
                           select d;
+
+                List<VakViewModel> vakViewModels = new List<VakViewModel>();
+
+                // wanneer je een student bent, moet je het inschrijfgedeelte kunnen zien.
+                if (User.IsInRole("Student"))
+                {
+                    var user = await userManager.GetUserAsync(User);
+
+                    //aflopen databank en alle rijen, waar de student in voorkomt in de tabel CourseUser, in een list<CourseUser> steken.
+                    var qry2 = from c in db.CourseUser
+                               orderby c.Vakcode
+                               where c.Userid == user.UserName
+                               select c;
+
+                    //alle vakken aflopen
+                    foreach (var vak in qry) 
+                    {
+                        //Als het vak voorkomt in de list<CourseUser> qry2, dan maak je een VakViewModel aan
+                        //      waar ingeschreven == 1 staat voor: de student is geaccepteerd door lector (goedgekeurd == true)
+                        //      en ingeschreven == 2 staat voor: de student heeft aanvraag gedaan maar is nog niet geaccepteerd (goedgekeurd == false)
+                        var q2 = qry2.Where(cu => cu.Vakcode.Equals(vak.Vakcode));
+                        if (q2.Any())
+                        {
+                            var temp = new VakViewModel { Vakcode = vak.Vakcode, Titel = vak.Titel, Studiepunten = vak.Studiepunten, Ingeschreven = q2.First().GoedGekeurd ? 1 : 2 };
+                            vakViewModels.Add(temp);
+                        }
+                        //als het vak daar niet in voorkomt, maak je een VakViewModel aan met ingeschreven op 0, 
+                        //dit betekent dat je geen aanvraag hebt gedaan voor de inschrijving noch ingeschreven bent.
+                        else
+                        {
+                            var temp = new VakViewModel { Vakcode = vak.Vakcode, Titel = vak.Titel, Studiepunten = vak.Studiepunten, Ingeschreven = 0 };
+                            vakViewModels.Add(temp);
+                        }
+                    }
+                }
+                //als je geen student bent, maar wel admin of lector, krijg je gewoon een overzicht van alle vakken. Die kan je dan bewerken of verwijderen.
+                else 
+                {
+                    foreach (var vak in qry)
+                    {
+                        var temp = new VakViewModel { Vakcode = vak.Vakcode, Titel = vak.Titel, Studiepunten = vak.Studiepunten };
+                        vakViewModels.Add(temp);
+                    }
+                }
+
                 if (TempData["error"] != null)
                 {
                     ViewBag.error = TempData["error"].ToString();
@@ -30,7 +89,7 @@ namespace Gip.Controllers
                     ViewBag.error = "indexVakGood";
                 }
                 
-                return View(qry);
+                return View(vakViewModels);
             }
             catch (Exception e)
             {
@@ -173,6 +232,26 @@ namespace Gip.Controllers
             }
             TempData["error"] = "editGood";
             return RedirectToAction("Index", "Vak");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult> SubscribeAsync(string vakCode) 
+        {
+            try
+            {
+                var vak = db.Course.Find(vakCode);
+                var user = await userManager.GetUserAsync(User);
+                var oldUser = db.User.Find(user.UserName);
+
+                CourseUser courseUser = new CourseUser { Vakcode = vakCode, Userid = user.UserName};
+                db.CourseUser.Add(courseUser);
+                db.SaveChanges();
+            }
+            catch (Exception e) {
+                ViewBag.error = e.Message + " " + e.InnerException.Message==null?" ": e.InnerException.Message;
+            }
+            return RedirectToAction("Index");
         }
     }
 }

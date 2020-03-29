@@ -57,7 +57,7 @@ namespace Gip.Controllers
                         }
                         catch (Exception e) 
                         {
-                            ModelState.AddModelError("", e.Message + " " +e.InnerException.Message);
+                            ModelState.AddModelError("", e.Message + " " + e.InnerException.Message == null ? " " : e.InnerException.Message);
                             return View("../Home/Register");
                         }
                         if (signInManager.IsSignedIn(User) && User.IsInRole("Admin")) 

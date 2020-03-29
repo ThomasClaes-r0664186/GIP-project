@@ -125,7 +125,7 @@ namespace Gip.Controllers
             }
             catch (Exception e) 
             {
-                ModelState.AddModelError("", e.Message + " " + e.InnerException.Message);
+                ModelState.AddModelError("", e.Message + " " + e.InnerException.Message == null ? " " : e.InnerException.Message);
                 return View("../Home/Register");
             }
         }
@@ -169,7 +169,7 @@ namespace Gip.Controllers
                     }
                     catch (Exception e)
                     {
-                        ModelState.AddModelError("", "Uw user is met zijn nummer aangeduid als lector in een lesmoment, gelieve dit lesmoment te verwijderen voordat u de user kan aanpassen. Fout: " + e.InnerException.Message);
+                        ModelState.AddModelError("", "Uw user is met zijn nummer aangeduid als lector in een lesmoment, gelieve dit lesmoment te verwijderen voordat u de user kan aanpassen. Fout: " + e.InnerException.Message == null ? " " : e.InnerException.Message);
                         return View(model);
                     }
 
@@ -212,7 +212,7 @@ namespace Gip.Controllers
                 }
                 catch (Exception e)
                 {
-                    ModelState.AddModelError("", "Uw user is aangeduid als lector in een lesmoment, gelieve dit lesmoment te verwijderen voordat u de user kan verwijderen. Fout: " + e.InnerException.Message);
+                    ModelState.AddModelError("", "Uw user is aangeduid als lector in een lesmoment, gelieve dit lesmoment te verwijderen voordat u de user kan verwijderen. Fout: " + e.InnerException.Message == null ? " " : e.InnerException.Message);
                     return View("ListUsers");
                 }
 

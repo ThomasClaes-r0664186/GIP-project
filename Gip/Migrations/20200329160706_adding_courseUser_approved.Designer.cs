@@ -4,14 +4,16 @@ using Gip.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Gip.Migrations
 {
     [DbContext(typeof(gipDatabaseContext))]
-    partial class gipDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20200329160706_adding_courseUser_approved")]
+    partial class adding_courseUser_approved
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,7 +85,7 @@ namespace Gip.Migrations
                     b.Property<string>("Vakcode")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<bool>("GoedGekeurd")
+                    b.Property<bool>("Approved")
                         .HasColumnType("bit");
 
                     b.HasKey("Userid", "Vakcode");

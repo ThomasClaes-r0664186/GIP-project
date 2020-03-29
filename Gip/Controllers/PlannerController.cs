@@ -102,6 +102,8 @@ namespace Gip.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
+
+
         [HttpPost]
         [Route("planner/add")]
         [Authorize(Roles = "Admin, Lector")]
@@ -251,7 +253,7 @@ namespace Gip.Controllers
             catch(Exception e)
             {
                 Console.WriteLine(e);
-                TempData["error"] = "deleteError" + "/" + "Er is een databank probleem opgetreden. " + e.InnerException.Message;
+                TempData["error"] = "deleteError" + "/" + "Er is een databank probleem opgetreden. " + e.InnerException.Message == null ? " " : e.InnerException.Message;
                 return RedirectToAction("Index", "Planner");
             }
             TempData["error"] = "deleteGood";
@@ -309,7 +311,7 @@ namespace Gip.Controllers
             }
             catch (Exception e) {
                 Console.WriteLine(e);
-                TempData["error"] = "editError" + "/" + e.Message + " " + e.InnerException.Message;
+                TempData["error"] = "editError" + "/" + e.Message + " " + e.InnerException.Message == null ? " " : e.InnerException.Message;
                 return RedirectToAction("Index","Planner");
             }
             TempData["error"] = "editGood";

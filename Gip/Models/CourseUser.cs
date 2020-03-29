@@ -11,6 +11,7 @@ namespace Gip.Models
     {
         private string vakcode;
         private string userid;
+        private bool goedGekeurd;
 
         public virtual User User { get; set; }
         public virtual Course VakcodeNavigation { get; set; }
@@ -66,6 +67,12 @@ namespace Gip.Models
                     }
                 }
             }
+        }
+
+        public bool GoedGekeurd
+        {
+            get { return goedGekeurd; }
+            set { this.goedGekeurd = value;  }
         }
     }
 }
