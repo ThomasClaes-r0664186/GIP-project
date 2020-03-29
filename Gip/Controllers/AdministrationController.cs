@@ -3,6 +3,7 @@ using Gip.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ namespace Gip.Controllers
     [Authorize(Roles = "Admin")]
     public class AdministrationController : Controller
     {
+        private gipDatabaseContext db = new gipDatabaseContext();
+
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly UserManager<IdentityUser> userManager;
 
@@ -104,15 +107,27 @@ namespace Gip.Controllers
 
             var userRoles = await userManager.GetRolesAsync(user);
 
-            var model = new EditUserViewModel
+            try
             {
-                Id = user.Id,
-                RNum = user.UserName,
-                Email = user.Email,
-                Roles = userRoles
-            };
+                var userForNames = db.User.Find(user.UserName);
 
-            return View(model);
+                var model = new EditUserViewModel
+                {
+                    Id = user.Id,
+                    Name = userForNames.VoorNaam,
+                    SurName = userForNames.Naam,
+                    RNum = user.UserName,
+                    Email = user.Email,
+                    Roles = userRoles
+                };
+
+                return View(model);
+            }
+            catch (Exception e) 
+            {
+                ModelState.AddModelError("", e.Message + " " + e.InnerException.Message);
+                return View("../Home/Register");
+            }
         }
 
         [HttpPost]
@@ -129,12 +144,35 @@ namespace Gip.Controllers
             {
                 var emailUser = await userManager.FindByEmailAsync(model.Email);
 
-                if (emailUser != null)
+                if (emailUser != null && user != emailUser)
                 {
                     ModelState.AddModelError("", "Email " + model.Email + " is already in use.");
                 }
                 else
                 {
+                    try
+                    {
+                        var OldDbUser = db.User.Find(user.UserName);
+                        if (model.RNum.Equals(OldDbUser.Userid))
+                        {
+                            db.User.Find(user.UserName).VoorNaam = model.Name;
+                            db.User.Find(user.UserName).Naam = model.SurName;
+                            db.User.Find(user.UserName).Mail = model.Email;
+                            db.SaveChanges();
+                        }
+                        else 
+                        {
+                            db.User.Add(new User { Userid = model.RNum, VoorNaam = model.Name, Naam = model.SurName, Mail = model.Email});
+                            db.User.Remove(OldDbUser);
+                            db.SaveChanges();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        ModelState.AddModelError("", "Uw user is met zijn nummer aangeduid als lector in een lesmoment, gelieve dit lesmoment te verwijderen voordat u de user kan aanpassen. Fout: " + e.InnerException.Message);
+                        return View(model);
+                    }
+
                     user.UserName = model.RNum;
                     user.Email = model.Email;
 
@@ -166,6 +204,18 @@ namespace Gip.Controllers
             }
             else
             {
+                try
+                {
+                    var OldDbUser = db.User.Find(user.UserName);
+                    db.User.Remove(OldDbUser);
+                    db.SaveChanges();
+                }
+                catch (Exception e)
+                {
+                    ModelState.AddModelError("", "Uw user is aangeduid als lector in een lesmoment, gelieve dit lesmoment te verwijderen voordat u de user kan verwijderen. Fout: " + e.InnerException.Message);
+                    return View("ListUsers");
+                }
+
                 var result = await userManager.DeleteAsync(user);
 
                 if (result.Succeeded)

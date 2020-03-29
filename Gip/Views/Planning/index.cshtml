@@ -119,21 +119,25 @@
                     <th>Start/einde</th>
                     <th>Vak</th>
                     <th>Lokaal</th>
-                    <th>Delete</th>
-                    <th>Edit</th>
-
-                </tr>
+                    @if (User.IsInRole("Lector") || User.IsInRole("Admin"))
+                    {
+                        <th>Delete</th>
+                        <th>Edit</th>
+                    }
+                    </tr>
             </thead>
             <tbody>
                 @foreach (var planner in Model)
                 {
                     @if (planner.Vakcode != null && planner.Gebouw != null)
                     {
-                    <tr>
-                        <td id="datumClick" onclick="window.location = 'planner/viewTopic?vakcode=@planner.Vakcode&datum=@planner.Datum&startMoment=@planner.Startmoment&eindMoment=@planner.Eindmoment&gebouw=@planner.Gebouw&verdiep=@planner.Verdiep&nummer=@planner.Nummer&datumY=@planner.Datum.ToString("yyyy")&datumM=@planner.Datum.ToString("MM")&datumD=@planner.Datum.ToString("dd")';" class="veranderDatum">@planner.Datum.ToString("dd/MM/yyyy")</td>
-                        <td>@planner.Startmoment.ToString("HH:mm") / @planner.Eindmoment.ToString("HH:mm")</td>
-                        <td id="vakClick" onclick="window.location = 'planner/viewCourseMoments?vakcode=@planner.Vakcode';">@planner.Titel</td>
-                        <td>@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer</td>
+                <tr>
+                    <td id="datumClick" onclick="window.location = 'planner/viewTopic?vakcode=@planner.Vakcode&datum=@planner.Datum&startMoment=@planner.Startmoment&eindMoment=@planner.Eindmoment&gebouw=@planner.Gebouw&verdiep=@planner.Verdiep&nummer=@planner.Nummer&rNummer=@planner.RNummer&datumY=@planner.Datum.ToString("yyyy")&datumM=@planner.Datum.ToString("MM")&datumD=@planner.Datum.ToString("dd")';" class="veranderDatum">@planner.Datum.ToString("dd/MM/yyyy")</td>
+                    <td>@planner.Startmoment.ToString("HH:mm") / @planner.Eindmoment.ToString("HH:mm")</td>
+                    <td id="vakClick" onclick="window.location = 'planner/viewCourseMoments?vakcode=@planner.Vakcode';">@planner.Titel</td>
+                    <td>@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer</td>
+                    @if (User.IsInRole("Lector") || User.IsInRole("Admin"))
+                    {
                         <td>
                             <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deletePlanning-@planner.Vakcode@planner.Datum.ToString().Replace(" ", "").Replace("/", "").Replace(":", "")@planner.Startmoment.ToString().Replace(" ", "").Replace("/", "").Replace(":", "")@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer.Trim()">Delete</button>
                             <div class="modal fade" id="deletePlanning-@planner.Vakcode.Trim()@planner.Datum.ToString().Replace(" ", "").Replace("/", "").Replace(":", "")@planner.Startmoment.ToString().Replace(" ", "").Replace("/", "").Replace(":", "")@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer.Trim()" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -154,6 +158,7 @@
                                                     <input type="text" name="gebouw" style="display: none" value="@planner.Gebouw">
                                                     <input type="text" name="verdiep" style="display: none" value="@planner.Verdiep">
                                                     <input type="text" name="nummer" style="display: none" value="@planner.Nummer">
+                                                    <input type="text" name="rNummer" style="display: none" value="@planner.RNummer">
                                                     <input type="text" name="eindMoment" style="display: none" value="@planner.Eindmoment">
                                                 </div>
                                                 Ben je zeker dat je het lesmoment op @planner.Datum.ToString("dd/MM/yyyy") over het vak @planner.Titel met startmoment @planner.Startmoment.ToString("HH:mm") wilt verwijderen?
@@ -188,6 +193,7 @@
                                                     <input type="text" name="oldGebouw" style="display: none" value="@planner.Gebouw">
                                                     <input type="text" name="oldVerdiep" style="display: none" value="@planner.Verdiep">
                                                     <input type="text" name="oldNummer" style="display: none" value="@planner.Nummer">
+                                                    <input type="text" name="OldRNummer" style="display: none" value="@planner.RNummer">
                                                 </div>
                                                 <div class="form-group">
                                                     <input type="date" id="dat" class="form-control" name="newDatum" min="@DateTime.Today.ToString("dd/MM/yyyy")" max="" required="required" value="@planner.Datum" />
@@ -205,7 +211,7 @@
                                                         {
                                                             if (@plannerLokaal.Gebouw != null && @plannerLokaal.Vakcode == null)
                                                             {
-                                                        <option value="@plannerLokaal.Gebouw.Trim()@plannerLokaal.Verdiep@plannerLokaal.Nummer">@plannerLokaal.Gebouw.Trim()@plannerLokaal.Verdiep@plannerLokaal.Nummer</option>
+                                                                <option value="@plannerLokaal.Gebouw.Trim()@plannerLokaal.Verdiep@plannerLokaal.Nummer">@plannerLokaal.Gebouw.Trim()@plannerLokaal.Verdiep@plannerLokaal.Nummer</option>
                                                             }
                                                         }
                                                     </select>
@@ -218,7 +224,7 @@
                                                         {
                                                             if (@plannerVak.Vakcode != null && @plannerVak.Gebouw == null)
                                                             {
-                                                        <option value="@plannerVak.Vakcode">@plannerVak.Vakcode @plannerVak.Titel</option>
+                                                                <option value="@plannerVak.Vakcode">@plannerVak.Vakcode @plannerVak.Titel</option>
                                                             }
                                                         }
                                                     </select>
@@ -248,6 +254,7 @@
                                 </div>
                             </div>
                         </td>
+                    }
                     </tr>
                         }
                     }

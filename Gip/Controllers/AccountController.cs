@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Gip.Models;
+using Gip.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +10,8 @@ namespace Gip.Controllers
 {
     public class AccountController : Controller
     {
+        private gipDatabaseContext db = new gipDatabaseContext();
+
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
 
@@ -45,6 +49,17 @@ namespace Gip.Controllers
 
                     if (result.Succeeded && email == null)
                     {
+                        try
+                        {
+                            User user2 = new User(model.SurName, model.Name, model.Email, model.RNum);
+                            db.User.Add(user2);
+                            db.SaveChanges();
+                        }
+                        catch (Exception e) 
+                        {
+                            ModelState.AddModelError("", e.Message + " " +e.InnerException.Message);
+                            return View("../Home/Register");
+                        }
                         if (signInManager.IsSignedIn(User) && User.IsInRole("Admin")) 
                         {
                             return RedirectToAction("ListUsers", "Administration");
@@ -103,6 +118,44 @@ namespace Gip.Controllers
         public IActionResult AccessDenied(string ReturnUrl) 
         {
             return View("../Shared/AccessDenied");
+        }
+
+        [HttpGet]
+        public IActionResult ChangePassword() 
+        { return View("../Home/ChangePassword"); }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return RedirectToAction("Login");
+                }
+
+                var result = await userManager.ChangePasswordAsync(user,
+                    model.CurrentPassword, model.NewPassword);
+
+                // The new password did not meet the complexity rules or
+                // the current password is incorrect. Add these errors to
+                // the ModelState and rerender ChangePassword view
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return View("../Home/ChangePassword");
+                }
+
+                // Upon successfully changing the password refresh sign-in cookie
+                await signInManager.RefreshSignInAsync(user);
+                return View("../Home/ChangePasswordConfirmation");
+            }
+
+            return View("../Home/ChangePassword", model);
         }
 
         //Werkt niet omdat de Json dit wilt returnen naar view: account/register, deze bestaat niet, moet op een manier gereturned worden naar Home/register

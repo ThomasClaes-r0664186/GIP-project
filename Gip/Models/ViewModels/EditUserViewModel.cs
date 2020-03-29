@@ -20,6 +20,12 @@ namespace Gip.Models
         [ValidRNum(ErrorMessage = "R nummer moet aan het juist formaat voldoen. Vb: R0000001")]
         public string RNum { get; set; }
 
+        [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string SurName { get; set; }
+
         [Required][EmailAddress]
         public string Email { get; set; }
 

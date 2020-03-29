@@ -16,6 +16,12 @@ namespace Gip.Models
         public string RNum { get; set; }
 
         [Required]
+        public string Name { get; set; }
+
+        [Required]
+        public string SurName { get; set; }
+
+        [Required]
         [EmailAddress]
         //[Remote(action:"IsEmailInUse", controller: "Account")]
         public string Email { get; set; }

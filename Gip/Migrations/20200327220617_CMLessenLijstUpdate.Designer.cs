@@ -4,14 +4,16 @@ using Gip.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Gip.Migrations
 {
     [DbContext(typeof(gipDatabaseContext))]
-    partial class gipDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20200327220617_CMLessenLijstUpdate")]
+    partial class CMLessenLijstUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,9 +62,6 @@ namespace Gip.Migrations
 
                     b.Property<DateTime>("Eindmoment")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("LessenLijst")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Vakcode", "Datum", "Gebouw", "Verdiep", "Nummer", "Userid", "Startmoment", "Eindmoment");
 
@@ -140,9 +139,6 @@ namespace Gip.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Naam")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("VoorNaam")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Userid");
