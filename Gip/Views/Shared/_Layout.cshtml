@@ -76,31 +76,37 @@
                             }
 
                         }
-                        <ul class="navbar-nav ml-auto">
-                            @if (signInManager.IsSignedIn(User))
-                            {
-                                <li class="nav-item">
-                                    <form method="post" asp-action="logout" asp-controller="Account">
-                                        <button type="submit" class="nav-link btn btn-link py-0" style="width:auto">
-                                            Logout @User.Identity.Name
-                                        </button>
-                                    </form>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Account" asp-action="ChangePassword">Verander wachtwoord</a>
-                                </li>
-                            }
-                            else
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            @User.Identity.Name
+                        </a>
+                        @if (signInManager.IsSignedIn(User))
+                        {
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <form method="post" asp-action="logout" asp-controller="Account">
+                                    <button type="submit" class="nav-link btn btn-link py-0" style="width:auto">
+                                        Logout
+                                    </button>
+                                </form>
+                                <div class="dropdown-divider"></div>
+                                <form method="get" asp-action="ChangePassword" asp-controller="Account">
+                                    <button type="submit" class="nav-link btn btn-link py-0" style="width:auto">
+                                        Change password
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                        else
+                        {
+                        <li class="nav-item">
+                                <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
                                 </li>
                             }
-                        </ul>
-                    </ul>
+                        </ul>                   
                 </div>
             </div>
         </nav>
