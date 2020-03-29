@@ -9,68 +9,64 @@
         {
             ViewBag.error = " ";
         }
-
-        @if (ViewBag.error.Contains("addError"))
-
+        else
         {
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>@ViewBag.error.Split("/")[1]</strong>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        }
+            @if (ViewBag.error.Contains("addError"))
 
-
-        @if (ViewBag.error.Contains("editError"))
-        {
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>@ViewBag.error.Split("/")[1] Het lokaal werd verwijderd, gelieve deze met de nieuwe gegevens aan te maken.</strong>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@ViewBag.error.Split("/")[1]</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("editError"))
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@ViewBag.error.Split("/")[1] Het lokaal werd verwijderd, gelieve deze met de nieuwe gegevens aan te maken.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("deleteError"))
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@ViewBag.error.Split("/")[1]</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("deleteGood"))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Het lokaal is correct verwijderd.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("addGood"))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Het lokaal is correct toegevoegd.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("editGood"))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Het lokaal is correct gewijzigd.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
         }
-
-        @if (ViewBag.error.Contains("deleteError"))
-        {
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>@ViewBag.error.Split("/")[1]</strong>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        }
-        @if (ViewBag.error.Contains("deleteGood"))
-        {
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>Het lokaal is correct verwijderd.</strong>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        }
-        @if (ViewBag.error.Contains("addGood"))
-        {
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>Het lokaal is correct toegevoegd.</strong>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        }
-        @if (ViewBag.error.Contains("editGood"))
-        {
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>Het lokaal is correct gewijzigd.</strong>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        }
-
-
-
 
         <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModalLong" style="float:right">Lokaal toevoegen</button>
 

@@ -42,6 +42,7 @@ namespace Gip.Controllers
 
         [HttpPost]
         [Route("vak/add")]
+        [Authorize(Roles = "Admin, Lector")]
         public ActionResult Add(string vakcode, string titel, int studiepunten)
         {
             try{
@@ -69,6 +70,7 @@ namespace Gip.Controllers
 
         [HttpGet]
         [Route("vak/add")]
+        [Authorize(Roles = "Admin, Lector")]
         public ActionResult Add()
         {
             return View();
@@ -76,6 +78,7 @@ namespace Gip.Controllers
 
         [HttpPost]
         [Route("vak/delete")]
+        [Authorize(Roles = "Admin, Lector")]
         public ActionResult Delete(string vakcode)
         {
             if (vakcode == null || vakcode.Trim().Equals(""))
@@ -109,6 +112,7 @@ namespace Gip.Controllers
         
         [HttpPost]
         [Route("vak/edit")]
+        [Authorize(Roles = "Admin, Lector")]
         public ActionResult Edit(string vakcodeOld, string vakcodeNew, string titel, int studiepunten)
         {
             TempData["error"] = "";

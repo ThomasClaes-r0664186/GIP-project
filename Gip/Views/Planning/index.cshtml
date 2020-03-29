@@ -31,82 +31,80 @@
         {
             ViewBag.error = " ";
         }
-
-        @if (ViewBag.error.Contains("addError"))
+        else
         {
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>@ViewBag.error.Split("/")[1]</strong>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+            @if (ViewBag.error.Contains("addError"))
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@ViewBag.error.Split("/")[1]</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("editError"))
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@ViewBag.error.Split("/")[1]</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("deleteError"))
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@ViewBag.error.Split("/")[1]</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("topicError"))
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@ViewBag.error.Split("/")[1]</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("deleteGood"))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Het lesmoment is correct verwijderd.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("addGood"))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Het lesmoment is correct toegevoegd.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("editGood"))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Het lesmoment is correct gewijzigd.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if ((ViewBag.prevWeek + 1) > 0)
+            {
+                <a role="button" class="btn btn-default btn-lg" asp-area="" asp-controller="Planner" asp-action="Index" asp-route-week="@ViewBag.prevWeek">
+                    <span data-feather="arrow-left"></span>
+                    Vorige week
+                </a>
+            }
         }
 
-        @if (ViewBag.error.Contains("editError"))
-        {
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>@ViewBag.error.Split("/")[1]</strong>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        }
-
-        @if (ViewBag.error.Contains("deleteError"))
-        {
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>@ViewBag.error.Split("/")[1]</strong>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        }
-
-        @if (ViewBag.error.Contains("topicError"))
-        {
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>@ViewBag.error.Split("/")[1]</strong>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        }
-
-        @if (ViewBag.error.Contains("deleteGood"))
-        {
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>Het lesmoment is correct verwijderd.</strong>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        }
-        @if (ViewBag.error.Contains("addGood"))
-        {
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>Het lesmoment is correct toegevoegd.</strong>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        }
-        @if (ViewBag.error.Contains("editGood"))
-        {
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>Het lesmoment is correct gewijzigd.</strong>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        }
-
-        @if ((ViewBag.prevWeek + 1) > 0)
-        {
-            <a role="button" class="btn btn-default btn-lg" asp-area="" asp-controller="Planner" asp-action="Index" asp-route-week="@ViewBag.prevWeek">
-                <span data-feather="arrow-left"></span>
-                Vorige week
-            </a>
-        }
         <a role="button" class="btn btn-default btn-lg" asp-area="" asp-controller="Planner" asp-action="Index" asp-route-week="@ViewBag.nextWeek">
             Volgende week
             <span data-feather="arrow-right"></span>
