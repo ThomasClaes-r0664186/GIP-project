@@ -236,7 +236,7 @@ namespace Gip.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult> SubscribeAsync(string vakCode) 
+        public async Task<ActionResult> Subscribe(string vakCode) 
         {
             try
             {
@@ -250,6 +250,27 @@ namespace Gip.Controllers
             }
             catch (Exception e) {
                 ViewBag.error = e.Message + " " + e.InnerException.Message==null?" ": e.InnerException.Message;
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult> UnSubscribe(string vakCode)
+        {
+            try
+            {
+                var vak = db.Course.Find(vakCode);
+                var user = await userManager.GetUserAsync(User);
+                CourseUser cu = db.CourseUser.Find(user.UserName, vak.Vakcode);
+
+                db.CourseUser.Remove(cu);
+
+                db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                ViewBag.error = e.Message + " " + e.InnerException.Message == null ? " " : e.InnerException.Message;
             }
             return RedirectToAction("Index");
         }

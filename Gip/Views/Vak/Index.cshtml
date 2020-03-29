@@ -219,7 +219,7 @@
 
                         <td>
                             <a>Uw aanvraag is in verwerking </a>
-                            <form method="post" asp-action="CancelSubReq">
+                            <form method="post" asp-action="UnSubscribe">
                                 <input type="hidden" name="vakCode" value="@vak.Vakcode" />
                                 <input type="submit" value="Stop aanvraag" class="btn btn-danger">
                             </form>
@@ -227,7 +227,7 @@
 
                         break;
                     default:
-
+                        <td><a>Er is iets misgelopen waardoor u dit te zien krijgt.</a></td>
                         break;
                 }
             }
