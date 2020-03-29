@@ -38,29 +38,29 @@
                             @if (User.IsInRole("Student") || User.IsInRole("Lector") || User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Vak" asp-action="Index">Vakken</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Vak" asp-action="Index" style="color:black">Vakken</a>
                                 </li>
                             }
                             @if (User.IsInRole("Lector") || User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Lokaal" asp-action="Index">Lokalen</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Lokaal" asp-action="Index" style="color:black">Lokalen</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Planner" asp-action="Add">Planner</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Planner" asp-action="Add" style="color:black">Planner</a>
                                 </li>
                             }
                             @if (User.IsInRole("Student") || User.IsInRole("Lector") || User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Planner" asp-action="Index">Planning</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Planner" asp-action="Index" style="color:black">Planning</a>
                                 </li>
                             }
                             @if (User.IsInRole("Admin"))
                             {
 
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" style="color:black"
                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Admin panel
                                     </a>
@@ -78,20 +78,20 @@
                         }
                         @if (signInManager.IsSignedIn(User))
                         {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                            <li class="nav-item dropdown" >
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" style="color:black"
                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     @User.Identity.Name
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <form method="post" asp-action="logout" asp-controller="Account">
-                                        <button type="submit" class="nav-link btn btn-link py-0" style="width:auto">
+                                        <button type="submit" class="nav-link btn btn-link py-0" style="width:auto; color:black;" >
                                             Logout
                                         </button>
                                     </form>
                                     <div class="dropdown-divider"></div>
                                     <form method="get" asp-action="ChangePassword" asp-controller="Account">
-                                        <button type="submit" class="nav-link btn btn-link py-0" style="width:auto">
+                                        <button type="submit" class="nav-link btn btn-link py-0" style="width:auto; color:black;" >
                                             Change password
                                         </button>
                                     </form>
@@ -101,10 +101,10 @@
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
+                                <a class="nav-link" asp-controller="Account" asp-action="Register" style="color:black;">Register</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
+                                <a class="nav-link" asp-controller="Account" asp-action="Login" style="color:black;">Login</a>
                             </li>
                         }
                     </ul>                   
