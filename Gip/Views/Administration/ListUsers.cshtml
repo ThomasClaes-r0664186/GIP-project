@@ -9,9 +9,10 @@
 @if (Model.Any())
 {
     <a asp-action="Register" asp-controller="Account"
-       class="btn btn-primary mb-3" style="width:auto">
+       class="btn btn-success" style="width:auto">
         Add new user
     </a>
+    <br />
 
     foreach (var user in Model)
     {
@@ -23,7 +24,7 @@
                 <h5 class="card-title">@user.UserName</h5>
             </div>
             <div class="card-footer">
-                <a asp-action="EditUser" asp-controller="Administration" asp-route-id="@user.Id" class="btn  btn-sm btn-primary">Edit</a>
+                <a asp-action="EditUser" asp-controller="Administration" asp-route-id="@user.Id" class="btn btn-sm btn-dark">Edit</a>
                 <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteUserModal-@user.UserName">Delete</button>
                 <div class="modal fade" id="deleteUserModal-@user.UserName" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
