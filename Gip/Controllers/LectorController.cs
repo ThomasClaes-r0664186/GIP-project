@@ -54,7 +54,51 @@ namespace Gip.Controllers
                 }
             }
 
+            if (TempData["error"] != null)
+            {
+                ViewBag.error = TempData["error"].ToString();
+                TempData["error"] = null;
+            }
+
             return View(studentRequests); 
+        }
+
+        [HttpPost]
+        public ActionResult ApproveStudent(string studId, string vakId) 
+        {
+            try 
+            {
+                db.CourseUser.Find(studId, vakId).GoedGekeurd = true;
+
+                db.SaveChanges();
+
+                TempData["error"] = "approveGood";
+            }
+            catch (Exception e) 
+            {
+                TempData["error"] = "error" + "/" + e.Message;
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public ActionResult DenyStudent(string studId, string vakId)
+        {
+            try 
+            {
+                CourseUser cu = db.CourseUser.Find(studId, vakId);
+
+                db.CourseUser.Remove(cu);
+
+                db.SaveChanges();
+
+                TempData["error"] = "denyGood";
+            }
+            catch (Exception e)
+            {
+                TempData["error"] = "error" + "/" + e.Message;
+            }
+            return RedirectToAction("Index");
         }
     }
 }

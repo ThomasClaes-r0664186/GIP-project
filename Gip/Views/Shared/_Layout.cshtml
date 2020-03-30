@@ -56,7 +56,6 @@
                             }
                             @if (User.IsInRole("Admin"))
                             {
-
                                 <li class="nav-item dropdown text-dark">
                                     <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" 
                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -70,9 +69,7 @@
                                            asp-action="ListRoles">Roles</a>
                                     </div>
                                 </li>
-
                             }
-
                         }
                         @if (signInManager.IsSignedIn(User))
                         {
