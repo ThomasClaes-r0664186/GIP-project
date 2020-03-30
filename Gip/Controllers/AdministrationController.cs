@@ -90,8 +90,17 @@ namespace Gip.Controllers
         [HttpGet]
         public ActionResult ListUsers()
         {
+
             var users = userManager.Users;
-            return View(users);
+            var oldUsers = db.User;
+            List<ListUsersViewModel> listUsers = new List<ListUsersViewModel>();
+
+            foreach (var user in users)
+            {
+                ListUsersViewModel l = new ListUsersViewModel { UserId = user.Id, UserName = user.UserName, Naam = oldUsers.Find(user.UserName).Naam, Voornaam = oldUsers.Find(user.UserName).VoorNaam };
+                listUsers.Add(l);
+            }
+            return View(listUsers);
         }
 
         [HttpGet]
@@ -178,6 +187,11 @@ namespace Gip.Controllers
 
                     var result = await userManager.UpdateAsync(user);
 
+                    if(ModelState.ErrorCount >= 1) 
+                    {
+                        ModelState.AddModelError("", "Uw user is met zijn nummer aangeduid als lector in een lesmoment, gelieve dit lesmoment te verwijderen voordat u de user kan aanpassen.");
+                    }
+
                     if (result.Succeeded)
                     {
                         return RedirectToAction("ListUsers");
@@ -213,7 +227,7 @@ namespace Gip.Controllers
                 catch (Exception e)
                 {
                     ModelState.AddModelError("", "Uw user is aangeduid als lector in een lesmoment, gelieve dit lesmoment te verwijderen voordat u de user kan verwijderen. Fout: " + e.InnerException.Message == null ? " " : e.InnerException.Message);
-                    return View("ListUsers");
+                    return RedirectToAction("ListUsers");
                 }
 
                 var result = await userManager.DeleteAsync(user);
