@@ -30,21 +30,36 @@
                     <ul class="navbar-nav flex-grow-1">
                         @if (signInManager.IsSignedIn(User))
                         {
-                            //Deze twee moeten samen in een dropdown komen, maar enkel wanneer de user in de rol van Lector is, dus vakken & aanvragen
-                            @if (User.IsInRole("Student") || User.IsInRole("Lector") || User.IsInRole("Admin"))
+
+                            @if (User.IsInRole("Lector"))
+                            {
+                                <li class="nav-item dropdown text-dark">
+                                    <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Lector panel
+                                    </a>
+                                    <div class="dropdown-menu text-dark" aria-labelledby="navbarDropdown">
+                                        <form method="get" asp-action="Index" asp-controller="Vak">
+                                            <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto">
+                                                Vakken
+                                            </button>
+                                         </form>
+                                        <div class="dropdown-divider"></div>
+                                        <form method="get" asp-action="Index" asp-controller="Lector">
+                                            <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto">
+                                                Aanvragen
+                                            </button>
+                                        </form>
+                                    </div>
+                                </li>
+                            }
+
+                            @if (User.IsInRole("Student") || User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Vak" asp-action="Index">Vakken</a>
                                 </li>
                             }
-                            @if (User.IsInRole("Lector")) 
-                            { 
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Lector" asp-action="Index">Aanvragen</a>
-                                </li>
-                            }
-                            //tot hier
-
+                        
                             @if (User.IsInRole("Lector") || User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
