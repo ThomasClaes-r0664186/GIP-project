@@ -33,12 +33,21 @@
         </li>*@
                         @if (signInManager.IsSignedIn(User))
                         {
+                            //Deze twee moeten samen in een dropdown komen, maar enkel wanneer de user in de rol van Lector is, dus vakken & aanvragen
                             @if (User.IsInRole("Student") || User.IsInRole("Lector") || User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Vak" asp-action="Index">Vakken</a>
                                 </li>
                             }
+                            @if (User.IsInRole("Lector")) 
+                            { 
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Lector" asp-action="Index">Aanvragen</a>
+                                </li>
+                            }
+                            //tot hier
+
                             @if (User.IsInRole("Lector") || User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
