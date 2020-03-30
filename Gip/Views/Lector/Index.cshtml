@@ -38,71 +38,83 @@ else
         </div>
     }
 }
-
+<h1>Aanvragen</h1>
 @if (Model.Any())
 {
-    <table>
+<table class="table table-bordered table-hover table-striped">
+    <thead>
         @foreach (var studReq in Model)
         {
             if (studReq.UserId == null)
             {
-                <thead>Vak : @studReq.VakCode @studReq.Titel </thead>
+                <tr>
+                    <th class="bg-light text-dark">@studReq.VakCode : @studReq.Titel </th>
+                </tr>
+                
+
             }
             else
             {
-                <tr>
-                    <td><h5>@studReq.Naam @studReq.VoorNaam</h5></td>
-                    <td>
-                        <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#approveModal-@studReq.UserId">Goedkeuren</button>
-                        <div class="modal fade" id="approveModal-@studReq.UserId" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Goedkeuring aanvraag</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form asp-action="ApproveStudent" asp-route-studId="@studReq.UserId" asp-route-vakId="@studReq.VakCode" method="post">
-                                            Ben je zeker dat je de @studReq.Naam @studReq.VoorNaam zijn aanvraag wilt goedkeuren voor het vak @studReq.Titel?
-                                            <div class="modal-footer">
-                                                <button type="submit" class="btn btn-sm btn-success">Goedkeuren</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
+    <tr>
+        <td class="bg-white">
+            <h5>@studReq.Naam @studReq.VoorNaam</h5>
+            <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#approveModal-@studReq.UserId">Accepteer</button>
+            <div class="modal fade" id="approveModal-@studReq.UserId" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Goedkeuring aanvraag</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-                    </td>
+                        <div class="modal-body">
+                            <form asp-action="ApproveStudent" asp-route-studId="@studReq.UserId" asp-route-vakId="@studReq.VakCode" method="post">
+                                Ben je zeker dat je de @studReq.Naam @studReq.VoorNaam zijn aanvraag wilt goedkeuren voor het vak @studReq.Titel?
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-sm btn-success">Goedkeuren</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#denyModal-@studReq.UserId">Weiger</button>
+            <div class="modal fade" id="denyModal-@studReq.UserId" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Afwijzen aanvraag</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form asp-action="DenyStudent" asp-route-studId="@studReq.UserId" asp-route-vakId="@studReq.VakCode" method="post">
+                                Ben je zeker dat je de @studReq.Naam @studReq.VoorNaam zijn aanvraag wilt afwijzen voor het vak @studReq.Titel?
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-sm btn-danger">Afwijzen</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
 
-                    <td>
-                        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#denyModal-@studReq.UserId">Afkeuren</button>
-                        <div class="modal fade" id="denyModal-@studReq.UserId" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Afwijzen aanvraag</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form asp-action="DenyStudent" asp-route-studId="@studReq.UserId" asp-route-vakId="@studReq.VakCode" method="post">
-                                            Ben je zeker dat je de @studReq.Naam @studReq.VoorNaam zijn aanvraag wilt afwijzen voor het vak @studReq.Titel?
-                                            <div class="modal-footer">
-                                                <button type="submit" class="btn btn-sm btn-danger">Afwijzen</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
+  
+          
+      
+
+    </tr>
             }
 
+
+
+
+
         }
+    </thead>
     </table>
 }
 else
