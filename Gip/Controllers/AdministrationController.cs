@@ -91,7 +91,15 @@ namespace Gip.Controllers
         public ActionResult ListUsers()
         {
             var users = userManager.Users;
-            return View(users);
+            var oldUsers = db.User;
+            List<ListUsersViewModel> listUsers = new List<ListUsersViewModel>();
+
+            foreach (var user in users)
+            {
+                ListUsersViewModel l = new ListUsersViewModel { UserId = user.Id, UserName = user.UserName, Naam = oldUsers.Find(user.UserName).Naam, Voornaam = oldUsers.Find(user.UserName).VoorNaam };
+                listUsers.Add(l);
+            }
+            return View(listUsers);
         }
 
         [HttpGet]
