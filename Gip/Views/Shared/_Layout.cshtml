@@ -42,13 +42,13 @@
                                     </a>
                                     <div class="dropdown-menu text-white" aria-labelledby="navbarDropdown">
                                         <form method="get" asp-action="Index" asp-controller="Vak">
-                                            <button type="submit" class="nav-link btn btn-link py-0 text-white" style="width:auto">
+                                            <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto">
                                                 Vakken
                                             </button>
                                         </form>
                                         <div class="dropdown-divider"></div>
                                         <form method="get" asp-action="Index" asp-controller="Lector">
-                                            <button type="submit" class="nav-link btn btn-link py-0 text-white" style="width:auto">
+                                            <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto">
                                                 Aanvragen
                                             </button>
                                         </form>
@@ -87,13 +87,13 @@
                                     </a>
                                     <div class="dropdown-menu text-white" aria-labelledby="navbarDropdown">
                                         <form method="get" asp-action="ListUsers" asp-controller="Administration">
-                                            <button type="submit" class="nav-link btn btn-link py-0 text-white" style="width:auto;">
+                                            <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto;">
                                                 Users control panel
                                             </button>
                                         </form>
                                         <div class="dropdown-divider"></div>
                                         <form method="get" asp-action="ListRoles" asp-controller="Administration">
-                                            <button type="submit" class="nav-link btn btn-link py-0 text-white" style="width:auto;">
+                                            <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto;">
                                                 Roles control panel
                                             </button>
                                         </form>
@@ -103,21 +103,21 @@
                         }
                         @if (signInManager.IsSignedIn(User))
                         {
-                            <li class="nav-item dropdown text-white" style="position:fixed;right:70px;top:7px;">
+                            <li class="nav-item dropdown text-white" style="position:fixed;right:70px;">
                                 <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown"
                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     @User.Identity.Name
                                 </a>
                                 <div class="dropdown-menu text-white" aria-labelledby="navbarDropdown">
                                     <form method="post" asp-action="logout" asp-controller="Account">
-                                        <button type="submit" class="nav-link btn btn-link py-0 text-white" style="width:auto;">
+                                        <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto;">
                                             Logout @User.Identity.Name
 
                                         </button>
                                     </form>
                                     <div class="dropdown-divider"></div>
                                     <form method="get" asp-action="ChangePassword" asp-controller="Account">
-                                        <button type="submit" class="nav-link btn btn-link py-0 text-white" style="width:auto;">
+                                        <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto;">
                                             Change password
                                         </button>
                                     </form>
