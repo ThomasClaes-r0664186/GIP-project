@@ -106,17 +106,22 @@ namespace Gip.Controllers
         public ActionResult Add(string vakcode, string titel, int studiepunten)
         {
             try{
-                Course course = new Course { Vakcode = vakcode, Titel = titel, Studiepunten = studiepunten};
+                var cInUse = from c in db.Course
+                             where c.Vakcode == vakcode
+                             select c;
+
+                if (cInUse.Any()) 
+                {
+                    TempData["error"] = "addError" + "/" + "Dit lokaal bestaat reeds.";
+                    return RedirectToAction("Index", "Vak");
+                }
+
+                Course course = new Course { Vakcode = vakcode.ToUpper(), Titel = titel, Studiepunten = studiepunten};
                 db.Course.Add(course);
                 db.SaveChanges();
             }
             catch (Exception e)
             {
-                if (e.InnerException != null && e.InnerException.Message.ToLower().Contains("primary"))
-                {
-                    TempData["error"] = "addError" + "/" + "De vakcode die u heeft ingegeven, is reeds in gebruik. Gelieve een andere vakcode te gebruiken.";
-                    return RedirectToAction("Index", "Vak");
-                }
                 Console.WriteLine(e);
                 TempData["error"] = "addError" + "/" + e.Message;
                 return RedirectToAction("Index", "Vak");
@@ -133,6 +138,7 @@ namespace Gip.Controllers
             return View();
         }
 
+        // verwijder terwijl gebruikt in coursemoment?
         [HttpPost]
         [Route("vak/delete")]
         [Authorize(Roles = "Admin, Lector")]
@@ -167,7 +173,6 @@ namespace Gip.Controllers
             return RedirectToAction("Index", "Vak");
         }
 
-        //fixed, zorg er nog voor dat vak niet kan toegevoegd worden wanneer vakcode reeds in gebruik + verwijder bij gebruik lesmoment?
         [HttpPost]
         [Route("vak/edit")]
         [Authorize(Roles = "Admin, Lector")]
@@ -180,13 +185,37 @@ namespace Gip.Controllers
                 return RedirectToAction("Index", "Vak");
             }
             try{
+
                 Course course = db.Course.Find(vakcodeOld);
+
+                if (course == null) 
+                {
+                    TempData["error"] = "editError" + "/" + "Het oude vak id is niet correct doorgegeven.";
+                    return RedirectToAction("Index", "Vak");
+                }
+
+                var cInUse = from c in db.Course
+                             where c.Vakcode == vakcodeNew
+                             select c;
+
+                if (cInUse.Any())
+                {
+                    foreach (var c in cInUse) 
+                    {
+                        if (c != course)
+                        {
+                            TempData["error"] = "editError" + "/" + "De nieuwe vakcode die u heeft ingegeven, is reeds in gebruik.";
+                            return RedirectToAction("Index", "Vak");
+                        }
+                    }
+                }
+
                 Course newCourse = new Course();
-                newCourse.Vakcode = vakcodeNew;
+                newCourse.Vakcode = vakcodeNew.ToUpper();
                 newCourse.Titel = titel;
                 newCourse.Studiepunten = studiepunten;
 
-                course.Vakcode = newCourse.Vakcode;
+                course.Vakcode = newCourse.Vakcode.ToUpper();
                 course.Titel = newCourse.Titel;
                 course.Studiepunten = newCourse.Studiepunten;
                 db.SaveChanges();

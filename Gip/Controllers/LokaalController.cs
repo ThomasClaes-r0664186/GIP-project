@@ -46,6 +46,18 @@ namespace Gip.Controllers
         {
             try
             {
+                var rInUse = from d in db.Room
+                             where d.Gebouw == gebouw
+                             where d.Verdiep == verdiep
+                             where d.Nummer == nummer
+                             select d;
+
+                if (rInUse.Any())
+                {
+                    TempData["error"] = "addError" + "/" + "Dit lokaal bestaat reeds.";
+                    return RedirectToAction("Index", "Lokaal");
+                }
+
                 Room room = new Room { Gebouw = gebouw.ToUpper() , Verdiep = verdiep, Nummer = nummer, Type = type, Capaciteit = capaciteit, Middelen = middelen};
                 db.Room.Add(room);
                 
@@ -53,11 +65,6 @@ namespace Gip.Controllers
             }
             catch (Exception e)
             {
-                if (e.InnerException != null && e.InnerException.Message.ToLower().Contains("primary"))
-                {
-                    TempData["error"] = "addError" + "/" + "De combinatie van gebouw, verdiep en nummer die u heeft ingegeven, is reeds in gebruik. Gelieve een andere combinatie te gebruiken.";
-                    return RedirectToAction("Index", "Lokaal");
-                }
                 Console.WriteLine(e);
                 TempData["error"] = "addError" + "/" + e.Message;
                 return RedirectToAction("Index", "Lokaal");
@@ -113,7 +120,6 @@ namespace Gip.Controllers
             return View();
         }
 
-        //fixed - moet nog aangepast worden dat gebouw, verdiep en lokaal combo niet reeds mag bestaan.
         [HttpPost]
         [Route("lokaal/edit")]
         public ActionResult Edit(int lokaalId, string gebouw, int verdiep, string nummer, string type, int capaciteit, string middelen)
@@ -123,7 +129,19 @@ namespace Gip.Controllers
             {
                 if (lokaalId < 0)
                 {
-                    TempData["error"] = "deleteError" + "/" + "LokaalId werd verkeerd meegegeven.";
+                    TempData["error"] = "editError" + "/" + "LokaalId werd verkeerd meegegeven.";
+                    return RedirectToAction("Index", "Lokaal");
+                }
+
+                var rInUse = from d in db.Room
+                             where d.Gebouw == gebouw
+                             where d.Verdiep == verdiep
+                             where d.Nummer == nummer
+                             select d;
+
+                if (rInUse.Any()) 
+                {
+                    TempData["error"] = "editError" + "/" + "Dit lokaal bestaat reeds.";
                     return RedirectToAction("Index", "Lokaal");
                 }
 
