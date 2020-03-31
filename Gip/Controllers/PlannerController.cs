@@ -97,6 +97,7 @@ namespace Gip.Controllers
                                select new
                                {
                                    cmId = cm.Id,
+                                   cId = c.Id,
                                    datum = s.Datum,
                                    startmoment = s.Startmoment,
                                    gebouw = r.Gebouw,
@@ -117,6 +118,7 @@ namespace Gip.Controllers
                     foreach (var qry in _qry)
                     {
                         Planner planner = new Planner { cmId = qry.cmId, 
+                                                        cId = qry.cId,
                                                         Datum = qry.datum, 
                                                         Startmoment = qry.startmoment, 
                                                         Gebouw = qry.gebouw, 
