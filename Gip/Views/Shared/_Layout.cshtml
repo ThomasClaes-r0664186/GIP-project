@@ -17,7 +17,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </head>
-<body style="background-color:#e9f3f8;">
+<body style="background-color:#e9f3f8;" onload="clockDate()">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3" style="background-color:#e00049;">
             <div class="container">
@@ -29,6 +29,9 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                <div id="timeDate" class="text-white" style="position:absolute;left:25px;">
+                    <a id="d">day</a> <a id="mon">month</a> <a id="y">year</a> <br /><a id="h">hour</a>:<a id="m">minute</a>
+                </div>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         @if (signInManager.IsSignedIn(User))
@@ -127,7 +130,7 @@
                         }
                         else
                         {
-                            
+
                             <li class="nav-item">
                                 <a class="nav-link text-white" asp-controller="Account" asp-action="Login">Login</a>
                             </li>
@@ -160,6 +163,7 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/popupFormOnCheckBoxClick.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/js/clockAndDate.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
