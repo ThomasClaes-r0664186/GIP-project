@@ -25,14 +25,12 @@ namespace Gip.Controllers
             this.userManager = userManager;
         }
 
-        //fixed
         [HttpGet]
         public IActionResult CreateRole()
         {
             return View();
         }
 
-        //fixed
         [HttpPost]
         public async Task<IActionResult> CreateRoleAsync(CreateRoleViewModel model)
         {
@@ -55,7 +53,6 @@ namespace Gip.Controllers
             return View(model);
         }
 
-        //fixed
         [HttpGet]
         public ActionResult ListRoles()
         {
@@ -63,7 +60,6 @@ namespace Gip.Controllers
             return View(roles);
         }
 
-        //fixed
         [HttpGet]
         public async Task<IActionResult> EditRole(string id)
         {
@@ -91,7 +87,6 @@ namespace Gip.Controllers
             return View(model);
         }
 
-        //fixed
         [HttpGet]
         public ActionResult ListUsers()
         {
@@ -100,7 +95,6 @@ namespace Gip.Controllers
             return View(users);
         }
 
-        //fixed
         [HttpGet]
         public async Task<IActionResult> EditUser(string id)
         {
@@ -210,7 +204,6 @@ namespace Gip.Controllers
             }
         }
 
-        //fixed
         [HttpGet]
         public async Task<IActionResult> EditUsersInRole(string roleId)
         {
@@ -249,7 +242,6 @@ namespace Gip.Controllers
             return View(model);
         }
 
-        //fixed
         [HttpPost]
         public async Task<IActionResult> EditUsersInRole(List<UserRoleViewModel> model, string roleId)
         {
@@ -292,7 +284,6 @@ namespace Gip.Controllers
             return RedirectToAction("EditRole", new { Id = roleId });
         }
 
-        //fixed
         [HttpGet]
         public async Task<IActionResult> ManageUserRoles(string userId)
         {
@@ -331,7 +322,6 @@ namespace Gip.Controllers
             return View(model);
         }
 
-        //fixed
         [HttpPost]
         public async Task<IActionResult> ManageUserRoles(List<UserRolesViewModel> model, string userId)
         {

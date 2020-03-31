@@ -13,7 +13,6 @@ namespace Gip.Controllers
     {
         private gipDatabaseContext db = new gipDatabaseContext();
 
-        //fixed (niet zeker over qry)
         [HttpGet]
         [Route("Lector")]
         public ActionResult Index()
@@ -46,7 +45,6 @@ namespace Gip.Controllers
             return View(studentRequests);
         }
 
-        //fixed
         [HttpPost]
         public ActionResult ApproveStudent(int cuId) 
         {
@@ -66,7 +64,6 @@ namespace Gip.Controllers
             return RedirectToAction("Index");
         }
 
-        //fixed
         [HttpPost]
         public ActionResult DenyStudent(int cuId)
         {

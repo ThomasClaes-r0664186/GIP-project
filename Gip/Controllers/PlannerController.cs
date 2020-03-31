@@ -25,7 +25,6 @@ namespace Gip.Controllers
         }
 
         // GET /planner
-        //fixed
         [HttpGet]
         [Route("planner")]
         public async Task<ActionResult> Index(int week)
@@ -169,7 +168,7 @@ namespace Gip.Controllers
             }
         }
 
-        //fixed denk ik
+        //fixed - nog iets aan toevoegen
         [HttpPost]
         [Route("planner/add")]
         [Authorize(Roles = "Admin, Lector")]
@@ -223,7 +222,6 @@ namespace Gip.Controllers
             return RedirectToAction("Index", "Planner");
         }
 
-        //fixed
         [HttpGet]
         [Route("planner/add")]
         [Authorize(Roles = "Admin, Lector")]
@@ -258,7 +256,6 @@ namespace Gip.Controllers
             }
         }
 
-        //fixed
         [HttpPost]
         [Route("planner/delete")]
         [Authorize(Roles = "Admin, Lector")]
@@ -283,7 +280,7 @@ namespace Gip.Controllers
             return RedirectToAction("Index", "Planner");
         }
 
-        //fixed?
+        //fixed - nog iets aan toevoegen.
         [HttpPost]
         [Route("planner/edit")]
         [Authorize(Roles = "Admin, Lector")]
@@ -321,7 +318,6 @@ namespace Gip.Controllers
                     db.Schedule.Add(schedule);
                     db.SaveChanges();
 
-                    //werkt dit wel? Hier wordt de schedule waarvoor de id nog gegenereerd moet worden toegewezen aan scheduleId van oldmoment
                     oldMoment.ScheduleId = schedule.Id;
                     db.SaveChanges();
                 }
@@ -349,7 +345,6 @@ namespace Gip.Controllers
             return RedirectToAction("Index", "Planner");
         }
 
-        //fixed - werkt nog niet
         [HttpGet]
         [Route("planner/viewTopic")]
         public ActionResult ViewTopic(int cmId)
@@ -416,7 +411,6 @@ namespace Gip.Controllers
             }
         }
 
-        //fixed - werkt nog niet
         [HttpGet]
         [Route("planner/viewCourseMoments")]
         public ActionResult ViewCourseMoments(int vakcode)

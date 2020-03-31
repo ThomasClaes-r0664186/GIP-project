@@ -25,7 +25,6 @@ namespace Gip.Controllers
         }
 
         // GET
-        //fixed
         [HttpGet]
         [Route("vak")]
         public async Task<ActionResult> Index()
@@ -126,7 +125,6 @@ namespace Gip.Controllers
             return RedirectToAction("Index", "Vak");
         }
 
-        //fixed
         [HttpGet]
         [Route("vak/add")]
         [Authorize(Roles = "Admin, Lector")]
@@ -135,7 +133,6 @@ namespace Gip.Controllers
             return View();
         }
 
-        //fixed 
         [HttpPost]
         [Route("vak/delete")]
         [Authorize(Roles = "Admin, Lector")]
@@ -203,7 +200,6 @@ namespace Gip.Controllers
             return RedirectToAction("Index", "Vak");
         }
 
-        //fixed
         [HttpPost]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult> Subscribe(int vakCode) 
@@ -224,7 +220,6 @@ namespace Gip.Controllers
             return RedirectToAction("Index");
         }
 
-        //fixed
         [HttpPost]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult> UnSubscribe(int vakCode)

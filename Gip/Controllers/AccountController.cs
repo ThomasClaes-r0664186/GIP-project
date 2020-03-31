@@ -21,14 +21,12 @@ namespace Gip.Controllers
             this.signInManager = signInManager;
         }
 
-        //fixed
         [AllowAnonymous]
         public IActionResult Register()
         {
             return View("../Home/Register");
         }
 
-        //fixed
         [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
@@ -127,14 +125,12 @@ namespace Gip.Controllers
             return View("../Home/Register");
         }
 
-        //fixed
         [HttpPost]
         public async Task<IActionResult> Logout() {
             await signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
 
-        //fixed
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Login()
@@ -142,7 +138,6 @@ namespace Gip.Controllers
             return View("../Home/Login");
         }
 
-        //fixed
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
@@ -167,7 +162,6 @@ namespace Gip.Controllers
             return View("../Home/Login", model);
         }
 
-        //fixed
         [HttpGet]
         [AllowAnonymous]
         public IActionResult AccessDenied(string ReturnUrl) 
@@ -175,12 +169,10 @@ namespace Gip.Controllers
             return View("../Shared/AccessDenied");
         }
 
-        //fixed
         [HttpGet]
         public IActionResult ChangePassword() 
         { return View("../Home/ChangePassword"); }
 
-        //fixed
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {

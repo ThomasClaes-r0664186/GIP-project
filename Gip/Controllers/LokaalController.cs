@@ -66,7 +66,6 @@ namespace Gip.Controllers
             return RedirectToAction("Index", "Lokaal");
         }
         
-        //changed
         [HttpGet]
         [Route("lokaal/add")]
         public ActionResult Add()
