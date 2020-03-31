@@ -353,11 +353,59 @@ namespace Gip.Controllers
         public ActionResult ViewTopic(int cmId)
         {
             try {
-                //users, courses, room & schedule == null 
-                CourseMoment moment = db.CourseMoment.Find(cmId);
+                var qryCm = from cm in db.CourseMoment
+                            join c in db.Course on cm.CourseId equals c.Id
+                            join s in db.Schedule on cm.ScheduleId equals s.Id
+                            join r in db.Room on cm.RoomId equals r.Id
+                            join u in db.Users on cm.ApplicationUserId equals u.Id
+                            where cm.Id == cmId
+                            select new
+                            {
+                                Datum = s.Datum,
+                                Startmoment = s.Startmoment,
+                                Eindmoment = s.Eindmoment,
+                                Gebouw = r.Gebouw,
+                                Verdiep = r.Verdiep,
+                                Nummer = r.Nummer,
+                                Vakcode = c.Vakcode,
+                                Titel = c.Titel,
+                                LessenLijst = cm.LessenLijst
+                            };
 
-                Planner planner = new Planner(moment.Schedule.Datum, moment.Schedule.Startmoment, moment.Room.Gebouw, moment.Room.Verdiep, moment.Room.Nummer, moment.Courses.Vakcode, moment.Courses.Titel, moment.Schedule.Eindmoment, moment.LessenLijst);
-                return View("../Planning/ViewTopi", planner);
+                if (qryCm.Any())
+                {
+                    Planner planner = new Planner
+                    {
+                        Datum = qryCm.FirstOrDefault().Datum,
+                        Startmoment = qryCm.FirstOrDefault().Startmoment,
+                        Eindmoment = qryCm.FirstOrDefault().Eindmoment,
+                        Gebouw = qryCm.FirstOrDefault().Gebouw,
+                        Verdiep = qryCm.FirstOrDefault().Verdiep,
+                        Nummer = qryCm.FirstOrDefault().Nummer,
+                        Vakcode = qryCm.FirstOrDefault().Vakcode,
+                        Titel = qryCm.FirstOrDefault().Titel,
+                        LessenLijst = qryCm.FirstOrDefault().LessenLijst
+                    };
+
+                    return View("../Planning/ViewTopi", planner);
+                }
+                else 
+                {
+                    TempData["error"] = "topicError" + "/" + "Databank fout.";
+                    return RedirectToAction("Index", "Planner");
+                }
+                ////users, courses, room & schedule == null 
+                //CourseMoment moment = db.CourseMoment.Find(cmId);
+
+                            //Planner planner = new Planner(
+                            //                                moment.Room.Gebouw, 
+                            //                                moment.Room.Verdiep, 
+                            //                                moment.Room.Nummer, 
+                            //                                moment.Courses.Vakcode, 
+                            //                                moment.Courses.Titel, 
+                            //                                moment.LessenLijst);
+
+                            //return View("../Planning/ViewTopi", planner);
             }
             catch (Exception e) {
                 Console.WriteLine(e);
