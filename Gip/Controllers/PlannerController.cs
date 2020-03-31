@@ -347,12 +347,13 @@ namespace Gip.Controllers
             return RedirectToAction("Index", "Planner");
         }
 
-        //fixed
+        //fixed - werkt nog niet
         [HttpGet]
         [Route("planner/viewTopic")]
         public ActionResult ViewTopic(int cmId)
         {
             try {
+                //users, courses, room & schedule == null 
                 CourseMoment moment = db.CourseMoment.Find(cmId);
 
                 Planner planner = new Planner(moment.Schedule.Datum, moment.Schedule.Startmoment, moment.Room.Gebouw, moment.Room.Verdiep, moment.Room.Nummer, moment.Courses.Vakcode, moment.Courses.Titel, moment.Schedule.Eindmoment, moment.LessenLijst);
@@ -365,7 +366,7 @@ namespace Gip.Controllers
             }
         }
 
-        //fixed
+        //fixed - werkt nog niet
         [HttpGet]
         [Route("planner/viewCourseMoments")]
         public ActionResult ViewCourseMoments(int vakcode)

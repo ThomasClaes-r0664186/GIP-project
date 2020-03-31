@@ -192,7 +192,7 @@ namespace Gip.Controllers
                 course.Vakcode = newCourse.Vakcode;
                 course.Titel = newCourse.Titel;
                 course.Studiepunten = newCourse.Studiepunten;
-
+                db.SaveChanges();
             }
             catch (Exception e) {
                 Console.WriteLine(e.Message);
