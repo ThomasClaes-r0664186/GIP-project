@@ -17,11 +17,14 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </head>
-<body>
+<body style="background-color:#e9f3f8;" onload="clockDate()">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3" style="background-color:#e00049;">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Toledo V2</a>
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                    <img src="https://i.imgur.com/aNxQJBI.jpg" style="width:50px;height:50px;">
+                </a>
+                <a class="navbar-brand text-white" asp-controller="Home" asp-action="Index">Intranet V2</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -33,19 +36,19 @@
 
                             @if (User.IsInRole("Lector"))
                             {
-                                <li class="nav-item dropdown text-dark">
-                                    <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <li class="nav-item dropdown text-white">
+                                    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Lector panel
                                     </a>
-                                    <div class="dropdown-menu text-dark" aria-labelledby="navbarDropdown">
+                                    <div class="dropdown-menu text-white" aria-labelledby="navbarDropdown">
                                         <form method="get" asp-action="Index" asp-controller="Vak">
-                                            <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto">
+                                            <button type="submit" class="nav-link btn btn-link py-0 text-white" style="width:auto">
                                                 Vakken
                                             </button>
-                                         </form>
+                                        </form>
                                         <div class="dropdown-divider"></div>
                                         <form method="get" asp-action="Index" asp-controller="Lector">
-                                            <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto">
+                                            <button type="submit" class="nav-link btn btn-link py-0 text-white" style="width:auto">
                                                 Aanvragen
                                             </button>
                                         </form>
@@ -56,65 +59,65 @@
                             @if (User.IsInRole("Student") || User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Vak" asp-action="Index">Vakken</a>
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Vak" asp-action="Index">Vakken</a>
                                 </li>
                             }
-                        
+
                             @if (User.IsInRole("Lector") || User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Lokaal" asp-action="Index">Lokalen</a>
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Lokaal" asp-action="Index">Lokalen</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Planner" asp-action="Add">Planner</a>
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Planner" asp-action="Add">Planner</a>
                                 </li>
                             }
                             @if (User.IsInRole("Student") || User.IsInRole("Lector") || User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Planner" asp-action="Index">Planning</a>
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Planner" asp-action="Index">Planning</a>
                                 </li>
                             }
                             @if (User.IsInRole("Admin"))
                             {
-                                <li class="nav-item dropdown text-dark">
-                                    <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown"
+                                <li class="nav-item dropdown text-white">
+                                    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown"
                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Admin panel
                                     </a>
-                                    <div class="dropdown-menu text-dark" aria-labelledby="navbarDropdown">
+                                    <div class="dropdown-menu text-white" aria-labelledby="navbarDropdown">
                                         <form method="get" asp-action="ListUsers" asp-controller="Administration">
-                                            <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto;">
+                                            <button type="submit" class="nav-link btn btn-link py-0 text-white" style="width:auto;">
                                                 Users control panel
                                             </button>
                                         </form>
                                         <div class="dropdown-divider"></div>
                                         <form method="get" asp-action="ListRoles" asp-controller="Administration">
-                                            <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto;">
+                                            <button type="submit" class="nav-link btn btn-link py-0 text-white" style="width:auto;">
                                                 Roles control panel
                                             </button>
                                         </form>
-                                        </div>
+                                    </div>
                                 </li>
                             }
                         }
                         @if (signInManager.IsSignedIn(User))
                         {
-                            <li class="nav-item dropdown text-dark" style="position:fixed;right:70px;top:7px;" >
-                                <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown"
+                            <li class="nav-item dropdown text-white" style="position:fixed;right:70px;top:7px;">
+                                <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown"
                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     @User.Identity.Name
                                 </a>
-                                <div class="dropdown-menu text-dark" aria-labelledby="navbarDropdown">
+                                <div class="dropdown-menu text-white" aria-labelledby="navbarDropdown">
                                     <form method="post" asp-action="logout" asp-controller="Account">
-                                        <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto;">
+                                        <button type="submit" class="nav-link btn btn-link py-0 text-white" style="width:auto;">
                                             Logout @User.Identity.Name
 
                                         </button>
                                     </form>
                                     <div class="dropdown-divider"></div>
                                     <form method="get" asp-action="ChangePassword" asp-controller="Account">
-                                        <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto;">
+                                        <button type="submit" class="nav-link btn btn-link py-0 text-white" style="width:auto;">
                                             Change password
                                         </button>
                                     </form>
@@ -124,12 +127,14 @@
                         }
                         else
                         {
+
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Register</a>
+                                <a class="nav-link text-white" asp-controller="Account" asp-action="Login">Login</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
+                                <a class="nav-link text-white" asp-controller="Account" asp-action="Register">Register</a>
                             </li>
+
                         }
                     </ul>
                 </div>
@@ -143,16 +148,19 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-dark">
+    <footer class="border-top footer text-white" style="background-color:#003469;">
         <div class="container">
             © 2020 All rights reserved | Thomas Claes, Joni Timmermans, Tim Kerckx, Karel de Smet & Jaimie Haesevoets
         </div>
     </footer>
+    <img src="https://i.imgur.com/IxxLOxL.png" style="position:absolute;bottom:80px; right:20px;" />
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/popupFormOnCheckBoxClick.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/js/clockAndDate.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
