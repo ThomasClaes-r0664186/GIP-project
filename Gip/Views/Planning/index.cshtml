@@ -110,8 +110,7 @@
             <span data-feather="arrow-right"></span>
         </a>
 
-        <table class="table table-bordered table-hover table-striped">
-            <thead>
+        <table class="table table-bordered table-hover table-striped table-light">
                 <tr>
                     <th>Datum</th>
                     <th>Start/einde</th>
@@ -123,8 +122,7 @@
                         <th>Edit</th>
                     }
                     </tr>
-            </thead>
-            <tbody>
+
                 @foreach (var planner in Model)
                 {
                     @if (planner.Vakcode != null && planner.Gebouw != null)
@@ -231,7 +229,7 @@
                                                     <textarea class="form-control" name="newLessenlijst" rows="4" cols="50">@planner.LessenLijst</textarea>
                                                     <small>Geef een eventuele beschrijving</small>
                                                 </div>
-                                                <button type="submit" class="btn btn-dark">Wijzig planning</button>
+                                                <button type="submit" class="btn btn-sm btn-success">Wijzig planning</button>
                                             </form>
                                         </div>
                                     </div>
@@ -242,7 +240,6 @@
                     </tr>
                         }
                     }
-            </tbody>
         </table>
 
         <p>Als u op de <b>datum klikt</b>, krijgt u het lesoverzicht te zien.</p>
