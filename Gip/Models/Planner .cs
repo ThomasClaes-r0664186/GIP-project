@@ -4,6 +4,9 @@ namespace Gip.Models
 {
     public class Planner
     {
+        public int cmId {get; set;}
+        public int cId { get; set; }
+        public int rId { get; set; }
         private DateTime _datum;
         private DateTime _startmoment;
         private string _gebouw;
@@ -15,6 +18,8 @@ namespace Gip.Models
         private DateTime _eindmoment;
         private string _lessenLijst;
         private int _capaciteit;
+
+        public Planner() { }
 
         public Planner(DateTime datum, DateTime startmoment, string gebouw, int verdiep, string nummer, string vakcode, string titel, DateTime eindmoment)
         {

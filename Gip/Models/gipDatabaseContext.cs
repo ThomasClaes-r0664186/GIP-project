@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Gip.Models
 {
-    public partial class gipDatabaseContext : IdentityDbContext
+    public partial class gipDatabaseContext : IdentityDbContext<ApplicationUser>
     {
         public gipDatabaseContext()
         {
@@ -19,7 +19,7 @@ namespace Gip.Models
         public virtual DbSet<CourseMoment> CourseMoment { get; set; }
         public virtual DbSet<Room> Room { get; set; }
         public virtual DbSet<Schedule> Schedule { get; set; }
-        public virtual DbSet<User> User { get; set; }
+        //public virtual DbSet<ApplicationUser> ApplicationUser { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -33,32 +33,32 @@ namespace Gip.Models
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Room>().HasKey(x => new {
-                x.Gebouw,
-                x.Verdiep,
-                x.Nummer
-            });
+            //modelBuilder.Entity<Room>().HasKey(x => new {
+            //    x.Gebouw,
+            //    x.Verdiep,
+            //    x.Nummer
+            //});
 
-            modelBuilder.Entity<CourseUser>().HasKey(x => new {
-                x.Userid,
-                x.Vakcode
-            });
+            //modelBuilder.Entity<CourseUser>().HasKey(x => new {
+            //    x.Userid,
+            //    x.Vakcode
+            //});
 
-            modelBuilder.Entity<Schedule>().HasKey(x => new {
-                x.Datum,
-                x.Startmoment,
-                x.Eindmoment
-            });
+            //modelBuilder.Entity<Schedule>().HasKey(x => new {
+            //    x.Datum,
+            //    x.Startmoment,
+            //    x.Eindmoment
+            //});
 
-            modelBuilder.Entity<CourseMoment>().HasKey(x => new { 
-                x.Vakcode, 
-                x.Datum, 
-                x.Gebouw, 
-                x.Verdiep, 
-                x.Nummer, 
-                x.Userid, 
-                x.Startmoment, 
-                x.Eindmoment });
+            //modelBuilder.Entity<CourseMoment>().HasKey(x => new { 
+            //    x.Vakcode, 
+            //    x.Datum, 
+            //    x.Gebouw, 
+            //    x.Verdiep, 
+            //    x.Nummer, 
+            //    x.Userid, 
+            //    x.Startmoment, 
+            //    x.Eindmoment });
         }
     }
 }

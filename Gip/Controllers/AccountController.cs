@@ -12,21 +12,23 @@ namespace Gip.Controllers
     {
         private gipDatabaseContext db = new gipDatabaseContext();
 
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
         }
 
+        //fixed
         [AllowAnonymous]
         public IActionResult Register()
         {
             return View("../Home/Register");
         }
 
+        //fixed
         [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
@@ -34,21 +36,27 @@ namespace Gip.Controllers
             if (ModelState.IsValid)
             {
                 var email = await userManager.FindByEmailAsync(model.Email);
-                var user = new IdentityUser
+                var username = await userManager.FindByNameAsync(model.RNum);
+                var user = new ApplicationUser
                 {
                     UserName = model.RNum,
-                    Email = model.Email
+                    Email = model.Email,
+                    Naam = model.SurName,
+                    VoorNaam = model.Name
                 };
                 if (email != null)
                 {
                     ModelState.AddModelError("", "Email " + model.Email + " is already in use.");
                 }
+                else if (username != null)
+                {
+                    ModelState.AddModelError("", "Student number: " + model.RNum + " is already in use.");
+                }
                 else
                 {
                     var result = await userManager.CreateAsync(user, model.Password);
 
-                    //ervoor zorgen dat er admin gemaakt kan worden?
-                    switch (user.UserName.ToLower().ToCharArray()[0]) 
+                    switch (user.UserName.ToLower().ToCharArray()[0])
                     {
                         case 'c':
                             var result1 = await userManager.AddToRoleAsync(user, "Student");
@@ -92,44 +100,41 @@ namespace Gip.Controllers
                                 ModelState.AddModelError("", error6.Description);
                             }
                             break;
-                        default:break;
+                        default: break;
                     }
-
-                    if (result.Succeeded && email == null)
+                    if (!result.Succeeded)
                     {
-                        try
+                        foreach (var error in result.Errors)
                         {
-                            User user2 = new User(model.SurName, model.Name, model.Email, model.RNum);
-                            db.User.Add(user2);
-                            db.SaveChanges();
+                            ModelState.AddModelError("", error.Description);
                         }
-                        catch (Exception e) 
-                        {
-                            ModelState.AddModelError("", e.Message + " " + e.InnerException.Message == null ? " " : e.InnerException.Message);
-                            return View("../Home/Register");
-                        }
-                        if (signInManager.IsSignedIn(User) && User.IsInRole("Admin")) 
+                        return View("../Home/Register");
+                    }
+                    else
+                    {
+                        if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                         {
                             return RedirectToAction("ListUsers", "Administration");
                         }
-                        await signInManager.SignInAsync(user, isPersistent: false);
-                        return RedirectToAction("Index", "Home");
-                    }
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError("", error.Description);
+                        else
+                        {
+                            await signInManager.SignInAsync(user, isPersistent: false);
+                            return RedirectToAction("Index", "Home");
+                        }
                     }
                 }
             }
             return View("../Home/Register");
         }
 
+        //fixed
         [HttpPost]
         public async Task<IActionResult> Logout() {
             await signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
 
+        //fixed
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Login()
@@ -137,6 +142,7 @@ namespace Gip.Controllers
             return View("../Home/Login");
         }
 
+        //fixed
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
@@ -161,6 +167,7 @@ namespace Gip.Controllers
             return View("../Home/Login", model);
         }
 
+        //fixed
         [HttpGet]
         [AllowAnonymous]
         public IActionResult AccessDenied(string ReturnUrl) 
@@ -168,10 +175,12 @@ namespace Gip.Controllers
             return View("../Shared/AccessDenied");
         }
 
+        //fixed
         [HttpGet]
         public IActionResult ChangePassword() 
         { return View("../Home/ChangePassword"); }
 
+        //fixed
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
@@ -205,38 +214,5 @@ namespace Gip.Controllers
 
             return View("../Home/ChangePassword", model);
         }
-
-        //Werkt niet omdat de Json dit wilt returnen naar view: account/register, deze bestaat niet, moet op een manier gereturned worden naar Home/register
-        //[AcceptVerbs("Get", "Post")]
-        //[AllowAnonymous]
-        //public async Task<IActionResult> IsEmailInUse(string email)
-        //{
-        //    var user = await userManager.FindByEmailAsync(email);
-
-        //    if (user == null)
-        //    {
-        //        return Json(true);
-        //    }
-        //    else
-        //    {
-        //        return Json($"Email {email} is already in use.");
-        //    }
-        //}
-
-        //[AcceptVerbs("Get", "Post")]
-        //[AllowAnonymous]
-        //public async Task<IActionResult> RNumInUse(string RNum)
-        //{
-        //    var user = await userManager.FindByNameAsync(RNum);
-
-        //    if (user == null)
-        //    {
-        //        return Json(true);
-        //    }
-        //    else
-        //    {
-        //        return Json($"{RNum} is already in use.");
-        //    }
-        //}
     }
 }

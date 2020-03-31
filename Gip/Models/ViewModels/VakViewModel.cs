@@ -7,6 +7,7 @@ namespace Gip.Models.ViewModels
 {
     public class VakViewModel
     {
+        public int courseId { get; set; }
         public string Vakcode { get; set; }
         public string Titel { get; set; }
         public int Studiepunten { get; set; }

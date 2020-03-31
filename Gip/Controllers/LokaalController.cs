@@ -17,7 +17,6 @@ namespace Gip.Controllers
         {
             try
             {
-                //var gebouwlst = new List<string>();
                 var qry = from d in db.Room
                     orderby d.Gebouw, d.Verdiep, d.Nummer
                     select d;
@@ -47,13 +46,7 @@ namespace Gip.Controllers
         {
             try
             {
-                Room room = new Room();
-                room.Gebouw = gebouw.ToUpper();
-                room.Verdiep = verdiep;
-                room.Nummer = nummer;
-                room.Type = type;
-                room.Capaciteit = capaciteit;
-                room.Middelen = middelen;
+                Room room = new Room { Gebouw = gebouw.ToUpper() , Verdiep = verdiep, Nummer = nummer, Type = type, Capaciteit = capaciteit, Middelen = middelen};
                 db.Room.Add(room);
                 
                 db.SaveChanges();
@@ -73,6 +66,7 @@ namespace Gip.Controllers
             return RedirectToAction("Index", "Lokaal");
         }
         
+        //changed
         [HttpGet]
         [Route("lokaal/add")]
         public ActionResult Add()
@@ -80,21 +74,18 @@ namespace Gip.Controllers
             return View();
         }
 
+        //fixed, verwijder bij gebruik lesmoment?
         [HttpPost]
         [Route("lokaal/delete")]
-        public ActionResult Delete(string lokaalId)
+        public ActionResult Delete(int lokaalId)
         {
-            if (lokaalId == null || lokaalId.Trim().Equals(""))
+            if (lokaalId < 0)
             {
-                TempData["error"] = "deleteError" + "/" + "LokaalId werd leeg meegegeven.";
+                TempData["error"] = "deleteError" + "/" + "LokaalId werd verkeerd meegegeven.";
                 return RedirectToAction("Index", "Lokaal");
             }
-            lokaalId = lokaalId.Trim() + " ";
-            string gebouw = lokaalId.Substring(0, 1);
-            int verdieping = int.Parse(lokaalId.Substring(1,1));
-            string nummer = lokaalId.Substring(2, (lokaalId.Length-2));
-            
-            Room room = db.Room.Find(gebouw,verdieping,nummer);
+
+            Room room = db.Room.Find(lokaalId);
 
             if (room == null)
             {
@@ -123,62 +114,34 @@ namespace Gip.Controllers
             return View();
         }
 
-
+        //fixed - moet nog aangepast worden dat gebouw, verdiep en lokaal combo niet reeds mag bestaan.
         [HttpPost]
         [Route("lokaal/edit")]
-        public ActionResult Edit(string lokaalId, string gebouw, int verdiep, string nummer, string type, int capaciteit, string middelen)
+        public ActionResult Edit(int lokaalId, string gebouw, int verdiep, string nummer, string type, int capaciteit, string middelen)
         {
             TempData["error"] = "";
             try
             {
-                gebouw = gebouw.ToUpper();
-                if (lokaalId == null || lokaalId.Trim().Equals(""))
+                if (lokaalId < 0)
                 {
-                    TempData["error"] = "editError" + "/" + "De oude lokaal id is niet goed doorgegeven want deze is leeg.";
+                    TempData["error"] = "deleteError" + "/" + "LokaalId werd verkeerd meegegeven.";
                     return RedirectToAction("Index", "Lokaal");
                 }
 
-                lokaalId = lokaalId.Trim() + " ";
-                string gebouwId = lokaalId.Substring(0, 1);
-                int verdieping = int.Parse(lokaalId.Substring(1, 1));
-                string nummerOld = lokaalId.Substring(2, (lokaalId.Length - 2));
+                Room room = db.Room.Find(lokaalId);
+                Room newRoom = new Room { Gebouw = gebouw.Trim(), Verdiep = verdiep , Nummer = nummer, Type = type, Capaciteit = capaciteit, Middelen = middelen};
 
-                Room room = db.Room.Find(gebouwId, verdieping, nummerOld);
-                Room newRoom = new Room();
+                room.Gebouw = newRoom.Gebouw;
+                room.Verdiep = newRoom.Verdiep;
+                room.Nummer = newRoom.Nummer;
+                room.Type = newRoom.Type;
+                room.Capaciteit = newRoom.Capaciteit;
+                room.Middelen = newRoom.Middelen;
 
-                newRoom.Gebouw = gebouw.Trim();
-                newRoom.Verdiep = verdiep;
-                newRoom.Nummer = nummer;
-                newRoom.Type = type;
-                newRoom.Capaciteit = capaciteit;
-                newRoom.Middelen = middelen;
-
-                if (room.Gebouw.Trim().Equals(newRoom.Gebouw) && room.Verdiep.Equals(newRoom.Verdiep) && room.Nummer.Equals(newRoom.Nummer))
-                {
-                    db.Room.Find(room.Gebouw, room.Verdiep, room.Nummer).Type = newRoom.Type;
-                    db.Room.Find(room.Gebouw, room.Verdiep, room.Nummer).Capaciteit = newRoom.Capaciteit;
-                    db.Room.Find(room.Gebouw, room.Verdiep, room.Nummer).Middelen = newRoom.Middelen;
-                    db.SaveChanges();
-                }
-                else 
-                {
-                    db.Room.Add(newRoom);
-                    db.SaveChanges();
-                    Delete(lokaalId);
-                }
-                if (TempData["error"].ToString().Contains("deleteError"))
-                {
-                    TempData["error"] = "editError" + "/" + "Dit lokaal werd gebruikt in een lesmoment. Er werd een nieuw lokaal aangemaakt met de nieuwe waarden, gelieve dit aan te passen in de planning.";
-                    return RedirectToAction("Index", "Lokaal");
-                }
+                db.SaveChanges();
             }
             catch (Exception e)
             {
-                if (e.InnerException != null && e.InnerException.Message.ToLower().Contains("primary"))
-                {
-                    TempData["error"] = "addError" + "/" + "De combinatie van gebouw, verdiep en nummer die u heeft ingegeven, is reeds in gebruik. Gelieve een andere combinatie te gebruiken.";
-                    return RedirectToAction("Index", "Lokaal");
-                }
                 Console.WriteLine(e.Message);
                 TempData["error"] = "editError" + "/" + e.Message;
                 return RedirectToAction("Index", "Lokaal");

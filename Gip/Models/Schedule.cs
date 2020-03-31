@@ -10,23 +10,24 @@ namespace Gip.Models
     {
         public Schedule()
         {
-            CourseMoment = new HashSet<CourseMoment>();
+            Coursemoments = new HashSet<CourseMoment>();
         }
         public Schedule(DateTime datum, DateTime startmoment, DateTime eindmoment)
         {
             this.Datum = datum;
             this.Startmoment = startmoment;
             this.Eindmoment = eindmoment;
-            CourseMoment = new HashSet<CourseMoment>();
+            Coursemoments = new HashSet<CourseMoment>();
         }
+
+        public int Id { get; set; }
 
         private DateTime datum;
         private DateTime startmoment;
         private DateTime eindmoment;
 
-        public virtual ICollection<CourseMoment> CourseMoment { get; set; }
+        public virtual ICollection<CourseMoment> Coursemoments { get; set; }
 
-        [Key, Column(Order = 0)]
         public DateTime Datum
         {
             get { return datum; }
@@ -52,7 +53,6 @@ namespace Gip.Models
             }
         }
 
-        [Key, Column(Order = 1)]
         public DateTime Startmoment
         {
             get { return startmoment; }
@@ -74,7 +74,6 @@ namespace Gip.Models
             }
         }
 
-        [Key, Column(Order = 2)]
         public DateTime Eindmoment
         {
             get { return eindmoment; }

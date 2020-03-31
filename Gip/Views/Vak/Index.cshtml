@@ -1,4 +1,4 @@
-﻿@inject SignInManager<IdentityUser> signInManager;
+﻿@inject SignInManager<ApplicationUser> signInManager;
 @model List<VakViewModel>
     <Gip.Models.Course>
         @{
@@ -128,8 +128,8 @@
             @if (signInManager.IsSignedIn(User) && User.IsInRole("Lector") || User.IsInRole("Admin"))
             {
                 <td>
-                    <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteVakModal-@vak.Vakcode">Delete</button>
-                    <div class="modal fade" id="deleteVakModal-@vak.Vakcode" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteVakModal-@vak.courseId">Delete</button>
+                    <div class="modal fade" id="deleteVakModal-@vak.courseId" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -141,7 +141,7 @@
                                 <div class="modal-body">
                                     <form action="/vak/delete" method="post">
                                         <div>
-                                            <input type="text" name="vakcode" style="display: none" value="@vak.Vakcode">
+                                            <input type="text" name="vakcode" style="display: none" value="@vak.courseId">
                                         </div>
                                         Ben je zeker dat je het vak @vak.Titel wilt verwijderen?
                                         <div class="modal-footer">
@@ -154,8 +154,8 @@
                     </div>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-sm btn-dark" data-toggle="modal" data-target="#editVak-@vak.Vakcode">Edit</button>
-                    <div class="modal fade" id="editVak-@vak.Vakcode" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <button type="button" class="btn btn-sm btn-dark" data-toggle="modal" data-target="#editVak-@vak.courseId">Edit</button>
+                    <div class="modal fade" id="editVak-@vak.courseId" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -167,7 +167,7 @@
                                 <div class="modal-body">
                                     <form action="/vak/edit" method="post">
                                         <div>
-                                            <input type="text" name="vakcodeOld" style="display:none" value="@vak.Vakcode">
+                                            <input type="text" name="vakcodeOld" style="display:none" value="@vak.courseId">
                                         </div>
                                         <div class="form-group">
                                             <label for="vakcode" class="col-form-label">Vakcode:</label>
@@ -197,7 +197,7 @@
 
                         <td>
                             <form method="post" asp-action="Subscribe">
-                                <input type="hidden" name="vakCode" value="@vak.Vakcode" />
+                                <input type="hidden" name="vakCode" value="@vak.courseId" />
                                 <input type="submit" value="Schrijf in" class="btn btn-success">
                             </form>
                         </td>
@@ -209,7 +209,7 @@
 
                         <td>
                             <form method="post" asp-action="UnSubscribe">
-                                <input type="hidden" name="vakCode" value="@vak.Vakcode" />
+                                <input type="hidden" name="vakCode" value="@vak.courseId" />
                                 <input type="submit" value="Schrijf uit" class="btn btn-danger">
                             </form>
                         </td>
@@ -220,7 +220,7 @@
                         <td>
                             <a>Uw aanvraag is in verwerking </a>
                             <form method="post" asp-action="UnSubscribe">
-                                <input type="hidden" name="vakCode" value="@vak.Vakcode" />
+                                <input type="hidden" name="vakCode" value="@vak.courseId" />
                                 <input type="submit" value="Stop aanvraag" class="btn btn-danger">
                             </form>
                         </td>

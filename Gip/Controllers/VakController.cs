@@ -15,16 +15,17 @@ namespace Gip.Controllers
     {
         private gipDatabaseContext db = new gipDatabaseContext();
 
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
 
-        public VakController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public VakController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
         }
 
         // GET
+        //fixed
         [HttpGet]
         [Route("vak")]
         public async Task<ActionResult> Index()
@@ -43,28 +44,28 @@ namespace Gip.Controllers
                     var user = await userManager.GetUserAsync(User);
 
                     //aflopen databank en alle rijen, waar de student in voorkomt in de tabel CourseUser, in een list<CourseUser> steken.
+
                     var qry2 = from c in db.CourseUser
-                               orderby c.Vakcode
-                               where c.Userid == user.UserName
+                               where c.ApplicationUserId == user.Id
                                select c;
-                    
+
                     //alle vakken aflopen
                     foreach (var vak in qry) 
                     {
                         //Als het vak voorkomt in de list<CourseUser> qry2, dan maak je een VakViewModel aan
                         //      waar ingeschreven == 1 staat voor: de student is geaccepteerd door lector (goedgekeurd == true)
                         //      en ingeschreven == 2 staat voor: de student heeft aanvraag gedaan maar is nog niet geaccepteerd (goedgekeurd == false)
-                        var q2 = qry2.Where(cu => cu.Vakcode.Equals(vak.Vakcode));
+                        var q2 = qry2.Where(cu => cu.CourseId.Equals(vak.Id));
                         if (q2.Any())
                         {
-                            var temp = new VakViewModel { Vakcode = vak.Vakcode, Titel = vak.Titel, Studiepunten = vak.Studiepunten, Ingeschreven = q2.First().GoedGekeurd ? 1 : 2 };
+                            var temp = new VakViewModel { courseId = vak.Id, Vakcode = vak.Vakcode, Titel = vak.Titel, Studiepunten = vak.Studiepunten, Ingeschreven = q2.First().GoedGekeurd ? 1 : 2 };
                             vakViewModels.Add(temp);
                         }
                         //als het vak daar niet in voorkomt, maak je een VakViewModel aan met ingeschreven op 0, 
                         //dit betekent dat je geen aanvraag hebt gedaan voor de inschrijving noch ingeschreven bent.
                         else
                         {
-                            var temp = new VakViewModel { Vakcode = vak.Vakcode, Titel = vak.Titel, Studiepunten = vak.Studiepunten, Ingeschreven = 0 };
+                            var temp = new VakViewModel { courseId = vak.Id ,Vakcode = vak.Vakcode, Titel = vak.Titel, Studiepunten = vak.Studiepunten, Ingeschreven = 0 };
                             vakViewModels.Add(temp);
                         }
                     }
@@ -74,7 +75,7 @@ namespace Gip.Controllers
                 {
                     foreach (var vak in qry)
                     {
-                        var temp = new VakViewModel { Vakcode = vak.Vakcode, Titel = vak.Titel, Studiepunten = vak.Studiepunten };
+                        var temp = new VakViewModel { courseId = vak.Id, Vakcode = vak.Vakcode, Titel = vak.Titel, Studiepunten = vak.Studiepunten };
                         vakViewModels.Add(temp);
                     }
                 }
@@ -99,16 +100,14 @@ namespace Gip.Controllers
             }
         }
 
+        //fixed, zorg er nog voor dat vak niet kan toegevoegd worden wanneer vakcode reeds in gebruik
         [HttpPost]
         [Route("vak/add")]
         [Authorize(Roles = "Admin, Lector")]
         public ActionResult Add(string vakcode, string titel, int studiepunten)
         {
             try{
-                Course course = new Course();
-                course.Vakcode = vakcode;
-                course.Titel = titel;
-                course.Studiepunten = studiepunten;
+                Course course = new Course { Vakcode = vakcode, Titel = titel, Studiepunten = studiepunten};
                 db.Course.Add(course);
                 db.SaveChanges();
             }
@@ -127,6 +126,7 @@ namespace Gip.Controllers
             return RedirectToAction("Index", "Vak");
         }
 
+        //fixed
         [HttpGet]
         [Route("vak/add")]
         [Authorize(Roles = "Admin, Lector")]
@@ -135,14 +135,15 @@ namespace Gip.Controllers
             return View();
         }
 
+        //fixed 
         [HttpPost]
         [Route("vak/delete")]
         [Authorize(Roles = "Admin, Lector")]
-        public ActionResult Delete(string vakcode)
+        public ActionResult Delete(int vakcode)
         {
-            if (vakcode == null || vakcode.Trim().Equals(""))
+            if (vakcode < 0)
             {
-                TempData["error"] = "deleteError" + "/" + "Vakcode mag niet leeg zijn.";
+                TempData["error"] = "deleteError" + "/" + "Vakcode is foutief.";
                 return  RedirectToAction("Index", "Vak");
             }
 
@@ -168,14 +169,15 @@ namespace Gip.Controllers
             TempData["error"] = "deleteGood";
             return RedirectToAction("Index", "Vak");
         }
-        
+
+        //fixed, zorg er nog voor dat vak niet kan toegevoegd worden wanneer vakcode reeds in gebruik + verwijder bij gebruik lesmoment?
         [HttpPost]
         [Route("vak/edit")]
         [Authorize(Roles = "Admin, Lector")]
-        public ActionResult Edit(string vakcodeOld, string vakcodeNew, string titel, int studiepunten)
+        public ActionResult Edit(int vakcodeOld, string vakcodeNew, string titel, int studiepunten)
         {
             TempData["error"] = "";
-            if (vakcodeOld == null || vakcodeOld.Trim().Equals(""))
+            if (vakcodeOld < 0)
             {
                 TempData["error"] = "editError" + "/" + "De oude vakcode is niet goed doorgegeven want deze is leeg.";
                 return RedirectToAction("Index", "Vak");
@@ -187,65 +189,33 @@ namespace Gip.Controllers
                 newCourse.Titel = titel;
                 newCourse.Studiepunten = studiepunten;
 
-                if (course.Vakcode.Equals(newCourse.Vakcode)) {
-                    db.Course.Find(vakcodeOld).Titel = newCourse.Titel;
-                    db.Course.Find(vakcodeOld).Studiepunten = newCourse.Studiepunten;
-                    db.SaveChanges();
-                }
-                else
-                {
-                    db.Course.Add(newCourse);
-                    db.SaveChanges();
-                    Delete(vakcodeOld);
-                }
-                if (TempData["error"].ToString().Contains("deleteError"))
-                {
-                    TempData["error"] = "editError" + "/" + "Dit vak werd gebruikt in een lesmoment. Er werd een nieuw vak aangemaakt met de nieuwe waarden, gelieve dit aan te passen in de planning.";
-                    return RedirectToAction("Index", "Vak");
-                }
+                course.Vakcode = newCourse.Vakcode;
+                course.Titel = newCourse.Titel;
+                course.Studiepunten = newCourse.Studiepunten;
+
             }
             catch (Exception e) {
-                if (e.InnerException != null && e.InnerException.Message.ToLower().Contains("primary"))
-                {
-                    TempData["error"] = "editError" + "/" + "De vakcode die u heeft ingegeven, is reeds in gebruik. Gelieve een andere vakcode te gebruiken.";
-                    return RedirectToAction("Index", "Vak");
-                }
                 Console.WriteLine(e.Message);
                 TempData["error"] = "editError" + "/" + e.Message;
                 return RedirectToAction("Index", "Vak");
-
-                /**
-                 * lesmoment mee updaten met verandering lokaal, poging 1:
-                 * 
-                 * if (e.Message.ToLower().Contains("updating")) {
-                    Course newVak = db.Course.Find(vakcodeNew);
-
-                    var query = db.CourseMoment.Where(l => l.Vakcode == vakcodeOld);
-                    foreach (var q in query) {
-                        db.CourseMoment.Find(q.Vakcode, q.Datum, q.Gebouw, q.Verdiep, q.Nummer, q.Userid, q.Startmoment, q.Eindmoment).Vakcode = newVak.Vakcode;
-
-                        PlannerController.Edit(q.Vakcode, q.Datum, q.Startmoment, q.Gebouw, q.Verdiep, q.Nummer, newVak.Vakcode, );
-                    }
-
-                    db.SaveChanges();
-                }*/
             }
             TempData["error"] = "editGood";
             return RedirectToAction("Index", "Vak");
         }
 
+        //fixed
         [HttpPost]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult> Subscribe(string vakCode) 
+        public async Task<ActionResult> Subscribe(int vakCode) 
         {
             try
             {
                 var vak = db.Course.Find(vakCode);
                 var user = await userManager.GetUserAsync(User);
-                var oldUser = db.User.Find(user.UserName);
 
-                CourseUser courseUser = new CourseUser { Vakcode = vakCode, Userid = user.UserName};
-                db.CourseUser.Add(courseUser);
+                CourseUser cu = new CourseUser { CourseId = vak.Id, ApplicationUserId = user.Id};
+                db.CourseUser.Add(cu);
+
                 db.SaveChanges();
             }
             catch (Exception e) {
@@ -254,9 +224,10 @@ namespace Gip.Controllers
             return RedirectToAction("Index");
         }
 
+        //fixed
         [HttpPost]
         [Authorize(Roles = "Student")]
-        public async Task<ActionResult> UnSubscribe(string vakCode)
+        public async Task<ActionResult> UnSubscribe(int vakCode)
         {
             try
             {

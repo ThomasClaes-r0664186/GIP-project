@@ -4,14 +4,16 @@ using Gip.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Gip.Migrations
 {
     [DbContext(typeof(gipDatabaseContext))]
-    partial class gipDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20200331130535_changeKeysToIdAndUserToIdentityUser")]
+    partial class changeKeysToIdAndUserToIdentityUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -118,7 +120,10 @@ namespace Gip.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ApplicationUserId")
+                    b.Property<int?>("ApplicationUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ApplicationUsersId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("CourseId")
@@ -135,7 +140,7 @@ namespace Gip.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId");
+                    b.HasIndex("ApplicationUsersId");
 
                     b.HasIndex("CourseId");
 
@@ -153,7 +158,10 @@ namespace Gip.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ApplicationUserId")
+                    b.Property<int?>("ApplicationUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ApplicationUsersId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("CourseId")
@@ -164,7 +172,7 @@ namespace Gip.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId");
+                    b.HasIndex("ApplicationUsersId");
 
                     b.HasIndex("CourseId");
 
@@ -357,7 +365,7 @@ namespace Gip.Migrations
                 {
                     b.HasOne("Gip.Models.ApplicationUser", "ApplicationUsers")
                         .WithMany("Coursemoments")
-                        .HasForeignKey("ApplicationUserId");
+                        .HasForeignKey("ApplicationUsersId");
 
                     b.HasOne("Gip.Models.Course", "Courses")
                         .WithMany("CourseMoments")
@@ -376,7 +384,7 @@ namespace Gip.Migrations
                 {
                     b.HasOne("Gip.Models.ApplicationUser", "ApplicationUsers")
                         .WithMany("CourseUsers")
-                        .HasForeignKey("ApplicationUserId");
+                        .HasForeignKey("ApplicationUsersId");
 
                     b.HasOne("Gip.Models.Course", "Courses")
                         .WithMany("CourseUsers")

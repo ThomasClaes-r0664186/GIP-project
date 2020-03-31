@@ -9,9 +9,8 @@ namespace Gip.Models.ViewModels
     {
         public string VakCode { get; set; }
         public string Titel { get; set; }
-        public string UserId { get; set; }
+        public int cuId { get; set; }
         public string Naam { get; set; }
         public string VoorNaam { get; set; }
-
     }
 }

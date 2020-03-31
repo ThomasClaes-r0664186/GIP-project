@@ -15,16 +15,17 @@ namespace Gip.Controllers
     {
         private gipDatabaseContext db = new gipDatabaseContext();
 
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
 
-        public PlannerController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public PlannerController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
         }
 
         // GET /planner
+        //fixed
         [HttpGet]
         [Route("planner")]
         public async Task<ActionResult> Index(int week)
@@ -38,84 +39,73 @@ namespace Gip.Controllers
                 if (User.IsInRole("Student"))
                 {
                     var qry2 = from c in db.CourseUser
-                               orderby c.Vakcode
-                               where c.Userid == user.UserName
+                               where c.ApplicationUserId == user.Id
                                select c;
 
-                    List<string> vakMetStud = new List<string>();
+                    List<int?> vakMetStud = new List<int?>();
                     
                     foreach (var cu in qry2) 
                     {
                         if (cu.GoedGekeurd) 
                         {
-                            vakMetStud.Add(cu.Vakcode);
+                            vakMetStud.Add(cu.CourseId);
                         }
                     }
 
                     var _qry = from cm in db.CourseMoment
-                               join c in db.Course on cm.Vakcode equals c.Vakcode
-                               join s in db.Schedule
-                                    on new { cm.Datum, cm.Startmoment, cm.Eindmoment }
-                                    equals new { s.Datum, s.Startmoment, s.Eindmoment }
-                               where (int)((cm.Datum.DayOfYear / 7.0) + 0.2) == weekToUse
-                               where vakMetStud.Contains(cm.Vakcode)
-                               orderby cm.Datum, cm.Startmoment, cm.Eindmoment, cm.Gebouw, cm.Verdiep, cm.Nummer
+                               join c in db.Course on cm.CourseId equals c.Id
+                               join s in db.Schedule on cm.ScheduleId equals s.Id
+                               join r in db.Room on cm.RoomId equals r.Id
+                               join u in db.Users on cm.ApplicationUserId equals u.Id
+                               where (int)((s.Datum.DayOfYear / 7.0) + 0.2) == weekToUse
+                               where vakMetStud.Contains(cm.CourseId)
+                               orderby s.Datum, s.Startmoment, s.Eindmoment, r.Gebouw, r.Verdiep, r.Nummer
                                select new
                                {
-                                   datum = cm.Datum,
-                                   startmoment = cm.Startmoment,
-                                   gebouw = cm.Gebouw,
-                                   verdiep = cm.Verdiep,
-                                   nummer = cm.Nummer,
+                                   cmId = cm.Id,
+                                   datum = s.Datum,
+                                   startmoment = s.Startmoment,
+                                   gebouw = r.Gebouw,
+                                   verdiep = r.Verdiep,
+                                   nummer = r.Nummer,
                                    vakcode = c.Vakcode,
                                    titel = c.Titel,
                                    eindmoment = s.Eindmoment,
-                                   rNummer = cm.Userid
                                };
-                    var lokaalQry = from lok in db.Room
-                                    orderby lok.Gebouw, lok.Verdiep, lok.Nummer
-                                    select lok;
-                    var vakQry = from vak in db.Course
-                                 orderby vak.Vakcode
-                                 select vak;
-
                     foreach (var qry in _qry)
                     {
-                        Planner planner = new Planner(qry.datum, qry.startmoment, qry.gebouw, qry.verdiep, qry.nummer, qry.rNummer, qry.vakcode, qry.titel, qry.eindmoment);
-                        planners.Add(planner);
-                    }
-
-                    foreach (var qry in lokaalQry)
-                    {
-                        Planner planner = new Planner(qry.Gebouw, qry.Verdiep, qry.Nummer, qry.Capaciteit);
-                        planners.Add(planner);
-                    }
-
-                    foreach (var qry in vakQry)
-                    {
-                        Planner planner = new Planner(qry.Vakcode, qry.Titel);
+                        Planner planner = new Planner { cmId = qry.cmId, 
+                                                        Datum = qry.datum, 
+                                                        Startmoment = qry.startmoment, 
+                                                        Gebouw = qry.gebouw, 
+                                                        Verdiep = qry.verdiep, 
+                                                        Nummer = qry.nummer, 
+                                                        Vakcode = qry.vakcode, 
+                                                        Titel = qry.titel, 
+                                                        Eindmoment = qry.eindmoment};
                         planners.Add(planner);
                     }
                 }
                 else {
                     var _qry = from cm in db.CourseMoment
-                               join c in db.Course on cm.Vakcode equals c.Vakcode
-                               join s in db.Schedule
-                                    on new { cm.Datum, cm.Startmoment, cm.Eindmoment }
-                                    equals new { s.Datum, s.Startmoment, s.Eindmoment }
-                               where (int)((cm.Datum.DayOfYear / 7.0) + 0.2) == weekToUse
-                               orderby cm.Datum, cm.Startmoment, cm.Eindmoment, cm.Gebouw, cm.Verdiep, cm.Nummer
+                               join c in db.Course on cm.CourseId equals c.Id
+                               join s in db.Schedule on cm.ScheduleId equals s.Id
+                               join r in db.Room on cm.RoomId equals r.Id
+                               join u in db.Users on cm.ApplicationUserId equals u.Id
+                               where (int)((s.Datum.DayOfYear / 7.0) + 0.2) == weekToUse
+                               orderby s.Datum, s.Startmoment, s.Eindmoment, r.Gebouw, r.Verdiep, r.Nummer
                                select new
                                {
-                                   datum = cm.Datum,
-                                   startmoment = cm.Startmoment,
-                                   gebouw = cm.Gebouw,
-                                   verdiep = cm.Verdiep,
-                                   nummer = cm.Nummer,
+                                   cmId = cm.Id,
+                                   datum = s.Datum,
+                                   startmoment = s.Startmoment,
+                                   gebouw = r.Gebouw,
+                                   verdiep = r.Verdiep,
+                                   nummer = r.Nummer,
                                    vakcode = c.Vakcode,
                                    titel = c.Titel,
                                    eindmoment = s.Eindmoment,
-                                   rNummer = cm.Userid
+                                   lessenlijst = cm.LessenLijst
                                };
                     var lokaalQry = from lok in db.Room
                                     orderby lok.Gebouw, lok.Verdiep, lok.Nummer
@@ -126,19 +116,28 @@ namespace Gip.Controllers
 
                     foreach (var qry in _qry)
                     {
-                        Planner planner = new Planner(qry.datum, qry.startmoment, qry.gebouw, qry.verdiep, qry.nummer, qry.rNummer, qry.vakcode, qry.titel, qry.eindmoment);
+                        Planner planner = new Planner { cmId = qry.cmId, 
+                                                        Datum = qry.datum, 
+                                                        Startmoment = qry.startmoment, 
+                                                        Gebouw = qry.gebouw, 
+                                                        Verdiep = qry.verdiep, 
+                                                        Nummer = qry.nummer, 
+                                                        Vakcode = qry.vakcode, 
+                                                        Titel = qry.titel, 
+                                                        Eindmoment = qry.eindmoment,
+                                                        LessenLijst = qry.lessenlijst};
                         planners.Add(planner);
                     }
 
                     foreach (var qry in lokaalQry)
                     {
-                        Planner planner = new Planner(qry.Gebouw, qry.Verdiep, qry.Nummer, qry.Capaciteit);
+                        Planner planner = new Planner { rId = qry.Id, Gebouw = qry.Gebouw, Verdiep = qry.Verdiep, Nummer = qry.Nummer, Capaciteit = qry.Capaciteit};
                         planners.Add(planner);
                     }
 
                     foreach (var qry in vakQry)
                     {
-                        Planner planner = new Planner(qry.Vakcode, qry.Titel);
+                        Planner planner = new Planner { cId = qry.Id, Vakcode = qry.Vakcode, Titel = qry.Titel};
                         planners.Add(planner);
                     }
                 }
@@ -168,11 +167,11 @@ namespace Gip.Controllers
             }
         }
 
-
+        //fixed denk ik
         [HttpPost]
         [Route("planner/add")]
         [Authorize(Roles = "Admin, Lector")]
-        public async Task<IActionResult> Add(string dat, string uur, string lokaalId, double duratie, string vakcode, string? lessenlijst,bool? checkbox, string lokaal2Id)
+        public async Task<IActionResult> Add(string dat, string uur, int lokaalId, double duratie, int vakid, string? lessenlijst,bool? checkbox, int lokaal2Id)
         {
             DateTime datum = DateTime.ParseExact(dat, "yyyy-MM-dd", CultureInfo.InvariantCulture);
             DateTime tijd = new DateTime(1800, 1, 1, int.Parse(uur.Split(":")[0]), int.Parse(uur.Split(":")[1]), 0);
@@ -185,74 +184,31 @@ namespace Gip.Controllers
 
             DateTime eindmoment = tijd.AddHours(_duratie);
 
-            lokaalId = lokaalId.Trim() + " ";
-            string gebouw = lokaalId.Substring(0, 1);
-            int verdieping = int.Parse(lokaalId.Substring(1, 1));
-            string nummer = lokaalId.Substring(2, (lokaalId.Length - 2));
-
             try
             {
-                Schedule schedule = db.Schedule.Find(datum, tijd, eindmoment);
-                if (schedule == null) {
-                    schedule = new Schedule();
-                    schedule.Datum = datum;
-                    schedule.Startmoment = tijd;
-                    schedule.Eindmoment = eindmoment;
-                    db.Schedule.Add(schedule);
-                    db.SaveChanges();
-                }
+                //hier code schrijven zodat er niet altijd een nieuwe schedule wordt aangemaakt
+                Schedule schedule = new Schedule { Datum = datum, Startmoment = tijd, Eindmoment = eindmoment };
+
+                db.Schedule.Add(schedule);
+                db.SaveChanges();
 
                 var user = await userManager.GetUserAsync(User);
 
-                CourseMoment moment = new CourseMoment();
-                moment.Vakcode = vakcode;
-                moment.Datum = datum;
-                moment.Startmoment = schedule.Startmoment;
-                moment.Eindmoment = schedule.Eindmoment;
-                moment.Gebouw = gebouw;
-                moment.Verdiep = verdieping;
-                moment.Nummer = nummer;
-                moment.Userid = user.UserName;
-                moment.LessenLijst = lessenlijst;
+                CourseMoment moment = new CourseMoment { CourseId = vakid, ScheduleId = schedule.Id, RoomId = lokaalId, ApplicationUserId = user.Id, LessenLijst = lessenlijst};
 
-                if (db.CourseMoment.Find(moment.Vakcode, moment.Datum, moment.Gebouw, moment.Verdiep, moment.Nummer, moment.Userid = user.UserName,moment.Startmoment, moment.Eindmoment) != null)
-                {
-                    TempData["error"] = "addError" + "/" + "Dit lesmoment staat reeds in de planning.";
-                    return RedirectToAction("Index", "Planner");
-                }
-                else {
-                    db.CourseMoment.Add(moment);
-                    db.SaveChanges();
-                }
+                //hier code schrijven zodat er geen tweede dezelfde coursemoment aangemaakt kan worden
+
+                db.CourseMoment.Add(moment);
+                db.SaveChanges();
 
                 if (checkbox != null && checkbox == true)
                 {
-                    lokaal2Id = lokaal2Id.Trim() + " ";
-                    string gebouw2 = lokaal2Id.Substring(0, 1);
-                    int verdieping2 = int.Parse(lokaal2Id.Substring(1, 1));
-                    string nummer2 = lokaal2Id.Substring(2, (lokaal2Id.Length - 2));
+                    CourseMoment moment2 = new CourseMoment { CourseId = vakid, ScheduleId = schedule.Id, RoomId = lokaal2Id, ApplicationUserId = user.Id, LessenLijst = lessenlijst};
 
-                    CourseMoment moment2 = new CourseMoment();
-                    moment2.Vakcode = vakcode;
-                    moment2.Datum = datum;
-                    moment2.Startmoment = schedule.Startmoment;
-                    moment2.Eindmoment = schedule.Eindmoment;
-                    moment2.Gebouw = gebouw2;
-                    moment2.Verdiep = verdieping2;
-                    moment2.Nummer = nummer2;
-                    moment2.Userid = user.UserName;
-                    moment2.LessenLijst = lessenlijst;
+                    //hier code schrijven zodat er geen tweede dezelfde coursemoment aangemaakt kan worden
 
-                    if (db.CourseMoment.Find(moment2.Vakcode, moment2.Datum, moment2.Gebouw, moment2.Verdiep, moment2.Nummer, moment2.Userid = user.UserName, moment2.Startmoment, moment2.Eindmoment) != null)
-                    {
-                        TempData["error"] = "addError" + "/" + "Uw tweede lokaal is hetzelfde als het eerste lokaal, enkel het lesmoment in het eerste lokaal werd toegevoegd.";
-                        return RedirectToAction("Index", "Planner");
-                    }
-                    else
-                    {
-                        db.CourseMoment.Add(moment2);
-                        db.SaveChanges();
-                    }
+                    db.CourseMoment.Add(moment2);
+                    db.SaveChanges();
                 }
             }
             catch (Exception e)
@@ -265,7 +221,7 @@ namespace Gip.Controllers
             return RedirectToAction("Index", "Planner");
         }
 
-
+        //fixed
         [HttpGet]
         [Route("planner/add")]
         [Authorize(Roles = "Admin, Lector")]
@@ -283,11 +239,11 @@ namespace Gip.Controllers
                 List < Planner > planners = new List<Planner>();
                 foreach (var qry in lokaalQry)
                 {
-                    Planner planner = new Planner(qry.Gebouw, qry.Verdiep, qry.Nummer, qry.Capaciteit);
+                    Planner planner = new Planner { rId = qry.Id, Gebouw = qry.Gebouw, Verdiep = qry.Verdiep, Nummer = qry.Nummer, Capaciteit = qry.Capaciteit};
                     planners.Add(planner);
                 }
                 foreach (var qry in vakQry) {
-                    Planner planner = new Planner(qry.Vakcode, qry.Titel);
+                    Planner planner = new Planner { cId = qry.Id, Vakcode = qry.Vakcode, Titel = qry.Titel};
                     planners.Add(planner);
                 }
                 return View("../Planner/Index",planners);
@@ -300,12 +256,12 @@ namespace Gip.Controllers
             }
         }
 
+        //fixed
         [HttpPost]
         [Route("planner/delete")]
         [Authorize(Roles = "Admin, Lector")]
-        public ActionResult Delete(string vakcode, DateTime datum, DateTime startMoment, string gebouw, int verdiep, string nummer, string rNummer, DateTime eindMoment) {
-            DateTime newStartMoment = new DateTime(1800, 1, 1, startMoment.Hour, startMoment.Minute, startMoment.Second);
-            CourseMoment moment = db.CourseMoment.Find(vakcode, datum,gebouw, verdiep, nummer, rNummer, newStartMoment, eindMoment);
+        public ActionResult Delete(int cmId) {
+            CourseMoment moment = db.CourseMoment.Find(cmId);
             if (moment == null) {
                 TempData["error"] = "deleteError" + "/" + "Er is geen overeenkomend moment gevonden.";
                 return RedirectToAction("Index", "Planner");
@@ -325,54 +281,61 @@ namespace Gip.Controllers
             return RedirectToAction("Index", "Planner");
         }
 
+        //fixed?
         [HttpPost]
         [Route("planner/edit")]
         [Authorize(Roles = "Admin, Lector")]
-        public async Task<ActionResult> EditAsync(string oldVakcode, 
-            DateTime oldDatum, DateTime oldStartMoment, DateTime oldEindmoment,
-            string oldGebouw, int oldVerdiep, string oldNummer, string OldRNummer,
-            string newVakcode, 
+        public async Task<ActionResult> Edit(int cmId,
+            int newVakcode, 
             string newDatum, string newStartMoment, double newDuratie,
-            string newLokaalid, string newLessenlijst) {
+            int newLokaalid, string newLessenlijst) {
             try
             {
-                CourseMoment oldMoment = db.CourseMoment.Find(oldVakcode, oldDatum, oldGebouw, oldVerdiep, oldNummer, OldRNummer, oldStartMoment, oldEindmoment);
+                CourseMoment oldMoment = db.CourseMoment.Find(cmId);
                 if (oldMoment == null)
                 {
                     TempData["error"] = "deleteError" + "/" + "Er is geen overeenkomend moment gevonden in de databank.";
                     return RedirectToAction("Index", "Planner");
                 }
-                else
+
+                if (oldMoment.RoomId != newLokaalid) 
                 {
-                    db.CourseMoment.Remove(oldMoment);
+                    oldMoment.RoomId = db.Room.Find(newLokaalid).Id;
+                    db.SaveChanges();
                 }
-                newLokaalid = newLokaalid.Trim() + " ";
-                string newGebouw = newLokaalid.Substring(0, 1);
-                int newVerdiep = int.Parse(newLokaalid.Substring(1, 1));
-                string newNummer = newLokaalid.Substring(2, (newLokaalid.Length - 2));
 
                 double _duratie = Convert.ToDouble(newDuratie);
 
                 DateTime datum = DateTime.ParseExact(newDatum, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 DateTime tijd = new DateTime(1800, 1, 1, int.Parse(newStartMoment.Split(":")[0]), int.Parse(newStartMoment.Split(":")[1]), 0);
                 DateTime eindmoment = tijd.AddHours(_duratie);
-                Schedule schedule = db.Schedule.Find(datum, tijd,eindmoment);
 
-                if (schedule == null)
+                if (oldMoment.Schedule.Datum != datum || oldMoment.Schedule.Startmoment != tijd || oldMoment.Schedule.Eindmoment != eindmoment) 
                 {
-                    schedule = new Schedule();
-                    schedule.Datum = datum;
-                    schedule.Startmoment = tijd;
-                    schedule.Eindmoment = eindmoment;
+                    // Deze lijn moet nog vervangen worden zodat er niet altijd een nieuwe reeds bestaande schedule wordt aangemaakt: Schedule schedule = db.Schedule.Find(datum, tijd,eindmoment);
+
+                    Schedule schedule = new Schedule { Datum = datum, Startmoment = tijd, Eindmoment = eindmoment};
 
                     db.Schedule.Add(schedule);
                     db.SaveChanges();
+
+                    //werkt dit wel? Hier wordt de schedule waarvoor de id nog gegenereerd moet worden toegewezen aan scheduleId van oldmoment
+                    oldMoment.ScheduleId = schedule.Id;
+                    db.SaveChanges();
                 }
+
+                if (oldMoment.CourseId != newVakcode) 
+                {
+                    oldMoment.CourseId = db.Course.Find(newVakcode).Id;
+                    db.SaveChanges();
+                }
+
+                oldMoment.LessenLijst = newLessenlijst;
 
                 var user = await userManager.GetUserAsync(User);
 
-                CourseMoment newMoment = new CourseMoment(newVakcode, datum, tijd, newGebouw, newVerdiep, newNummer, user.UserName, newLessenlijst,eindmoment);
-                db.CourseMoment.Add(newMoment);
+                oldMoment.ApplicationUserId = user.Id;
+                db.SaveChanges();
             }
             catch (Exception e) {
                 Console.WriteLine(e);
@@ -384,29 +347,15 @@ namespace Gip.Controllers
             return RedirectToAction("Index", "Planner");
         }
 
+        //fixed
         [HttpGet]
         [Route("planner/viewTopic")]
-        public ActionResult ViewTopic(string vakcode, DateTime datum, DateTime startMoment ,DateTime eindMoment, string gebouw, int verdiep, string nummer, string rNummer, int datumY, int datumM, int datumD)
+        public ActionResult ViewTopic(int cmId)
         {
             try {
-                /*
-                 * om de één of andere reden wordt datum niet meer deftig doorgegeven, deze is dus vervangen door datumY, M, D
-                 * 
-                int Year = Convert.ToInt32(datum.ToString("dd/MM/yyyy").Split('/')[2]);
-                int Month = Convert.ToInt32(datum.ToString("dd/MM/yyyy").Split('/')[0]);
-                int Day = Convert.ToInt32(datum.ToString("dd/MM/yyyy").Split('/')[1]);
-                DateTime dt = new DateTime(Year, Month, Day, datum.Hour, datum.Minute, datum.Second);
-                */
+                CourseMoment moment = db.CourseMoment.Find(cmId);
 
-                DateTime dt = new DateTime(datumY, datumM, datumD, datum.Hour, datum.Minute, datum.Second);
-
-                DateTime newStartMoment = new DateTime(1800, 1, 1, startMoment.Hour, startMoment.Minute, startMoment.Second);
-                
-                Schedule schedule = db.Schedule.Find(dt, newStartMoment,eindMoment);
-                CourseMoment moment = db.CourseMoment.Find(vakcode, dt, gebouw, verdiep, nummer, rNummer, newStartMoment, eindMoment);
-                /* db.CourseMoment.Find(vakcode, datum,gebouw, verdiep, nummer, "r0664186", newStartMoment, eindMoment); */
-                Course course = db.Course.Find(vakcode);
-                Planner planner = new Planner(moment.Datum, schedule.Startmoment, moment.Gebouw, moment.Verdiep, moment.Nummer, course.Vakcode, course.Titel, schedule.Eindmoment, moment.LessenLijst);
+                Planner planner = new Planner(moment.Schedule.Datum, moment.Schedule.Startmoment, moment.Room.Gebouw, moment.Room.Verdiep, moment.Room.Nummer, moment.Courses.Vakcode, moment.Courses.Titel, moment.Schedule.Eindmoment, moment.LessenLijst);
                 return View("../Planning/ViewTopi", planner);
             }
             catch (Exception e) {
@@ -416,29 +365,29 @@ namespace Gip.Controllers
             }
         }
 
+        //fixed
         [HttpGet]
         [Route("planner/viewCourseMoments")]
-        public ActionResult ViewCourseMoments(string vakcode)
+        public ActionResult ViewCourseMoments(int vakcode)
         {
             try
             {
                 var _qry = from cm in db.CourseMoment
-                          join c in db.Course on cm.Vakcode equals c.Vakcode
-                          join s in db.Schedule
-                               on new { cm.Datum, cm.Startmoment, cm.Eindmoment }
-                               equals new { s.Datum, s.Startmoment, s.Eindmoment}
-                          where cm.Vakcode == vakcode
-                          select new
-                          {
-                              datum = cm.Datum,
-                              startmoment = cm.Startmoment,
-                              gebouw = cm.Gebouw,
-                              verdiep = cm.Verdiep,
-                              nummer = cm.Nummer,
-                              vakcode = c.Vakcode,
-                              titel = c.Titel,
-                              eindmoment = s.Eindmoment
-                          };
+                           join c in db.Course on cm.CourseId equals c.Id
+                           join s in db.Schedule on cm.ScheduleId equals s.Id
+                           join r in db.Room on cm.RoomId equals r.Id
+                           where cm.CourseId == vakcode
+                           select new
+                           {
+                               datum = s.Datum,
+                               startmoment = s.Startmoment,
+                               gebouw = r.Gebouw,
+                               verdiep = r.Verdiep,
+                               nummer = r.Nummer,
+                               vakcode = c.Vakcode,
+                               titel = c.Titel,
+                               eindmoment = s.Eindmoment
+                           };
 
                 List<Planner> planners = new List<Planner>();
                 foreach (var qry in _qry)

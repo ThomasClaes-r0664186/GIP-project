@@ -8,6 +8,8 @@ namespace Gip.Models
 {
     public partial class Room
     {
+        public int Id { get; set; }
+
         private string gebouw;
         private int verdiep;
         private string nummer;
@@ -15,10 +17,11 @@ namespace Gip.Models
         private int capaciteit;
         private string middelen;
 
-        public virtual ICollection<CourseMoment> CourseMoment { get; set; }
+        public virtual ICollection<CourseMoment> Coursemoments { get; set; }
 
         public Room(string middelen, string gebouw, int verdiep, string nummer, string type, int capaciteit)
         {
+            Coursemoments = new HashSet<CourseMoment>();
             this.Middelen = middelen;
             this.Gebouw = gebouw;
             this.Verdiep = verdiep;
@@ -28,7 +31,7 @@ namespace Gip.Models
         }
         public Room()
         {
-            CourseMoment = new HashSet<CourseMoment>();
+            Coursemoments = new HashSet<CourseMoment>();
         }
 
         public string Middelen
@@ -89,7 +92,6 @@ namespace Gip.Models
             }
         }
 
-        [Key, Column(Order = 0)]
         public string Gebouw
         {
             get { return gebouw; }
@@ -120,7 +122,6 @@ namespace Gip.Models
             }
         }
 
-        [Key, Column(Order = 1)]
         public int Verdiep
         {
             get { return verdiep; }
@@ -145,7 +146,6 @@ namespace Gip.Models
             }
         }
 
-        [Key, Column(Order = 2)]
         public string Nummer
         {
             get { return nummer; }
@@ -170,7 +170,7 @@ namespace Gip.Models
             }
         }
 
-        public string Type //is dropdown
+        public string Type 
         {
             get { return type; }
             set

@@ -16,21 +16,23 @@ namespace Gip.Controllers
         private gipDatabaseContext db = new gipDatabaseContext();
 
         private readonly RoleManager<IdentityRole> roleManager;
-        private readonly UserManager<IdentityUser> userManager;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public AdministrationController(RoleManager<IdentityRole> roleManager,
-                                        UserManager<IdentityUser> userManager)
+                                        UserManager<ApplicationUser> userManager)
         {
             this.roleManager = roleManager;
             this.userManager = userManager;
         }
 
+        //fixed
         [HttpGet]
         public IActionResult CreateRole()
         {
             return View();
         }
 
+        //fixed
         [HttpPost]
         public async Task<IActionResult> CreateRoleAsync(CreateRoleViewModel model)
         {
@@ -53,6 +55,7 @@ namespace Gip.Controllers
             return View(model);
         }
 
+        //fixed
         [HttpGet]
         public ActionResult ListRoles()
         {
@@ -60,6 +63,7 @@ namespace Gip.Controllers
             return View(roles);
         }
 
+        //fixed
         [HttpGet]
         public async Task<IActionResult> EditRole(string id)
         {
@@ -87,22 +91,16 @@ namespace Gip.Controllers
             return View(model);
         }
 
+        //fixed
         [HttpGet]
         public ActionResult ListUsers()
         {
-
             var users = userManager.Users;
-            var oldUsers = db.User;
-            List<ListUsersViewModel> listUsers = new List<ListUsersViewModel>();
-
-            foreach (var user in users)
-            {
-                ListUsersViewModel l = new ListUsersViewModel { UserId = user.Id, UserName = user.UserName, Naam = oldUsers.Find(user.UserName).Naam, Voornaam = oldUsers.Find(user.UserName).VoorNaam };
-                listUsers.Add(l);
-            }
-            return View(listUsers);
+            
+            return View(users);
         }
 
+        //fixed
         [HttpGet]
         public async Task<IActionResult> EditUser(string id)
         {
@@ -118,13 +116,11 @@ namespace Gip.Controllers
 
             try
             {
-                var userForNames = db.User.Find(user.UserName);
-
                 var model = new EditUserViewModel
                 {
                     Id = user.Id,
-                    Name = userForNames.VoorNaam,
-                    SurName = userForNames.Naam,
+                    Name = user.VoorNaam,
+                    SurName = user.Naam,
                     RNum = user.UserName,
                     Email = user.Email,
                     Roles = userRoles
@@ -139,6 +135,7 @@ namespace Gip.Controllers
             }
         }
 
+        //fixed, nakijken wat er gebeurd wanneer je een user verwijderd gebruikt in coursemoment.
         [HttpPost]
         public async Task<IActionResult> EditUser(EditUserViewModel model)
         {
@@ -152,51 +149,29 @@ namespace Gip.Controllers
             else
             {
                 var emailUser = await userManager.FindByEmailAsync(model.Email);
+                var usernameUser = await userManager.FindByNameAsync(model.RNum);
 
                 if (emailUser != null && user != emailUser)
                 {
                     ModelState.AddModelError("", "Email " + model.Email + " is already in use.");
                 }
+                if (usernameUser != null && user != usernameUser) 
+                {
+                    ModelState.AddModelError("", "Student number: " + model.RNum + " is already in use.");
+                }
                 else
                 {
-                    try
-                    {
-                        var OldDbUser = db.User.Find(user.UserName);
-                        if (model.RNum.Equals(OldDbUser.Userid))
-                        {
-                            db.User.Find(user.UserName).VoorNaam = model.Name;
-                            db.User.Find(user.UserName).Naam = model.SurName;
-                            db.User.Find(user.UserName).Mail = model.Email;
-                            db.SaveChanges();
-                        }
-                        else 
-                        {
-                            db.User.Add(new User { Userid = model.RNum, VoorNaam = model.Name, Naam = model.SurName, Mail = model.Email});
-                            db.User.Remove(OldDbUser);
-                            db.SaveChanges();
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        ModelState.AddModelError("", "Uw user is met zijn nummer aangeduid als lector in een lesmoment, gelieve dit lesmoment te verwijderen voordat u de user kan aanpassen. Fout: " + e.InnerException.Message == null ? " " : e.InnerException.Message);
-                        return View(model);
-                    }
-
                     user.UserName = model.RNum;
                     user.Email = model.Email;
+                    user.Naam = model.SurName;
+                    user.VoorNaam = model.Name;
 
                     var result = await userManager.UpdateAsync(user);
-
-                    if(ModelState.ErrorCount >= 1) 
-                    {
-                        ModelState.AddModelError("", "Uw user is met zijn nummer aangeduid als lector in een lesmoment, gelieve dit lesmoment te verwijderen voordat u de user kan aanpassen.");
-                    }
 
                     if (result.Succeeded)
                     {
                         return RedirectToAction("ListUsers");
                     }
-
                     foreach (var error in result.Errors)
                     {
                         ModelState.AddModelError("", error.Description);
@@ -206,6 +181,7 @@ namespace Gip.Controllers
             }
         }
 
+        //fixed, nakijken wat er gebeurd wanneer je een user verwijderd gebruikt in coursemoment.
         [HttpPost]
         public async Task<IActionResult> DeleteUser(string id)
         {
@@ -218,18 +194,6 @@ namespace Gip.Controllers
             }
             else
             {
-                try
-                {
-                    var OldDbUser = db.User.Find(user.UserName);
-                    db.User.Remove(OldDbUser);
-                    db.SaveChanges();
-                }
-                catch (Exception e)
-                {
-                    ModelState.AddModelError("", "Uw user is aangeduid als lector in een lesmoment, gelieve dit lesmoment te verwijderen voordat u de user kan verwijderen. Fout: " + e.InnerException.Message == null ? " " : e.InnerException.Message);
-                    return RedirectToAction("ListUsers");
-                }
-
                 var result = await userManager.DeleteAsync(user);
 
                 if (result.Succeeded)
@@ -246,6 +210,7 @@ namespace Gip.Controllers
             }
         }
 
+        //fixed
         [HttpGet]
         public async Task<IActionResult> EditUsersInRole(string roleId)
         {
@@ -284,6 +249,7 @@ namespace Gip.Controllers
             return View(model);
         }
 
+        //fixed
         [HttpPost]
         public async Task<IActionResult> EditUsersInRole(List<UserRoleViewModel> model, string roleId)
         {
@@ -326,6 +292,7 @@ namespace Gip.Controllers
             return RedirectToAction("EditRole", new { Id = roleId });
         }
 
+        //fixed
         [HttpGet]
         public async Task<IActionResult> ManageUserRoles(string userId)
         {
@@ -364,6 +331,7 @@ namespace Gip.Controllers
             return View(model);
         }
 
+        //fixed
         [HttpPost]
         public async Task<IActionResult> ManageUserRoles(List<UserRolesViewModel> model, string userId)
         {

@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using Gip.Models.Exceptions;
-using System.Text.RegularExpressions;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Gip.Models
 {
-    public partial class CourseUser
+    public partial class CourseMomentUsers
     {
         public int Id { get; set; }
-        public bool GoedGekeurd { get; set; }
         public string? ApplicationUserId { get; set; }
-        public int? CourseId { get; set; }
+        public int? CoursMomentId { get; set; }
 
         public virtual ApplicationUser ApplicationUsers { get; set; }
-        public virtual Course Courses { get; set; }
+        public virtual CourseMoment Coursemoments { get; set; }
     }
 }

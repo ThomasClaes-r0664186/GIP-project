@@ -1,12 +1,10 @@
 ﻿using Gip.Models;
 using Gip.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Gip.Controllers
 {
@@ -15,78 +13,66 @@ namespace Gip.Controllers
     {
         private gipDatabaseContext db = new gipDatabaseContext();
 
-        private readonly UserManager<IdentityUser> userManager;
-        private readonly SignInManager<IdentityUser> signInManager;
-
+        //fixed (niet zeker over qry)
         [HttpGet]
         [Route("Lector")]
         public ActionResult Index()
         {
-            var vakL = from v in db.Course
-                      orderby v.Titel
-                      select v;
-
-            var cuL = from cu in db.CourseUser
-                      orderby cu.Userid
-                      where !cu.GoedGekeurd
-                      select cu;
-
-            var uL = from us in db.User
-                     orderby us.Naam
-                     select us;
-
             List<StudentRequestsViewModel> studentRequests = new List<StudentRequestsViewModel>();
 
-            foreach (var vak in vakL) 
+            var vakL = from course in db.Course
+                       orderby course.Vakcode
+                       select course;
+
+            var cuL = from cu in db.CourseUser
+                      join user in db.Users on cu.ApplicationUserId equals user.Id
+                      join vak in db.Course on cu.CourseId equals vak.Id
+                      where !cu.GoedGekeurd
+                      select new { cuId = cu.Id, cId = vak.Id,titel = vak.Titel, vakCode = vak.Vakcode, naam = user.Naam, voorNaam = user.VoorNaam};
+
+            foreach (var vakI in vakL)
             {
-                StudentRequestsViewModel studReq = new StudentRequestsViewModel {Titel = vak.Titel, VakCode = vak.Vakcode };
+                StudentRequestsViewModel studReq = new StudentRequestsViewModel { cuId = -1,Titel = vakI.Titel, VakCode = vakI.Vakcode };
                 studentRequests.Add(studReq);
 
-                var cuL2 = cuL.Where(c => c.Vakcode.Equals(vak.Vakcode));
+                var cuL2 = cuL.Where(c => c.cId.Equals(vakI.Id));
 
-                foreach (var u in cuL2) 
+                foreach (var res in cuL2)
                 {
-                    var user = db.User.Find(u.Userid);
-
-                    studReq = new StudentRequestsViewModel { VakCode = vak.Vakcode, Titel = vak.Titel, UserId = user.Userid, Naam = user.Naam, VoorNaam = user.VoorNaam};
-
+                    studReq = new StudentRequestsViewModel { cuId = res.cuId, VakCode = res.vakCode, Titel = res.titel, Naam = res.naam, VoorNaam = res.voorNaam};
                     studentRequests.Add(studReq);
                 }
             }
-
-            if (TempData["error"] != null)
-            {
-                ViewBag.error = TempData["error"].ToString();
-                TempData["error"] = null;
-            }
-
-            return View(studentRequests); 
+            return View(studentRequests);
         }
 
+        //fixed
         [HttpPost]
-        public ActionResult ApproveStudent(string studId, string vakId) 
+        public ActionResult ApproveStudent(int cuId) 
         {
-            try 
+            db.CourseUser.Find(cuId).GoedGekeurd = true;
+            db.SaveChanges();
+            try
             {
-                db.CourseUser.Find(studId, vakId).GoedGekeurd = true;
-
+                db.CourseUser.Find(cuId).GoedGekeurd = true;
                 db.SaveChanges();
 
                 TempData["error"] = "approveGood";
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 TempData["error"] = "error" + "/" + e.Message;
             }
             return RedirectToAction("Index");
         }
 
+        //fixed
         [HttpPost]
-        public ActionResult DenyStudent(string studId, string vakId)
+        public ActionResult DenyStudent(int cuId)
         {
-            try 
+            try
             {
-                CourseUser cu = db.CourseUser.Find(studId, vakId);
+                CourseUser cu = db.CourseUser.Find(cuId);
 
                 db.CourseUser.Remove(cu);
 

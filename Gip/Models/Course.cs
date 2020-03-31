@@ -10,22 +10,22 @@ namespace Gip.Models
     {
         public Course()
         {
-            CourseMoment = new HashSet<CourseMoment>();
-            CourseUser = new HashSet<CourseUser>();
+            CourseMoments = new HashSet<CourseMoment>();
+            CourseUsers = new HashSet<CourseUser>();
         }
         public Course(string vakcode, string titel, int studiepunten)
         {
+            CourseMoments = new HashSet<CourseMoment>();
+            CourseUsers = new HashSet<CourseUser>();
             this.Vakcode = vakcode;
             this.Titel = titel;
             this.Studiepunten = studiepunten;
         }
 
-        public virtual ICollection<CourseMoment> CourseMoment { get; set; }
-        public virtual ICollection<CourseUser> CourseUser { get; set; }
+        public int Id { get; set; }
 
         private string vakcode;
 
-        [Key]
         public string Vakcode
         {
             get { return vakcode; }
@@ -106,5 +106,8 @@ namespace Gip.Models
                 }
             }
         }
+
+        public virtual ICollection<CourseMoment> CourseMoments { get; set; }
+        public virtual ICollection<CourseUser> CourseUsers { get; set; }
     }
 }

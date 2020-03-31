@@ -154,8 +154,8 @@
                     <td>@lokaal.Middelen</td>
 
                     <td>
-                        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal-@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer">Delete</button>
-                        <div class="modal fade" id="deleteModal-@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal-@lokaal.Id">Delete</button>
+                        <div class="modal fade" id="deleteModal-@lokaal.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -167,7 +167,7 @@
                                     <div class="modal-body">
                                         <form action="/lokaal/delete" method="post">
                                             <div>
-                                                <input type="text" name="lokaalId" style="display: none" value="@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer">
+                                                <input type="text" name="lokaalId" style="display: none" value="@lokaal.Id">
                                             </div>
                                             Ben je zeker dat je lokaal @lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer wilt verwijderen?
                                             <div class="modal-footer">
@@ -181,8 +181,8 @@
                     </td>
 
                     <td>
-                        <button type="button" class="btn btn-sm btn-dark" data-toggle="modal" data-target="#editModal-@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer">Edit</button>
-                        <div class="modal fade" id="editModal-@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <button type="button" class="btn btn-sm btn-dark" data-toggle="modal" data-target="#editModal-@lokaal.Id">Edit</button>
+                        <div class="modal fade" id="editModal-@lokaal.Id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -194,7 +194,7 @@
                                     <div class="modal-body">
                                         <form action="/lokaal/edit" method="post">
                                             <div>
-                                                <input type="text" name="lokaalId" style="display: none" value="@lokaal.Gebouw.Trim()@lokaal.Verdiep@lokaal.Nummer">
+                                                <input type="text" name="lokaalId" style="display: none" value="@lokaal.Id">
                                             </div>
                                             <div class="form-group">
                                                 <label for="gebouw" class="col-form-label">Gebouw:</label>

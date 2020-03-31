@@ -38,6 +38,7 @@ else
         </div>
     }
 }
+
 <h1>Aanvragen</h1>
 @if (Model.Any())
 {
@@ -45,21 +46,19 @@ else
     <thead>
         @foreach (var studReq in Model)
         {
-            if (studReq.UserId == null)
+            if (studReq.cuId == -1)
             {
                 <tr>
                     <th class="bg-light text-dark">@studReq.VakCode : @studReq.Titel </th>
                 </tr>
-                
-
             }
             else
             {
     <tr>
         <td class="bg-white">
             <h5>@studReq.Naam @studReq.VoorNaam</h5>
-            <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#approveModal-@studReq.UserId">Accepteer</button>
-            <div class="modal fade" id="approveModal-@studReq.UserId" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#approveModal-@studReq.cuId">Accepteer</button>
+            <div class="modal fade" id="approveModal-@studReq.cuId" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -69,7 +68,7 @@ else
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form asp-action="ApproveStudent" asp-route-studId="@studReq.UserId" asp-route-vakId="@studReq.VakCode" method="post">
+                            <form asp-action="ApproveStudent" asp-route-cuId="@studReq.cuId" method="post">
                                 Ben je zeker dat je de @studReq.Naam @studReq.VoorNaam zijn aanvraag wilt goedkeuren voor het vak @studReq.Titel?
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-sm btn-success">Goedkeuren</button>
@@ -79,8 +78,8 @@ else
                     </div>
                 </div>
             </div>
-            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#denyModal-@studReq.UserId">Weiger</button>
-            <div class="modal fade" id="denyModal-@studReq.UserId" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#denyModal-@studReq.cuId">Weiger</button>
+            <div class="modal fade" id="denyModal-@studReq.cuId" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -90,7 +89,7 @@ else
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form asp-action="DenyStudent" asp-route-studId="@studReq.UserId" asp-route-vakId="@studReq.VakCode" method="post">
+                            <form asp-action="DenyStudent" asp-route-cuId="@studReq.cuId" method="post">
                                 Ben je zeker dat je de @studReq.Naam @studReq.VoorNaam zijn aanvraag wilt afwijzen voor het vak @studReq.Titel?
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-sm btn-danger">Afwijzen</button>
