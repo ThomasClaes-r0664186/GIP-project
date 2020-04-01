@@ -187,6 +187,12 @@ namespace Gip.Controllers
 
             DateTime eindmoment = tijd.AddHours(_duratie);
 
+            if (DubbeleBoeking(datum, tijd, eindmoment, lokaalId))
+            {
+                TempData["error"] = "addError" + "/" + "Dit lokaal wordt reeds gebruikt in een anders lesmoment op dit tijdstip.";
+                return RedirectToAction("Index", "Planner");
+            }
+
             try
             {
                 //hier code schrijven zodat er niet altijd een nieuwe schedule wordt aangemaakt
@@ -206,6 +212,12 @@ namespace Gip.Controllers
 
                 if (checkbox != null && checkbox == true)
                 {
+                    if (DubbeleBoeking(datum, tijd, eindmoment, lokaal2Id))
+                    {
+                        TempData["error"] = "addError" + "/" + "Het lokaal voor de tweede les wordt reeds gebruikt in een anders lesmoment op dit tijdstip. Lesmoment 1 werd wel ingepland.";
+                        return RedirectToAction("Index", "Planner");
+                    }
+
                     CourseMoment moment2 = new CourseMoment { CourseId = vakid, ScheduleId = schedule.Id, RoomId = lokaal2Id, ApplicationUserId = user.Id, LessenLijst = lessenlijst};
 
                     //hier code schrijven zodat er geen tweede dezelfde coursemoment aangemaakt kan worden
@@ -482,33 +494,6 @@ namespace Gip.Controllers
             }
         }
 
-        public static int GetIso8601WeekOfYear(DateTime time)
-        {
-            DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
-            if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
-            {
-                time = time.AddDays(3);
-            }
-
-            return (time.DayOfYear / 7);
-        }
-
-        public static DateTime FirstDayOfWeek(int weekOfYear) {
-            DateTime jan1 = new DateTime(DateTime.Today.Year, 1, 1);
-            int daysOffset = DayOfWeek.Thursday - jan1.DayOfWeek;
-
-            DateTime firstThursday = jan1.AddDays(daysOffset);
-            var cal = CultureInfo.CurrentCulture.Calendar;
-            int firstWeek = cal.GetWeekOfYear(firstThursday, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
-            var weekNum = weekOfYear + 1 ;
-            if (firstWeek == 1) {
-                weekNum -= 1;
-            }
-
-            var result = firstThursday.AddDays(weekNum * 7);
-            return result.AddDays(-3);
-        }
-
         [HttpGet]
         public IActionResult EditStudsInCm(int cmId)
         {
@@ -615,6 +600,73 @@ namespace Gip.Controllers
             }
 
             return RedirectToAction("ViewTopic", new { cmId = cmId});
+        }
+
+        public static int GetIso8601WeekOfYear(DateTime time)
+        {
+            DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
+            if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
+            {
+                time = time.AddDays(3);
+            }
+
+            return (time.DayOfYear / 7);
+        }
+
+        public static DateTime FirstDayOfWeek(int weekOfYear)
+        {
+            DateTime jan1 = new DateTime(DateTime.Today.Year, 1, 1);
+            int daysOffset = DayOfWeek.Thursday - jan1.DayOfWeek;
+
+            DateTime firstThursday = jan1.AddDays(daysOffset);
+            var cal = CultureInfo.CurrentCulture.Calendar;
+            int firstWeek = cal.GetWeekOfYear(firstThursday, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+            var weekNum = weekOfYear + 1;
+            if (firstWeek == 1)
+            {
+                weekNum -= 1;
+            }
+
+            var result = firstThursday.AddDays(weekNum * 7);
+            return result.AddDays(-3);
+        }
+
+        private bool DubbeleBoeking(DateTime datum, DateTime startmoment, DateTime eindmoment, int lokaalId)
+        {
+            // checken of voor dat lokaal er op die datum reeds een lesmoment is waar startmoment of eindmoment tussen dit startmoment of eindmoment valt.
+            // indien dit het geval is, return true
+
+            var qrySched = from cm in db.CourseMoment
+                        join s in db.Schedule on cm.ScheduleId equals s.Id
+                        where cm.RoomId == lokaalId
+                        where s.Datum > DateTime.Today
+                        select s;
+
+            if (!qrySched.Any()) 
+            {
+                return false;
+            }
+            else 
+            {
+                foreach (var sched in qrySched) 
+                {
+                    if (sched.Datum == datum) 
+                    {
+                        //valt het startmoment ertussen? vb : (14<16 && 17 > 16)
+                        if (sched.Startmoment < startmoment && sched.Eindmoment > startmoment)
+                        {
+                            return true;
+                        }
+                        // valt het eindmoment ertussen? vb : ()
+                        else if (sched.Startmoment > startmoment && sched.Startmoment < eindmoment)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }
