@@ -26,8 +26,9 @@ namespace Gip.Controllers
             var cuL = from cu in db.CourseUser
                       join user in db.Users on cu.ApplicationUserId equals user.Id
                       join vak in db.Course on cu.CourseId equals vak.Id
+                      orderby user.UserName
                       where !cu.GoedGekeurd
-                      select new { cuId = cu.Id, cId = vak.Id,titel = vak.Titel, vakCode = vak.Vakcode, naam = user.Naam, voorNaam = user.VoorNaam};
+                      select new { cuId = cu.Id, cId = vak.Id,titel = vak.Titel, vakCode = vak.Vakcode, RNum = user.UserName,naam = user.Naam, voorNaam = user.VoorNaam};
 
             foreach (var vakI in vakL)
             {
@@ -38,7 +39,7 @@ namespace Gip.Controllers
 
                 foreach (var res in cuL2)
                 {
-                    studReq = new StudentRequestsViewModel { cuId = res.cuId, VakCode = res.vakCode, Titel = res.titel, Naam = res.naam, VoorNaam = res.voorNaam};
+                    studReq = new StudentRequestsViewModel { RNum = res.RNum,cuId = res.cuId, VakCode = res.vakCode, Titel = res.titel, Naam = res.naam, VoorNaam = res.voorNaam};
                     studentRequests.Add(studReq);
                 }
             }

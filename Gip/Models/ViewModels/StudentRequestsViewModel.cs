@@ -7,6 +7,7 @@ namespace Gip.Models.ViewModels
 {
     public class StudentRequestsViewModel
     {
+        public string RNum { get; set; }
         public string VakCode { get; set; }
         public string Titel { get; set; }
         public int cuId { get; set; }

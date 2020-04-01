@@ -99,6 +99,19 @@ namespace Gip.Controllers
                 return RedirectToAction("Index", "Lokaal");
             }
 
+            var qryDelR = from cm in db.CourseMoment
+                          where cm.RoomId == room.Id
+                          select cm;
+
+            if (qryDelR.Any())
+            {
+                foreach (var CoUs in qryDelR)
+                {
+                    db.CourseMoment.Remove(CoUs);
+                }
+                db.SaveChanges();
+            }
+
             try
             {
                 db.Room.Remove(room);

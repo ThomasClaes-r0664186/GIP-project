@@ -90,7 +90,7 @@ namespace Gip.Controllers
         [HttpGet]
         public ActionResult ListUsers()
         {
-            var users = userManager.Users;
+            var users = userManager.Users.OrderBy(u => u.UserName);
             
             return View(users);
         }
@@ -188,6 +188,32 @@ namespace Gip.Controllers
             }
             else
             {
+                var qryDelUCMU = from cmu in db.CourseMomentUsers
+                              where cmu.ApplicationUserId == user.Id
+                              select cmu;
+
+                if (qryDelUCMU.Any())
+                {
+                    foreach (var CoUs in qryDelUCMU)
+                    {
+                        db.CourseMomentUsers.Remove(CoUs);
+                    }
+                    db.SaveChanges();
+                }
+
+                var qryDelUCU = from cu in db.CourseUser
+                              where cu.ApplicationUserId == user.Id
+                              select cu;
+
+                if (qryDelUCU.Any())
+                {
+                    foreach (var CoUs in qryDelUCU)
+                    {
+                        db.CourseUser.Remove(CoUs);
+                    }
+                    db.SaveChanges();
+                }
+
                 var result = await userManager.DeleteAsync(user);
 
                 if (result.Succeeded)

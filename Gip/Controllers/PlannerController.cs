@@ -395,6 +395,7 @@ namespace Gip.Controllers
                         //lijst van alle users die toegevoegd zijn aan coursemoment
                         var qryCU = from cmu in db.CourseMomentUsers
                                     join u in db.Users on cmu.ApplicationUserId equals u.Id
+                                    orderby u.UserName
                                     where qryCm.FirstOrDefault().cmId == cmu.CoursMomentId
                                     select u;
 
@@ -464,6 +465,7 @@ namespace Gip.Controllers
                            join s in db.Schedule on cm.ScheduleId equals s.Id
                            join r in db.Room on cm.RoomId equals r.Id
                            where cm.CourseId == vakcode
+                           orderby s.Datum, s.Startmoment, s.Eindmoment, r.Gebouw, r.Verdiep, r.Nummer
                            select new
                            {
                                datum = s.Datum,
@@ -503,6 +505,7 @@ namespace Gip.Controllers
             //lijst van alle studenten die geaccepteerd zijn voor dit vak
             var qryu = from cu in db.CourseUser
                        join u in db.Users on cu.ApplicationUserId equals u.Id
+                       orderby u.UserName
                        where cu.GoedGekeurd
                        select u;
 

@@ -157,6 +157,18 @@ namespace Gip.Controllers
                 return RedirectToAction("Index", "Vak");
             }
 
+            var qryDelC = from cu in db.CourseUser
+                          where cu.CourseId == vakcode
+                          select cu;
+
+            if (qryDelC.Any()) {
+                foreach (var CoUs in qryDelC)
+                {
+                    db.CourseUser.Remove(CoUs);
+                }
+                db.SaveChanges();
+            }
+
             try
             {
                 db.Course.Remove(course);
