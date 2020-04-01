@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\ViewModels\EditStudsInCmViewModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="Views\Shared\AccesDenied - Copy.cshtml" />
     <Content Remove="Views\Shared\AccesDenied.cshtml" />
   </ItemGroup>
