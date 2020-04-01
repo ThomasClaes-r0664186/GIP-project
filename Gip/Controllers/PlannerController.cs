@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
+using Gip.Models.ViewModels;
 
 namespace Gip.Controllers
 {
@@ -358,6 +359,8 @@ namespace Gip.Controllers
                             where cm.Id == cmId
                             select new
                             {
+                                cmId = cm.Id,
+                                cId = c.Id,
                                 Datum = s.Datum,
                                 Startmoment = s.Startmoment,
                                 Eindmoment = s.Eindmoment,
@@ -366,13 +369,30 @@ namespace Gip.Controllers
                                 Nummer = r.Nummer,
                                 Vakcode = c.Vakcode,
                                 Titel = c.Titel,
-                                LessenLijst = cm.LessenLijst
+                                LessenLijst = cm.LessenLijst,
+                                LectorRNum = u.UserName
                             };
 
                 if (qryCm.Any())
                 {
+                    List<ApplicationUser> userList = new List<ApplicationUser>();
+
+                    if (User.IsInRole("Lector") && User.Identity.Name == qryCm.FirstOrDefault().LectorRNum) 
+                    {
+                        //lijst van alle users die toegevoegd zijn aan coursemoment
+                        var qryCU = from cmu in db.CourseMomentUsers
+                                    join u in db.Users on cmu.ApplicationUserId equals u.Id
+                                    select u;
+
+                        foreach (var us in qryCU)
+                        {
+                            userList.Add(us);
+                        }
+                    }
+
                     Planner planner = new Planner
                     {
+                        cmId = qryCm.FirstOrDefault().cmId,
                         Datum = qryCm.FirstOrDefault().Datum,
                         Startmoment = qryCm.FirstOrDefault().Startmoment,
                         Eindmoment = qryCm.FirstOrDefault().Eindmoment,
@@ -381,7 +401,9 @@ namespace Gip.Controllers
                         Nummer = qryCm.FirstOrDefault().Nummer,
                         Vakcode = qryCm.FirstOrDefault().Vakcode,
                         Titel = qryCm.FirstOrDefault().Titel,
-                        LessenLijst = qryCm.FirstOrDefault().LessenLijst
+                        LessenLijst = qryCm.FirstOrDefault().LessenLijst, 
+                        RNummer = qryCm.FirstOrDefault().LectorRNum,
+                        users = userList
                     };
 
                     return View("../Planning/ViewTopi", planner);
@@ -477,6 +499,79 @@ namespace Gip.Controllers
 
             var result = firstThursday.AddDays(weekNum * 7);
             return result.AddDays(-3);
+        }
+
+        [HttpGet]
+        public IActionResult EditStudsInCm(int cmId)
+        {
+            ViewBag.cmId = cmId;
+            var model = new List<EditStudInCmViewModel>();
+
+            //lijst van alle studenten die geaccepteerd zijn voor dit vak
+            var qryu = from cu in db.CourseUser
+                       join u in db.Users on cu.ApplicationUserId equals u.Id
+                       where cu.GoedGekeurd
+                       select u;
+
+            foreach (var u in qryu) 
+            {
+                //checken of student "u" reeds in het vak zit, indien ja: IsSelected == true
+                var qryCMU = from cmu in db.CourseMomentUsers
+                             join us in db.Users on cmu.ApplicationUserId equals us.Id
+                             where cmu.ApplicationUserId == u.Id
+                             where cmu.CoursMomentId == cmId
+                             select us;
+
+                var editStudInCmViewModel = new EditStudInCmViewModel { userId = u.Id,
+                                                                        Naam = u.Naam,
+                                                                        VoorNaam = u.VoorNaam,
+                                                                        RNum = u.UserName};
+
+                if (qryCMU.Any())
+                {
+                    editStudInCmViewModel.IsSelected = true;
+                }
+                else 
+                {
+                    editStudInCmViewModel.IsSelected = false;
+                }
+
+                model.Add(editStudInCmViewModel);
+            }
+
+            return View("../Planning/EditStudsInCm", model);
+        }
+
+        [HttpPost]
+        public IActionResult EditStudsInCm(List<EditStudInCmViewModel> model, int cmId)
+        {
+            for (int i = 0; i < model.Count; i++) 
+            {
+                var qryCMU = from cmu in db.CourseMomentUsers
+                             where cmu.ApplicationUserId == model[i].userId
+                             where cmu.CoursMomentId == cmId
+                             select cmu;
+
+                if (qryCMU.Any() && !model[i].IsSelected)
+                {
+                    db.CourseMomentUsers.Remove(db.CourseMomentUsers.Find(qryCMU.FirstOrDefault().Id));
+
+                    db.SaveChanges();
+                }
+                else if (!qryCMU.Any() && model[i].IsSelected)
+                {
+                    CourseMomentUsers cmu = new CourseMomentUsers { ApplicationUserId = model[i].userId, CoursMomentId = cmId };
+
+                    db.CourseMomentUsers.Add(cmu);
+
+                    db.SaveChanges();
+                }
+                else 
+                {
+                    continue;
+                }
+            }
+            return RedirectToAction("ViewTopic", new { cmId = cmId});
         }
     }
 }

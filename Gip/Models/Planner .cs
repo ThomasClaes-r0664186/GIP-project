@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Gip.Models
 {
@@ -18,6 +19,8 @@ namespace Gip.Models
         private DateTime _eindmoment;
         private string _lessenLijst;
         private int _capaciteit;
+
+        public List<ApplicationUser> users { get; set; }
 
         public Planner() { }
 
