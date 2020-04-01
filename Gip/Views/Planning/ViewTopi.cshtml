@@ -11,8 +11,8 @@
 {
     ViewBag.error = " ";
 }
-else 
-{ 
+else
+{
     <div class="alert alert-warning alert-dismissible fade show" role="alert">
         <strong>@ViewBag.error</strong>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -71,17 +71,31 @@ else
 {
     if (Model.users.Any())
     {
-        foreach (var user in Model.users)
-        {
-            <p>@user.UserName - @user.Naam - @user.VoorNaam</p>
-        }
+
+        <h3>Studenten die ingeboekt staan voor deze les:</h3>
+            <table class="table table-bordered table-hover table-striped table-light">
+                <tr>
+                    <th>Gebruikersnaam</th>
+                    <th>Voornaam</th>
+                    <th>Naam</th>
+                </tr>
+
+    @foreach (var user in Model.users)
+    {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>@user.VoorNaam</td>
+                    <td>@user.Naam</td>
+                </tr>
+        
+    }
+            </table>
     }
 
-    <div>
-        <a asp-action="EditStudsInCm" asp-controller="Planner" asp-route-cmId="@Model.cmId" class="btn btn-sm  btn-success" style="width:auto">Student toevoegen aan planning</a>
-    </div>
+<div>
+    <a asp-action="EditStudsInCm" asp-controller="Planner" asp-route-cmId="@Model.cmId" class="btn btn-sm  btn-success" style="width:auto">Student toevoegen aan planning</a>
+    <a asp-action="Index" style="float:right;" class="btn btn-sm btn-danger">Terug naar de planning</a>
+</div>
 }
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
