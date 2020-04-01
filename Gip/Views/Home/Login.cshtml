@@ -4,6 +4,9 @@
     ViewData["Title"] = "Login";
 }
 
+<link rel="stylesheet" href="~/css/passwordShow.css" />
+
+
     <h1>Login</h1>
     <div class="row">
         <div class="col-md-12">
@@ -16,7 +19,8 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="Password">Wachtwoord</label>
-                    <input asp-for="Password" class="form-control" />
+                    <input asp-for="Password" class="form-control" id="pwd" />
+                    <i class="fa fa-eye" id="eye"></i>
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -31,3 +35,7 @@
             </form>
         </div>
     </div>
+
+
+
+<script src="~/js/passwordShow.js"></script>
