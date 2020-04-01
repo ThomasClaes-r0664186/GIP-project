@@ -11,7 +11,7 @@ namespace Gip.Utils
     {
         public override bool IsValid(object value)
         {
-            if (value.ToString() == "")
+            if (value == null || value.ToString() == "")
             {
                 return false;
             }
