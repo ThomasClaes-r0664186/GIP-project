@@ -33,93 +33,101 @@ namespace Gip.Controllers
         {
             if (ModelState.IsValid)
             {
-                var email = await userManager.FindByEmailAsync(model.Email);
-                var username = await userManager.FindByNameAsync(model.RNum);
-                var user = new ApplicationUser
+                try
                 {
-                    UserName = model.RNum,
-                    Email = model.Email,
-                    Naam = model.SurName,
-                    VoorNaam = model.Name
-                };
-                if (email != null)
-                {
-                    ModelState.AddModelError("", "Email " + model.Email + " is already in use.");
-                }
-                else if (username != null)
-                {
-                    ModelState.AddModelError("", "Student number: " + model.RNum + " is already in use.");
-                }
-                else
-                {
-                    var result = await userManager.CreateAsync(user, model.Password);
-
-                    switch (user.UserName.ToLower().ToCharArray()[0])
+                    var email = await userManager.FindByEmailAsync(model.Email);
+                    var username = await userManager.FindByNameAsync(model.RNum);
+                    var user = new ApplicationUser
                     {
-                        case 'c':
-                            var result1 = await userManager.AddToRoleAsync(user, "Student");
-                            foreach (var error1 in result1.Errors)
-                            {
-                                ModelState.AddModelError("", error1.Description);
-                            }
-                            break;
-                        case 'r':
-                            var result2 = await userManager.AddToRoleAsync(user, "Student");
-                            foreach (var error2 in result2.Errors)
-                            {
-                                ModelState.AddModelError("", error2.Description);
-                            }
-                            break;
-                        case 's':
-                            var result3 = await userManager.AddToRoleAsync(user, "Student");
-                            foreach (var error3 in result3.Errors)
-                            {
-                                ModelState.AddModelError("", error3.Description);
-                            }
-                            break;
-                        case 'm':
-                            var result4 = await userManager.AddToRoleAsync(user, "Student");
-                            foreach (var error4 in result4.Errors)
-                            {
-                                ModelState.AddModelError("", error4.Description);
-                            }
-                            break;
-                        case 'u':
-                            var result5 = await userManager.AddToRoleAsync(user, "Lector");
-                            foreach (var error5 in result5.Errors)
-                            {
-                                ModelState.AddModelError("", error5.Description);
-                            }
-                            break;
-                        case 'x':
-                            var result6 = await userManager.AddToRoleAsync(user, "Admin");
-                            foreach (var error6 in result6.Errors)
-                            {
-                                ModelState.AddModelError("", error6.Description);
-                            }
-                            break;
-                        default: break;
+                        UserName = model.RNum,
+                        Email = model.Email,
+                        Naam = model.SurName,
+                        VoorNaam = model.Name
+                    };
+                    if (email != null)
+                    {
+                        ModelState.AddModelError("", "Email " + model.Email + " is already in use.");
                     }
-                    if (!result.Succeeded)
+                    else if (username != null)
                     {
-                        foreach (var error in result.Errors)
-                        {
-                            ModelState.AddModelError("", error.Description);
-                        }
-                        return View("../Home/Register");
+                        ModelState.AddModelError("", "Student number: " + model.RNum + " is already in use.");
                     }
                     else
                     {
-                        if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                        var result = await userManager.CreateAsync(user, model.Password);
+
+                        switch (user.UserName.ToLower().ToCharArray()[0])
                         {
-                            return RedirectToAction("ListUsers", "Administration");
+                            case 'c':
+                                var result1 = await userManager.AddToRoleAsync(user, "Student");
+                                foreach (var error1 in result1.Errors)
+                                {
+                                    ModelState.AddModelError("", error1.Description);
+                                }
+                                break;
+                            case 'r':
+                                var result2 = await userManager.AddToRoleAsync(user, "Student");
+                                foreach (var error2 in result2.Errors)
+                                {
+                                    ModelState.AddModelError("", error2.Description);
+                                }
+                                break;
+                            case 's':
+                                var result3 = await userManager.AddToRoleAsync(user, "Student");
+                                foreach (var error3 in result3.Errors)
+                                {
+                                    ModelState.AddModelError("", error3.Description);
+                                }
+                                break;
+                            case 'm':
+                                var result4 = await userManager.AddToRoleAsync(user, "Student");
+                                foreach (var error4 in result4.Errors)
+                                {
+                                    ModelState.AddModelError("", error4.Description);
+                                }
+                                break;
+                            case 'u':
+                                var result5 = await userManager.AddToRoleAsync(user, "Lector");
+                                foreach (var error5 in result5.Errors)
+                                {
+                                    ModelState.AddModelError("", error5.Description);
+                                }
+                                break;
+                            case 'x':
+                                var result6 = await userManager.AddToRoleAsync(user, "Admin");
+                                foreach (var error6 in result6.Errors)
+                                {
+                                    ModelState.AddModelError("", error6.Description);
+                                }
+                                break;
+                            default: break;
+                        }
+                        if (!result.Succeeded)
+                        {
+                            foreach (var error in result.Errors)
+                            {
+                                ModelState.AddModelError("", error.Description);
+                            }
+                            return View("../Home/Register");
                         }
                         else
                         {
-                            await signInManager.SignInAsync(user, isPersistent: false);
-                            return RedirectToAction("Index", "Home");
+                            if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                            {
+                                return RedirectToAction("ListUsers", "Administration");
+                            }
+                            else
+                            {
+                                await signInManager.SignInAsync(user, isPersistent: false);
+                                return RedirectToAction("Index", "Home");
+                            }
                         }
                     }
+                }
+                catch (Exception e) 
+                {
+                    ModelState.AddModelError("", e.Message);
+                    return View("../Home/Register");
                 }
             }
             return View("../Home/Register");

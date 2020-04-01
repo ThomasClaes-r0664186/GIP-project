@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using Gip.Models.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gip.Controllers
 {
@@ -382,6 +383,7 @@ namespace Gip.Controllers
                         //lijst van alle users die toegevoegd zijn aan coursemoment
                         var qryCU = from cmu in db.CourseMomentUsers
                                     join u in db.Users on cmu.ApplicationUserId equals u.Id
+                                    where qryCm.FirstOrDefault().cmId == cmu.CoursMomentId
                                     select u;
 
                         foreach (var us in qryCU)
@@ -405,6 +407,12 @@ namespace Gip.Controllers
                         RNummer = qryCm.FirstOrDefault().LectorRNum,
                         users = userList
                     };
+
+                    if (TempData["error"] != null)
+                    {
+                        ViewBag.error = TempData["error"].ToString();
+                        TempData["error"] = null;
+                    }
 
                     return View("../Planning/ViewTopi", planner);
                 }
@@ -543,14 +551,36 @@ namespace Gip.Controllers
         }
 
         [HttpPost]
-        public IActionResult EditStudsInCm(List<EditStudInCmViewModel> model, int cmId)
+        public async Task<IActionResult> EditStudsInCm(List<EditStudInCmViewModel> model, int cmId)
         {
-            for (int i = 0; i < model.Count; i++) 
+            int maxAmountStudsInCm = 0;
+
+            var cmForMaxAmount = await db.CourseMoment.Include("Room").FirstOrDefaultAsync(cm => cm.Id == cmId);
+
+            if (cmForMaxAmount == null)
+            {
+                ViewBag.ErrorMessage = "Coursemoment met lokaal niet gevonden.";
+                return View("../Shared/NotFound");
+            }
+            else 
+            {
+                maxAmountStudsInCm = cmForMaxAmount.Room.Capaciteit;
+            }
+
+
+            var qryCMUAmount = from cmu in db.CourseMomentUsers
+                               where cmu.CoursMomentId == cmId
+                               select cmu;
+
+
+            int counter = qryCMUAmount.Count();
+
+            for (int i = 0; i < model.Count; i++)
             {
                 var qryCMU = from cmu in db.CourseMomentUsers
-                             where cmu.ApplicationUserId == model[i].userId
-                             where cmu.CoursMomentId == cmId
-                             select cmu;
+                                where cmu.ApplicationUserId == model[i].userId
+                                where cmu.CoursMomentId == cmId
+                                select cmu;
 
                 if (qryCMU.Any() && !model[i].IsSelected)
                 {
@@ -565,12 +595,25 @@ namespace Gip.Controllers
                     db.CourseMomentUsers.Add(cmu);
 
                     db.SaveChanges();
+
+                    counter++;
+
+                    if (counter >= maxAmountStudsInCm) 
+                    {
+                        break;
+                    }
                 }
-                else 
+                else
                 {
                     continue;
                 }
             }
+
+            if (counter >= maxAmountStudsInCm) 
+            {
+                TempData["error"] = "U heeft het maximum aantal studenten voor dit lokaal bereikt, indien u meer studenten had aangeduid werden deze niet toegelaten.";
+            }
+
             return RedirectToAction("ViewTopic", new { cmId = cmId});
         }
     }
