@@ -587,18 +587,18 @@ namespace Gip.Controllers
                 }
                 else if (!qryCMU.Any() && model[i].IsSelected)
                 {
+                    counter++;
+
+                    if (counter > maxAmountStudsInCm)
+                    {
+                        break;
+                    }
+
                     CourseMomentUsers cmu = new CourseMomentUsers { ApplicationUserId = model[i].userId, CoursMomentId = cmId };
 
                     db.CourseMomentUsers.Add(cmu);
 
                     db.SaveChanges();
-
-                    counter++;
-
-                    if (counter >= maxAmountStudsInCm) 
-                    {
-                        break;
-                    }
                 }
                 else
                 {
@@ -606,7 +606,7 @@ namespace Gip.Controllers
                 }
             }
 
-            if (counter >= maxAmountStudsInCm) 
+            if (counter > maxAmountStudsInCm) 
             {
                 TempData["error"] = "U heeft het maximum aantal studenten voor dit lokaal bereikt, indien u meer studenten had aangeduid werden deze niet toegelaten.";
             }
