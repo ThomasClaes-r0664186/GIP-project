@@ -1,4 +1,7 @@
-﻿@{
+﻿@model ApplicationUser
+@inject SignInManager<ApplicationUser> signInManager;
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -84,6 +87,11 @@ else
     <div class="card border-0 shadow my-5">
         <div class="card-body p-5">
             <img src="https://i.imgur.com/HqO78z5.png" style="position:absolute; right:10px; top:5px;" />
+            @*voorbeeld van hoe ge kunt zien of gebruiker is ingelogd, zo ja => toon goeiendag, voornaam & naam*@
+            @if (signInManager.IsSignedIn(User))
+            {
+                <h1>Goeiendag @Model.VoorNaam @Model.Naam</h1>
+            }
             <h1 class="font-weight-light text-dark font-weight-bolder">GIP Opdracht V2</h1>
             <p class="text-dark lead">Hieronder vindt u een beschrijving over het gebruik van de applicatie.</p>
             <div style="height:5px;"></div>
