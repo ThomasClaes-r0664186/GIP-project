@@ -119,7 +119,8 @@ namespace Gip.Controllers
                             else
                             {
                                 await signInManager.SignInAsync(user, isPersistent: false);
-                                return RedirectToAction("Index", "Home");
+                                return RedirectToAction("LoggedIn", "Account");
+                                //return RedirectToAction("Index", "Home");
                             }
                         }
                     }
@@ -161,7 +162,8 @@ namespace Gip.Controllers
                         return Redirect(returnUrl);
                     }
                     else {
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("LoggedIn", "Account");
+                        //return RedirectToAction("Index", "Home");
                     }
                 }
 
@@ -213,6 +215,18 @@ namespace Gip.Controllers
             }
 
             return View("../Home/ChangePassword", model);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> LoggedIn() 
+        {
+            var user = await userManager.FindByNameAsync(User.Identity.Name);
+
+            if (user == null) 
+            {
+                return View("Index", "Home");
+            }
+            return View("../Home/LoggedIn", user);
         }
     }
 }
