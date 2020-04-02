@@ -10,26 +10,37 @@
         <div class="card-header" style="background-color:#e00049;">
             <h2 class="text-white">Toevoegen of verwijderen studenten van dit lesmoment</h2>
         </div>
-        <div class="card-body bg-light">
-            @for (int i = 0; i < Model.Count; i++)
-            {
-            <div class="form-check m-1">
-                <input type="hidden" asp-for="@Model[i].userId" />
-                <input type="hidden" asp-for="@Model[i].RNum" />
-                <input type="hidden" asp-for="@Model[i].Naam" />
-                <input type="hidden" asp-for="@Model[i].VoorNaam" />
-                <input asp-for="@Model[i].IsSelected" class="form-check-input" />
-                <label class="form-check-label" asp-for="@Model[i].IsSelected">
-                    @Model[i].RNum - @Model[i].Naam @Model[i].VoorNaam
-                </label>
+        @if (Model.Any())
+        {
+            <div class="card-body bg-light">
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    <div class="form-check m-1">
+                        <input type="hidden" asp-for="@Model[i].userId" />
+                        <input type="hidden" asp-for="@Model[i].RNum" />
+                        <input type="hidden" asp-for="@Model[i].Naam" />
+                        <input type="hidden" asp-for="@Model[i].VoorNaam" />
+                        <input asp-for="@Model[i].IsSelected" class="form-check-input" />
+                        <label class="form-check-label" asp-for="@Model[i].IsSelected">
+                            @Model[i].RNum - @Model[i].Naam @Model[i].VoorNaam
+                        </label>
+                    </div>
+                }
             </div>
-            }
-        </div>
-        <div class="card-footer">
-            <input type="submit" value="Voeg student toe" class="btn btn-sm btn-success"
-                   style="width:auto" />
-            <a asp-action="ViewTopic" asp-route-cmId="@cmId"
-               class="btn btn-sm btn-danger" style="width: auto">Cancel</a>
-        </div>
+            <div class="card-footer">
+                <input type="submit" value="Voeg student toe" class="btn btn-sm btn-success"
+                       style="width:auto" />
+                <a asp-action="ViewTopic" asp-route-cmId="@cmId"
+                   class="btn btn-sm btn-danger" style="width: auto">Cancel</a>
+            </div>
+        }
+        else
+        {
+            <div class="card-body bg-light">Er zijn momenteel geen studenten die geaccepteerd zijn voor dit vak, keur hun aanvragen eerst goed.</div>
+            <div class="card-footer">
+                <a asp-action="ViewTopic" asp-route-cmId="@cmId"
+                   class="btn btn-sm btn-danger" style="width: auto">Cancel</a>
+            </div>
+        }
     </div>
 </form>

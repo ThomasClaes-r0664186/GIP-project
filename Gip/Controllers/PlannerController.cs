@@ -502,11 +502,20 @@ namespace Gip.Controllers
             ViewBag.cmId = cmId;
             var model = new List<EditStudInCmViewModel>();
 
+            var cm = db.CourseMoment.Find(cmId);
+
+            if (cm == null) 
+            {
+                TempData["error"] = "Oops, het coursemoment id dat werd meegegeven is incorrect.";
+                return RedirectToAction("ViewTopic", new { cmId = cmId });
+            }
+
             //lijst van alle studenten die geaccepteerd zijn voor dit vak
             var qryu = from cu in db.CourseUser
                        join u in db.Users on cu.ApplicationUserId equals u.Id
                        orderby u.UserName
                        where cu.GoedGekeurd
+                       where cu.CourseId == cm.CourseId
                        select u;
 
             foreach (var u in qryu) 

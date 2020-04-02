@@ -269,9 +269,36 @@ namespace Gip.Controllers
             {
                 var vak = db.Course.Find(vakCode);
                 var user = await userManager.GetUserAsync(User);
-                CourseUser cu = db.CourseUser.Find(user.UserName, vak.Vakcode);
+                //CourseUser cu = db.CourseUser.Find(user.UserName, vak.Vakcode);
 
-                db.CourseUser.Remove(cu);
+                var cu = from cus in db.CourseUser
+                         where cus.ApplicationUserId == user.Id
+                         where cus.CourseId == vak.Id
+                         select cus;
+
+                CourseUser courseUser = cu.FirstOrDefault();
+
+                if (vak == null || user == null || courseUser == null) 
+                {
+                    ViewBag.error = "Het vak of de gebruiker dat werd meegegeven is verkeerd meegegeven.";
+                    return RedirectToAction("Index");
+                }
+
+                var CMUL = from cmus in db.CourseMomentUsers
+                           join cm in db.CourseMoment on cmus.CoursMomentId equals cm.Id
+                           join c in db.Course on cm.CourseId equals c.Id
+                          where cmus.ApplicationUserId == user.Id
+                          where c.Id == vak.Id
+                          select cmus;
+
+                foreach (var cmu in CMUL) 
+                {
+                    db.CourseMomentUsers.Remove(cmu);
+                }
+
+                db.SaveChanges();
+
+                db.CourseUser.Remove(courseUser);
 
                 db.SaveChanges();
             }
