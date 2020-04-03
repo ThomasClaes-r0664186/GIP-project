@@ -651,7 +651,7 @@ namespace Gip.Controllers
             var qrySched = from cm in db.CourseMoment
                         join s in db.Schedule on cm.ScheduleId equals s.Id
                         where cm.RoomId == lokaalId
-                        where s.Datum > DateTime.Today
+                        where s.Datum >= DateTime.Today
                         select s;
 
             if (!qrySched.Any()) 
