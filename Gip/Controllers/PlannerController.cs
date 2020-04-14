@@ -434,18 +434,6 @@ namespace Gip.Controllers
                     TempData["error"] = "topicError" + "/" + "Databank fout.";
                     return RedirectToAction("Index", "Planner");
                 }
-                ////users, courses, room & schedule == null 
-                //CourseMoment moment = db.CourseMoment.Find(cmId);
-
-                            //Planner planner = new Planner(
-                            //                                moment.Room.Gebouw, 
-                            //                                moment.Room.Verdiep, 
-                            //                                moment.Room.Nummer, 
-                            //                                moment.Courses.Vakcode, 
-                            //                                moment.Courses.Titel, 
-                            //                                moment.LessenLijst);
-
-                            //return View("../Planning/ViewTopi", planner);
             }
             catch (Exception e) {
                 Console.WriteLine(e);
@@ -465,6 +453,7 @@ namespace Gip.Controllers
                            join s in db.Schedule on cm.ScheduleId equals s.Id
                            join r in db.Room on cm.RoomId equals r.Id
                            where cm.CourseId == vakcode
+                           where s.Datum >= DateTime.Now
                            orderby s.Datum, s.Startmoment, s.Eindmoment, r.Gebouw, r.Verdiep, r.Nummer
                            select new
                            {
@@ -564,11 +553,9 @@ namespace Gip.Controllers
                 maxAmountStudsInCm = cmForMaxAmount.Room.Capaciteit;
             }
 
-
             var qryCMUAmount = from cmu in db.CourseMomentUsers
                                where cmu.CoursMomentId == cmId
                                select cmu;
-
 
             int counter = qryCMUAmount.Count();
 
@@ -612,6 +599,166 @@ namespace Gip.Controllers
             }
 
             return RedirectToAction("ViewTopic", new { cmId = cmId});
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin, Lector")]
+        public ActionResult ViewCourseUsers(int vakcode) 
+        {
+            try
+            {
+                Course course = db.Course.Find(vakcode);
+
+                CourseUsersViewModel cuvw = new CourseUsersViewModel
+                {
+                    cId = course.Id,
+                    Vakcode = course.Vakcode,
+                    Titel = course.Titel
+                };
+
+                cuvw.users = GetUsersSubForCourse(vakcode);
+
+                if (TempData["error"] != null)
+                {
+                    ViewBag.error = "Deze studenten konden niet toegevoegd worden aan bepaalde lesmomenten door overschrijden capaciteit:" + TempData["error"].ToString();
+                    TempData["error"] = null;
+                }
+
+                return View("../Planning/ViewCourseUsers", cuvw);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                TempData["error"] = "topicError" + "/" + "Databank fout.";
+                return RedirectToAction("Index", "Vak");
+            }
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin, Lector")]
+        public ActionResult AddStudsToEachCm(int vakcode) 
+        {
+            ViewBag.VakCode = vakcode;
+            var model = new List<EditStudInCmViewModel>();
+
+            //lijst van alle studenten die geaccepteerd zijn voor dit vak
+            var qryu = from cu in db.CourseUser
+                       join u in db.Users on cu.ApplicationUserId equals u.Id
+                       orderby u.UserName
+                       where cu.GoedGekeurd
+                       where cu.CourseId == vakcode
+                       select u;
+
+            foreach (var u in qryu) 
+            {
+                var editStudInCmViewModel = new EditStudInCmViewModel
+                {
+                    userId = u.Id,
+                    Naam = u.Naam,
+                    VoorNaam = u.VoorNaam,
+                    RNum = u.UserName
+                };
+
+                if (GetUsersSubForCourse(vakcode).Contains(u)) 
+                {
+                    editStudInCmViewModel.IsSelected = true;
+                }
+                else 
+                {
+                    editStudInCmViewModel.IsSelected = false;
+                }
+
+                model.Add(editStudInCmViewModel);
+            }
+
+            return View("../Planning/EditStudsToEachCm", model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin, Lector")]
+        public async Task<ActionResult> AddStudsToEachCm(List<EditStudInCmViewModel> model, int vakcode) 
+        {
+            try {
+                foreach (var editStudInC in model)
+                {
+                    ApplicationUser user = db.Users.Find(editStudInC.userId);
+                    if (editStudInC.IsSelected) //wanneer user is aangeklikt
+                    {
+                        if (!GetUsersSubForCourse(vakcode).Contains(user))
+                        //user moet toegevoegd worden aan alle lesmomenten (voor dit vak) waarvoor hij nog niet is ingeschreven. Zonder capaciteit te overschrijden.
+                        //Als capa overschreden is => error tonen + verdergaan 
+                        //VB: Deze studenten konden niet toegevoegd worden aan bepaalde lesmomenten
+                        //    door overschrijden capaciteit: M0000001, M00..... 
+                        {
+                            //alle lesmomenten opvragen van dit vak.
+                            var qryCm = from cm in db.CourseMoment
+                                        where cm.CourseId == vakcode
+                                        select cm;
+
+                            //lesmomenten aflopen
+                            foreach (var cm in qryCm)
+                            {
+                                //Kijken of de user reeds ingeschreven is voor dit bepaalde lesmoment
+                                var qryCmU = from cmu in db.CourseMomentUsers
+                                             where cmu.ApplicationUserId == user.Id
+                                             where cmu.CoursMomentId == cm.Id
+                                             select cmu;
+
+                                //indien dit niet het geval is => kijken of capaciteit van lokaal overschreden wordt bij inschrijven user.
+                                if (!qryCmU.Any())
+                                {
+                                    var qryCmUAmount = from cmu in db.CourseMomentUsers
+                                                       where cmu.CoursMomentId == cm.Id
+                                                       select cmu;
+                                    int counter = qryCmUAmount.Count();
+                                    var temp = await db.CourseMoment.Include("Room").FirstOrDefaultAsync(cmt => cmt.Id == cm.Id);
+                                    int maxAmountStuds = temp.Room.Capaciteit;
+
+                                    //indien het niet overschreden wordt, user toevoegen.
+                                    if (counter + 1 <= maxAmountStuds)
+                                    {
+                                        db.CourseMomentUsers.Add(new CourseMomentUsers { CoursMomentId = cm.Id, ApplicationUserId = user.Id });
+                                    }
+                                    else //tonen dat de student voor dit bepaald lesmoment niet toegevoegd kon worden.
+                                    {
+                                        TempData["Error"] += " " + user.UserName;
+                                    }
+                                }
+                            }
+                            db.SaveChanges();
+                        }
+
+                        //else do nothing -> stud reeds ingeschreven voor alle lesmomenten
+                    }
+                    else //wanneer user niet is aangeklikt
+                    {
+                        if (GetUsersSubForCourse(vakcode).Contains(user)) // user verwijderen uit alle courseMomentUsers
+                        {
+                            var qCmU = from cmu in db.CourseMomentUsers
+                                       join cm in db.CourseMoment on cmu.CoursMomentId equals cm.Id
+                                       where cmu.ApplicationUserId == user.Id
+                                       where cm.CourseId == vakcode
+                                       select cmu;
+
+                            if (qCmU.Any())
+                            {
+                                foreach (var cmu in qCmU)
+                                {
+                                    db.CourseMomentUsers.Remove(db.CourseMomentUsers.Find(cmu.Id));
+                                }
+                                db.SaveChanges();
+                            }
+                        }
+                        //else do nothing
+                    }
+                }
+                return RedirectToAction("ViewCourseUsers", "Planner", new {vakcode});
+            }
+            catch (Exception e) 
+            {
+                TempData["Error"] = e.Message;
+                return RedirectToAction("ViewCourseUsers", "Planner", vakcode);
+            }
         }
 
         public static int GetIso8601WeekOfYear(DateTime time)
@@ -679,6 +826,52 @@ namespace Gip.Controllers
             }
 
             return false;
+        }
+
+        private List<ApplicationUser> GetUsersSubForCourse(int vakcode) 
+        {
+            List<ApplicationUser> userList = new List<ApplicationUser>();
+
+            var cms = from CrsM in db.CourseMoment
+                      where CrsM.CourseId == vakcode
+                      select CrsM;
+
+            var users = from us in db.CourseUser
+                        join uRol in db.UserRoles on us.ApplicationUserId equals uRol.UserId
+                        join rol in db.Roles on uRol.RoleId equals rol.Id
+                        join u in db.Users on us.ApplicationUserId equals u.Id
+                        where rol.NormalizedName == "STUDENT"
+                        orderby u.UserName
+                        select u;
+
+            if (cms.Any())
+            {
+                if (users.Any())
+                {
+                    foreach (var user in users)
+                    {
+                        try
+                        {
+                            foreach (var cm in cms)
+                            {
+                                var temp = from crsmus in db.CourseMomentUsers
+                                           where crsmus.CoursMomentId == cm.Id
+                                           where crsmus.ApplicationUserId == user.Id
+                                           select crsmus;
+
+                                if (!temp.Any())
+                                {
+                                    throw new Exception("Student zit niet in één van de lesmomenten");
+                                }
+                            }
+                            userList.Add(user);
+                        }
+                        catch (Exception e)
+                        { }
+                    }
+                }
+            }
+            return userList;
         }
     }
 }

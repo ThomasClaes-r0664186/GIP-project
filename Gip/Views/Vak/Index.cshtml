@@ -122,8 +122,16 @@
             @foreach (var vak in Model)
             {
         <tr>
-            <td>@vak.Vakcode</td>
-            <td>@vak.Titel</td>
+            @if (signInManager.IsSignedIn(User) && User.IsInRole("Lector") || User.IsInRole("Admin"))
+            {
+                <td id="vakcodeClick" onclick="window.location = 'planner/ViewCourseUsers?vakcode=@vak.courseId';" class="veranderDatum">@vak.Vakcode</td>
+                <td id="titelClick" onclick="window.location = 'planner/ViewCourseUsers?vakcode=@vak.courseId';" class="veranderDatum">@vak.Titel</td>
+            }
+            else
+            {
+                <td>@vak.Vakcode</td>
+                <td>@vak.Titel</td>
+            }
             <td>@vak.Studiepunten</td>
             @if (signInManager.IsSignedIn(User) && User.IsInRole("Lector") || User.IsInRole("Admin"))
             {
