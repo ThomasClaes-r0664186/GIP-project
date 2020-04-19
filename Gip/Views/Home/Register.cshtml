@@ -1,4 +1,5 @@
 ﻿@model Gip.Models.RegisterViewModel
+@inject SignInManager<ApplicationUser> signInManager;
 
 @{
     ViewData["Title"] = "Register";
@@ -44,6 +45,10 @@
                         <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                     </div>
                     <input type="submit" value="Register" class="btn btn-sm btn-success" />
+                    @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="Administration" asp-action="ListUsers" class="btn btn-sm btn-danger">Cancel</a>   
+                    }
                 </form>
             </div>
         </div>
