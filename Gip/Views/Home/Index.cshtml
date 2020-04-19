@@ -123,7 +123,7 @@ else
 
             @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
             {
-                if (true) //== "true || ViewBag.deletedDb == null"
+                if (ViewBag.deletedDb == null) //== "true || ViewBag.deletedDb == null"
                 {
                     <a asp-action="DeleteDbHistory" asp-controller="Administration" class="btn btn-sm btn-danger">Verwijder geschiedenis</a>
                 }
