@@ -24,21 +24,29 @@ namespace Gip.Controllers
             this.signInManager = signInManager;
         }
 
-        // GET /
         [HttpGet]
         [Route("")]
         public async Task<ActionResult> Index()
         {
             ApplicationUser user = null;
 
-            if (signInManager.IsSignedIn(User)) 
+            if (signInManager.IsSignedIn(User))
             {
                 user = await userManager.FindByNameAsync(User.Identity.Name);
             }
 
+            if (TempData["error"] != null)
+            {
+                ViewBag.error = TempData["error"].ToString();
+                TempData["error"] = null;
+            }
+
+            ViewBag.deletedDb = Request.Cookies["deleteDb"];
+
             return View(user);
         }
-        
+
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public ActionResult Error()
         {

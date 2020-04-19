@@ -1,6 +1,7 @@
 ﻿using Gip.Models;
 using Gip.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -385,6 +386,59 @@ namespace Gip.Controllers
             }
 
             return RedirectToAction("EditUser", new { id = userId});
+        }
+
+        //opgepast bij verwijderen schedule dat gebruikt is in een lesmoment => error doordat cascade on delete nog niet werkt.
+        public ActionResult DeleteDbHistory()
+        {
+            try
+            {
+                var historDate = DateTime.Now.AddMonths(-1);
+                //var historDate = DateTime.Now.AddDays(-10);
+
+                var schedToDel = from sched in db.Schedule
+                                 where sched.Datum < historDate
+                                 select sched;
+
+                foreach (var sched in schedToDel)
+                {
+                    db.Schedule.Remove(sched);
+
+                    var cmL = db.CourseMoment.Where(e => e.ScheduleId == sched.Id);
+                    if (cmL.Any()) 
+                    {
+                        foreach (var cm in cmL) 
+                        {
+                            var cmuL = db.CourseMomentUsers.Where(e => e.CoursMomentId == cm.Id);
+
+                            if (cmuL.Any()) 
+                            {
+                                foreach (var cmu in cmuL) 
+                                {
+                                    db.CourseMomentUsers.Remove(cmu);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                db.SaveChanges();
+
+                CookieOptions cookies = new CookieOptions();
+                cookies.Expires = DateTime.Now.AddDays(1);
+
+                Response.Cookies.Append("deleteDb", "true", cookies);
+
+                TempData["error"] = "deleteGood";
+            }
+            catch (Exception e)
+            {
+                TempData["error"] = "dbDeleteFail";
+
+                Console.WriteLine(e);
+            }
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }

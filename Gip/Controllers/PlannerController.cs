@@ -282,6 +282,16 @@ namespace Gip.Controllers
             try
             {
                 db.CourseMoment.Remove(moment);
+
+                var cmuL = db.CourseMomentUsers.Where(e => e.CoursMomentId == moment.Id);
+
+                if (cmuL.Any())
+                {
+                    foreach (var cmu in cmuL)
+                    {
+                        db.CourseMomentUsers.Remove(cmu);
+                    }
+                }
                 db.SaveChanges();
             }
             catch(Exception e)
@@ -836,13 +846,12 @@ namespace Gip.Controllers
                       where CrsM.CourseId == vakcode
                       select CrsM;
 
-            var users = from us in db.CourseUser
-                        join uRol in db.UserRoles on us.ApplicationUserId equals uRol.UserId
-                        join rol in db.Roles on uRol.RoleId equals rol.Id
-                        join u in db.Users on us.ApplicationUserId equals u.Id
-                        where rol.NormalizedName == "STUDENT"
-                        orderby u.UserName
-                        select u;
+            var users = (from us in db.CourseUser
+                         join uRol in db.UserRoles on us.ApplicationUserId equals uRol.UserId
+                         join rol in db.Roles on uRol.RoleId equals rol.Id
+                         join u in db.Users on us.ApplicationUserId equals u.Id
+                         where rol.NormalizedName == "STUDENT"
+                         select u).Distinct().OrderBy(user => user.UserName);
 
             if (cms.Any())
             {

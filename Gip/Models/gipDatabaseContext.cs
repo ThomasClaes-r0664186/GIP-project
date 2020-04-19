@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Gip.Models
 {
@@ -34,32 +35,11 @@ namespace Gip.Models
         {
             base.OnModelCreating(modelBuilder);
 
-            //modelBuilder.Entity<Room>().HasKey(x => new {
-            //    x.Gebouw,
-            //    x.Verdiep,
-            //    x.Nummer
-            //});
-
-            //modelBuilder.Entity<CourseUser>().HasKey(x => new {
-            //    x.Userid,
-            //    x.Vakcode
-            //});
-
-            //modelBuilder.Entity<Schedule>().HasKey(x => new {
-            //    x.Datum,
-            //    x.Startmoment,
-            //    x.Eindmoment
-            //});
-
-            //modelBuilder.Entity<CourseMoment>().HasKey(x => new { 
-            //    x.Vakcode, 
-            //    x.Datum, 
-            //    x.Gebouw, 
-            //    x.Verdiep, 
-            //    x.Nummer, 
-            //    x.Userid, 
-            //    x.Startmoment, 
-            //    x.Eindmoment });
+            //testen of dit werkt => zorgt ervoor dat wanneer er iets verwijderd wordt, elke lijn waarin ernaar verwezen is, ook wordt verwijderd.
+            foreach (var foreignKey in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                foreignKey.DeleteBehavior = DeleteBehavior.Cascade;
+            }
         }
     }
 }
