@@ -27,7 +27,7 @@ namespace Gip.Controllers
                       join user in db.Users on cu.ApplicationUserId equals user.Id
                       join vak in db.Course on cu.CourseId equals vak.Id
                       orderby user.UserName
-                      where !cu.GoedGekeurd
+                      where cu.GoedGekeurd == false
                       select new { cuId = cu.Id, cId = vak.Id,titel = vak.Titel, vakCode = vak.Vakcode, RNum = user.UserName,naam = user.Naam, voorNaam = user.VoorNaam};
 
             foreach (var vakI in vakL)
@@ -49,8 +49,8 @@ namespace Gip.Controllers
         [HttpPost]
         public ActionResult ApproveStudent(int cuId) 
         {
-            db.CourseUser.Find(cuId).GoedGekeurd = true;
-            db.SaveChanges();
+            //db.CourseUser.Find(cuId).GoedGekeurd = true;
+            //db.SaveChanges();
             try
             {
                 db.CourseUser.Find(cuId).GoedGekeurd = true;
@@ -66,14 +66,19 @@ namespace Gip.Controllers
         }
 
         [HttpPost]
-        public ActionResult DenyStudent(int cuId)
+        public ActionResult DenyStudent(int cuId, string beschrijving)
         {
+            // dit veranderen naar .Find(cuId).GoedGekeurd = null;
+            // + de afwijzingBeschr setten op de input van de docent
             try
             {
-                CourseUser cu = db.CourseUser.Find(cuId);
+                //CourseUser cu = db.CourseUser.Find(cuId);
 
-                db.CourseUser.Remove(cu);
+                //db.CourseUser.Remove(cu);
 
+                //db.SaveChanges();
+                db.CourseUser.Find(cuId).GoedGekeurd = null;
+                db.CourseUser.Find(cuId).AfwijzingBeschr = beschrijving;
                 db.SaveChanges();
 
                 TempData["error"] = "denyGood";

@@ -12,5 +12,6 @@ namespace Gip.Models.ViewModels
         public string Titel { get; set; }
         public int Studiepunten { get; set; }
         public int Ingeschreven { get; set; }
+        public string afwijzingBeschrijving { get; set; }
     }
 }

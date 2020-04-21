@@ -54,10 +54,11 @@ namespace Gip.Controllers
                         //Als het vak voorkomt in de list<CourseUser> qry2, dan maak je een VakViewModel aan
                         //      waar ingeschreven == 1 staat voor: de student is geaccepteerd door lector (goedgekeurd == true)
                         //      en ingeschreven == 2 staat voor: de student heeft aanvraag gedaan maar is nog niet geaccepteerd (goedgekeurd == false)
+                        //      voor een bescrhijving kunnen we dan hieraan toevoegen == 3 waarin je dan bent afgekeurd en je u niet meteen terug kan inschrijven.
                         var q2 = qry2.Where(cu => cu.CourseId.Equals(vak.Id));
                         if (q2.Any())
                         {
-                            var temp = new VakViewModel { courseId = vak.Id, Vakcode = vak.Vakcode, Titel = vak.Titel, Studiepunten = vak.Studiepunten, Ingeschreven = q2.First().GoedGekeurd ? 1 : 2 };
+                            var temp = new VakViewModel { courseId = vak.Id, Vakcode = vak.Vakcode, Titel = vak.Titel, Studiepunten = vak.Studiepunten, Ingeschreven = q2.First().GoedGekeurd == true ? 1 : q2.First().GoedGekeurd == false ? 2 : 3, afwijzingBeschrijving = q2.First().AfwijzingBeschr};
                             vakViewModels.Add(temp);
                         }
                         //als het vak daar niet in voorkomt, maak je een VakViewModel aan met ingeschreven op 0, 
@@ -250,7 +251,7 @@ namespace Gip.Controllers
                 var vak = db.Course.Find(vakCode);
                 var user = await userManager.GetUserAsync(User);
 
-                CourseUser cu = new CourseUser { CourseId = vak.Id, ApplicationUserId = user.Id};
+                CourseUser cu = new CourseUser { CourseId = vak.Id, ApplicationUserId = user.Id, GoedGekeurd = false};
                 db.CourseUser.Add(cu);
 
                 db.SaveChanges();
@@ -269,7 +270,6 @@ namespace Gip.Controllers
             {
                 var vak = db.Course.Find(vakCode);
                 var user = await userManager.GetUserAsync(User);
-                //CourseUser cu = db.CourseUser.Find(user.UserName, vak.Vakcode);
 
                 var cu = from cus in db.CourseUser
                          where cus.ApplicationUserId == user.Id

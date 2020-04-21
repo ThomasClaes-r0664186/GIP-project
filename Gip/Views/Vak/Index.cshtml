@@ -226,11 +226,22 @@
                     case 2:
 
                         <td>
-                            <a>Uw aanvraag is in verwerking </a>
                             <form method="post" asp-action="UnSubscribe">
                                 <input type="hidden" name="vakCode" value="@vak.courseId" />
                                 <input type="submit" value="Stop aanvraag" class="btn btn-danger">
                             </form>
+                            <a>Uw aanvraag is in verwerking </a>
+                        </td>
+
+                        break;
+                    case 3:
+
+                        <td>
+                            <form method="post" asp-action="UnSubscribe">
+                                <input type="hidden" name="vakCode" value="@vak.courseId" />
+                                <input type="submit" value="Schrijf in" class="btn btn-secondary" disabled>
+                            </form>
+                            <a>@(vak.afwijzingBeschrijving!=null? vak.afwijzingBeschrijving : " ")</a>
                         </td>
 
                         break;

@@ -41,13 +41,14 @@ namespace Gip.Controllers
                 {
                     var qry2 = from c in db.CourseUser
                                where c.ApplicationUserId == user.Id
+                               where c.GoedGekeurd != null
                                select c;
 
                     List<int?> vakMetStud = new List<int?>();
                     
                     foreach (var cu in qry2) 
                     {
-                        if (cu.GoedGekeurd) 
+                        if (cu.GoedGekeurd == true) 
                         {
                             vakMetStud.Add(cu.CourseId);
                         }
@@ -513,7 +514,7 @@ namespace Gip.Controllers
             var qryu = from cu in db.CourseUser
                        join u in db.Users on cu.ApplicationUserId equals u.Id
                        orderby u.UserName
-                       where cu.GoedGekeurd
+                       where cu.GoedGekeurd == true
                        where cu.CourseId == cm.CourseId
                        select u;
 
@@ -655,7 +656,7 @@ namespace Gip.Controllers
             var qryu = from cu in db.CourseUser
                        join u in db.Users on cu.ApplicationUserId equals u.Id
                        orderby u.UserName
-                       where cu.GoedGekeurd
+                       where cu.GoedGekeurd == true
                        where cu.CourseId == vakcode
                        select u;
 
@@ -851,6 +852,7 @@ namespace Gip.Controllers
                          join rol in db.Roles on uRol.RoleId equals rol.Id
                          join u in db.Users on us.ApplicationUserId equals u.Id
                          where rol.NormalizedName == "STUDENT"
+                         where us.GoedGekeurd == true
                          select u).Distinct().OrderBy(user => user.UserName);
 
             if (cms.Any())
@@ -876,7 +878,7 @@ namespace Gip.Controllers
                             userList.Add(user);
                         }
                         catch (Exception e)
-                        { }
+                        { Console.Write(e); }
                     }
                 }
             }
