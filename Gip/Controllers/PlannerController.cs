@@ -65,6 +65,7 @@ namespace Gip.Controllers
                                select new
                                {
                                    cmId = cm.Id,
+                                   cId = c.Id,
                                    datum = s.Datum,
                                    startmoment = s.Startmoment,
                                    gebouw = r.Gebouw,
@@ -77,6 +78,7 @@ namespace Gip.Controllers
                     foreach (var qry in _qry)
                     {
                         Planner planner = new Planner { cmId = qry.cmId, 
+                                                        cId = qry.cId,
                                                         Datum = qry.datum, 
                                                         Startmoment = qry.startmoment, 
                                                         Gebouw = qry.gebouw, 
@@ -464,7 +466,7 @@ namespace Gip.Controllers
                            join s in db.Schedule on cm.ScheduleId equals s.Id
                            join r in db.Room on cm.RoomId equals r.Id
                            where cm.CourseId == vakcode
-                           where s.Datum >= DateTime.Now
+                           where s.Datum.Date >= DateTime.Now.Date
                            orderby s.Datum, s.Startmoment, s.Eindmoment, r.Gebouw, r.Verdiep, r.Nummer
                            select new
                            {

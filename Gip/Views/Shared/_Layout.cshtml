@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/tableStyle.css"/>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <link rel="icon" href="https://pbs.twimg.com/profile_images/525369285992919040/53mGKhKC_400x400.png">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.css">
@@ -37,7 +38,7 @@
                         {
 
                             @if (User.IsInRole("Lector"))
-                            {   
+                            {
                                 <li class="nav-item dropdown text-white">
                                     <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Lector panel
@@ -160,11 +161,11 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/popupFormOnCheckBoxClick.js"></script>
+    <script src="~/scripts/popupFormOnCheckBoxClick.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="~/js/dropdowntToggle.js"></script>
-    <script src="~/js/messageBasedOnTime.js"></script>
+    <script src="~/scripts/dropdowntToggle.js"></script>
+    <script src="~/scripts/jquery.tablesorter.js"></script>
+    <script src="~/scripts/messageBasedOnTime.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
