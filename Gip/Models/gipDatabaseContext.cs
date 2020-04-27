@@ -21,7 +21,6 @@ namespace Gip.Models
         public virtual DbSet<CourseMomentUsers> CourseMomentUsers { get; set; }
         public virtual DbSet<Room> Room { get; set; }
         public virtual DbSet<Schedule> Schedule { get; set; }
-        //public virtual DbSet<ApplicationUser> ApplicationUser { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

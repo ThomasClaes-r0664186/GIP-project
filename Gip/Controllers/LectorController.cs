@@ -68,15 +68,8 @@ namespace Gip.Controllers
         [HttpPost]
         public ActionResult DenyStudent(int cuId, string beschrijving)
         {
-            // dit veranderen naar .Find(cuId).GoedGekeurd = null;
-            // + de afwijzingBeschr setten op de input van de docent
             try
             {
-                //CourseUser cu = db.CourseUser.Find(cuId);
-
-                //db.CourseUser.Remove(cu);
-
-                //db.SaveChanges();
                 db.CourseUser.Find(cuId).GoedGekeurd = null;
                 db.CourseUser.Find(cuId).AfwijzingBeschr = beschrijving;
                 db.SaveChanges();

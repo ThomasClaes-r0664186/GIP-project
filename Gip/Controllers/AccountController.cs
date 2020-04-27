@@ -14,11 +14,13 @@ namespace Gip.Controllers
 
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly MailHandler mailHandler;
 
         public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            mailHandler = new MailHandler();
         }
 
         [AllowAnonymous]
@@ -240,6 +242,8 @@ namespace Gip.Controllers
 
                     //bouw password reset link
                     var passwordResetLink = Url.Action("ResetPassword", "Account", new { email = model.Email, token }, Request.Scheme);
+
+                    mailHandler.SendMail(user, passwordResetLink, "Password recovery");
 
                     return View("../Home/ForgotPasswordConfirmation");
                 }
