@@ -23,7 +23,7 @@ namespace Gip
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<gipDatabaseContext>();
-            services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<gipDatabaseContext>();
+            services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<gipDatabaseContext>().AddDefaultTokenProviders();
             services.AddControllersWithViews();
 
             services.AddMvc(config => {

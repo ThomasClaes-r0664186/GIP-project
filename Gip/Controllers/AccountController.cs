@@ -219,6 +219,80 @@ namespace Gip.Controllers
             return View("../Home/ChangePassword", model);
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ForgotPassword()
+        {
+            return View("../Home/ForgotPassword");
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    //maak password reset token
+                    var token = await userManager.GeneratePasswordResetTokenAsync(user);
+
+                    //bouw password reset link
+                    var passwordResetLink = Url.Action("ResetPassword", "Account", new { email = model.Email, token }, Request.Scheme);
+
+                    return View("../Home/ForgotPasswordConfirmation");
+                }
+                return View("../Home/ForgotPasswordConfirmation");
+            }
+            return View(model);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            if (token==null || email==null)
+            {
+                ModelState.AddModelError("", "Ongeldige wachtwoord reset token");
+            }
+            return View("../Home/ResetPassword"); // niet zeker
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Find the user by email
+                var user = await userManager.FindByEmailAsync(model.Email);
+
+                if (user != null)
+                {
+                    // reset the user password
+                    var result = await userManager.ResetPasswordAsync(user, model.Token, model.Password);
+                    if (result.Succeeded)
+                    {
+                        return View("../Home/ResetPasswordConfirmation");
+                    }
+                    // Display validation errors. For example, password reset token already
+                    // used to change the password or password complexity rules not met
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                    return View(model);
+                }
+
+                // To avoid account enumeration and brute force attacks, don't
+                // reveal that the user does not exist
+                return View("../Home/ResetPasswordConfirmation");
+            }
+            // Display validation errors if model state is not valid
+            return View(model);
+        }
+
         //Welcome page
         //[HttpGet]
         //public async Task<ActionResult> LoggedIn() 
