@@ -2,8 +2,10 @@
 let hourNow = today.getHours();
 let greeting;
 
-
-if (hourNow < 12) {
+if (hourNow < 5) {
+    greeting = "Goedenacht";
+}
+else if (hourNow < 12) {
     greeting = "Goedemorgend";
 }
 else if (hourNow < 20) {

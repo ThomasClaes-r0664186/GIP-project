@@ -31,10 +31,11 @@
                             @Html.DisplayNameFor(m => m.RememberMe)
                         </label>
                     </div>
+                    <div><a asp-action="ForgotPassword">Forgot Password?</a></div>
                 </div>
                 <button type="submit" class="btn btn-sm btn-success">Login</button>
-                <div><a asp-action="ForgotPassword">Forgot Password?</a></div>
             </form>
+            <div>Nog geen account? <a asp-controller="Account" asp-action="Register">Maak er een</a></div>
         </div>
     </div>
 <script src="~/scripts/passwordShow.js"></script>
