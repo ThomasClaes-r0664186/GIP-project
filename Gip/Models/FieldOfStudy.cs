@@ -1,34 +1,21 @@
-﻿using System.Collections.Generic;
-using Gip.Models.Exceptions;
+﻿using Gip.Models.Exceptions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Threading.Tasks;
 
 namespace Gip.Models
 {
-    public partial class Course
+    public class FieldOfStudy
     {
-        public Course()
-        {
-            CourseMoments = new HashSet<CourseMoment>();
-            CourseUsers = new HashSet<CourseUser>();
-        }
-        public Course(string vakcode, string titel, int studiepunten)
-        {
-            CourseMoments = new HashSet<CourseMoment>();
-            CourseUsers = new HashSet<CourseUser>();
-            this.Vakcode = vakcode;
-            this.Titel = titel;
-            this.Studiepunten = studiepunten;
-        }
-
         public int Id { get; set; }
 
-        private string vakcode;
+        private string richtingCode;
 
-        public string Vakcode
+        public string RichtingCode
         {
-            get { return vakcode; }
+            get { return richtingCode; }
             set
             {
                 if (value.Trim() == "")
@@ -40,7 +27,7 @@ namespace Gip.Models
                     string pattern = @"^[a-zA-Z]{0,3}\d\d[a-zA-Z]$";
                     if (Regex.IsMatch(value, pattern))
                     {
-                        vakcode = value;
+                        richtingCode = value;
                     }
                     else
                     {
@@ -50,10 +37,10 @@ namespace Gip.Models
             }
         }
 
-        private string titel;
-        public string Titel
+        private string richtingTitel;
+        public string RichtingTitel
         {
-            get { return titel; }
+            get { return richtingTitel; }
             set
             {
                 if (value.Trim() == "")
@@ -70,17 +57,17 @@ namespace Gip.Models
                     }
                     else
                     {
-                        titel = value;
+                        richtingTitel = value;
                     }
                 }
             }
         }
 
-        private int studiepunten;
+        private int richtingStudiepunten;
 
-        public int Studiepunten
+        public int RichtingStudiepunten
         {
-            get { return studiepunten; }
+            get { return richtingStudiepunten; }
             set
             {
                 if (value <= 0)
@@ -88,16 +75,16 @@ namespace Gip.Models
                     throw new DatabaseException("Het aantal studiepunten mag niet negatief zijn.");
 
                 }
-                else if (value > 60)
+                else if (value > 120)
                 {
-                    throw new DatabaseException("Het aantal studiepunten mag niet hoger zijn dan 60.");
+                    throw new DatabaseException("Het aantal studiepunten mag niet hoger zijn dan 120.");
                 }
                 else
                 {
                     string pattern = @"^[1-9]{0,1}\d$";
                     if (Regex.IsMatch(value.ToString(), pattern))
                     {
-                        studiepunten = value;
+                        richtingStudiepunten = value;
                     }
                     else
                     {
@@ -107,10 +94,6 @@ namespace Gip.Models
             }
         }
 
-        public int? FieldOfStudyId { get; set; }
-
-        public virtual ICollection<CourseMoment> CourseMoments { get; set; }
-        public virtual ICollection<CourseUser> CourseUsers { get; set; }
-        public virtual FieldOfStudy FieldOfStudy { get; set; }
+        public virtual ICollection<Course> Courses { get; set; }
     }
 }

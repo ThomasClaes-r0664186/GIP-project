@@ -89,18 +89,22 @@ namespace Gip.Controllers
                                 }
                                 break;
                             case 'u':
-                                var result5 = await userManager.AddToRoleAsync(user, "Lector");
-                                foreach (var error5 in result5.Errors)
-                                {
-                                    ModelState.AddModelError("", error5.Description);
-                                }
+                                //voor zowel u als voor x moet er door een admin bevestigt worden dat het account aangemaakt mag worden.
+
+                                //hier kan bijvoorbeeld nog een melding gezet worden dat deze geaccepteerd moet worden door admin.
+
+                                //var result5 = await userManager.AddToRoleAsync(user, "Lector");
+                                //foreach (var error5 in result5.Errors)
+                                //{
+                                //    ModelState.AddModelError("", error5.Description);
+                                //}
                                 break;
                             case 'x':
-                                var result6 = await userManager.AddToRoleAsync(user, "Admin");
-                                foreach (var error6 in result6.Errors)
-                                {
-                                    ModelState.AddModelError("", error6.Description);
-                                }
+                                //var result6 = await userManager.AddToRoleAsync(user, "Admin");
+                                //foreach (var error6 in result6.Errors)
+                                //{
+                                //    ModelState.AddModelError("", error6.Description);
+                                //}
                                 break;
                             default: break;
                         }

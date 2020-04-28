@@ -11,6 +11,7 @@ namespace Gip.Models
     {
         private string naam;
         private string voorNaam;
+        private DateTime geboorteDatum;
 
         public virtual ICollection<CourseUser> CourseUsers { get; set; }
         public virtual ICollection<CourseMoment> Coursemoments { get; set; }
@@ -63,6 +64,18 @@ namespace Gip.Models
                         throw new DatabaseException("U heeft verboden characters ingegeven voor de naam, gelieve dit niet te doen.");
 
                     }
+                }
+            }
+        }
+
+        public DateTime GeboorteDatum 
+        {
+            get { return geboorteDatum; }
+            set {
+                if (value.Year < 1920) { throw new DatabaseException("De persoon mag niet ouder zijn dan 100jaar."); }
+                else 
+                {
+                    geboorteDatum = value;
                 }
             }
         }
