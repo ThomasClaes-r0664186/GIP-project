@@ -388,6 +388,62 @@ namespace Gip.Controllers
             return RedirectToAction("EditUser", new { id = userId});
         }
 
+        [HttpGet]
+        public ActionResult ListRegisterRequests() {
+            if (TempData["error"] != null) 
+            {
+                ViewBag.error = TempData["error"];
+            }
+            var userRequests = db.Users.Where(x => !db.UserRoles.Any(y => y.UserId == x.Id) && x.UserName.ToLower().StartsWith("u") || x.UserName.ToLower().StartsWith("x "));
+            return View(userRequests);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AcceptUserRequest(string id, char rol) {
+            var user = await userManager.FindByIdAsync(id);
+            if (user != null)
+            {
+                switch (rol) {
+                    case 'r':
+                        var result = await userManager.AddToRoleAsync(user, "Student");
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError("", error.Description);
+                        }
+                        TempData["error"] = user.UserName + " is succesvol toegevoegd aan de rol student.";
+                        break;
+                    case 'u':
+                        var result1 = await userManager.AddToRoleAsync(user, "Lector");
+                        foreach (var error1 in result1.Errors)
+                        {
+                            ModelState.AddModelError("", error1.Description);
+                        }
+
+                        TempData["error"] = user.UserName + " is succesvol toegevoegd aan de rol lector.";
+                        break;
+                    case 'x':
+                        var result2 = await userManager.AddToRoleAsync(user, "Admin");
+                        foreach (var error2 in result2.Errors)
+                        {
+                            ModelState.AddModelError("", error2.Description);
+                        }
+
+                        TempData["error"] = user.UserName + " is succesvol toegevoegd aan de rol admin.";
+                        break;
+                    default:
+
+                        TempData["error"] = "Error: De rol werd verkeerd meegegeven, " + user.UserName + " is dus nog steeds niet toegewezen aan een rol.";
+                        
+                        break;
+                }
+            }
+            else 
+            {
+                TempData["error"] = "Error: er is iets verkeerd gelopen waardoor de user niet gevonden kon worden.";
+            }
+            return RedirectToAction("ListRegisterRequests");
+        }
+
         //opgepast bij verwijderen schedule dat gebruikt is in een lesmoment => error doordat cascade on delete nog niet werkt.
         public ActionResult DeleteDbHistory()
         {
