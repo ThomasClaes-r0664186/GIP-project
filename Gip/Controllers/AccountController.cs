@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Gip.Models;
 using Gip.Models.ViewModels;
+using Gip.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -57,6 +58,8 @@ namespace Gip.Controllers
                     else
                     {
                         var result = await userManager.CreateAsync(user, model.Password);
+                        var remoteIp = Request.HttpContext.Connection.RemoteIpAddress;
+                        utils.log("Er is een user aangemaakt van de ip: " + remoteIp.ToString(), new string[] { "Properties", user.UserName + ";" + user.VoorNaam + ";" + user.Naam + ";" +user.Email});
 
                         switch (user.UserName.ToLower().ToCharArray()[0])
                         {
@@ -248,6 +251,8 @@ namespace Gip.Controllers
                     var passwordResetLink = Url.Action("ResetPassword", "Account", new { email = model.Email, token }, Request.Scheme);
 
                     mailHandler.SendMail(user, passwordResetLink, "Password recovery");
+                    var remoteIp = Request.HttpContext.Connection.RemoteIpAddress;
+                    utils.log("Er werd een password recovery aangevraagd door: " + user.UserName + " van de ip: " + remoteIp.ToString(), new string[] { "Properties", user.UserName + ";" + remoteIp.ToString()});
 
                     return View("../Home/ForgotPasswordConfirmation");
                 }

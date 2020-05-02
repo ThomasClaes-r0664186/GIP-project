@@ -45,7 +45,7 @@
                                     </a>
                                     <div class="dropdown-menu text-white" aria-labelledby="navbarDropdown">
                                         <form method="get" asp-action="Index" asp-controller="Vak">
-                                            <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto">
+                                            <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto" id="vakken">
                                                 Vakken
                                             </button>
                                         </form>
@@ -89,14 +89,14 @@
                             @if (User.IsInRole("Student") || User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" asp-area="" asp-controller="Vak" asp-action="Index">Vakken</a>
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Vak" asp-action="Index" id="vakken">Vakken</a>
                                 </li>
                             }
 
                             @if (User.IsInRole("Lector") || User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" asp-area="" asp-controller="Lokaal" asp-action="Index">Lokalen</a>
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Lokaal" asp-action="Index" id="lokalen">Lokalen</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-white" asp-area="" asp-controller="Planner" asp-action="Add">Planner</a>
@@ -138,10 +138,10 @@
                         {
 
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-controller="Account" asp-action="Login" style="position:absolute;right:210px;top:19px">Login</a>
+                                <a class="nav-link text-white" asp-controller="Account" asp-action="Login" style="position:absolute;right:210px;top:19px" id="login">Login</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-controller="Account" asp-action="Register" style="position:absolute;right:140px;top:19px">Register</a>
+                                <a class="nav-link text-white" asp-controller="Account" asp-action="Register" style="position:absolute;right:140px;top:19px" id="register">Register</a>
                             </li>
 
                         }

@@ -15,7 +15,7 @@
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group">
                     <label asp-for="RNum">Student nummer</label>
-                    <input asp-for="RNum" class="form-control" />
+                    <input asp-for="RNum" class="form-control" id="rnum"/>
                     <span asp-validation-for="RNum" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -33,7 +33,7 @@
                     </div>
                     <div><a asp-action="ForgotPassword">Forgot Password?</a></div>
                 </div>
-                <button type="submit" class="btn btn-sm btn-success">Login</button>
+                <button type="submit" class="btn btn-sm btn-success" id="loginButton">Login</button>
             </form>
             <div>Nog geen account? <a asp-controller="Account" asp-action="Register">Maak er een</a></div>
         </div>

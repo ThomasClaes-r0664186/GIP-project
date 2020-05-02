@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using Microsoft.AspNetCore.Authorization;
+using Gip.Utils;
 
 namespace Gip.Controllers
 {
@@ -60,8 +61,9 @@ namespace Gip.Controllers
 
                 Room room = new Room { Gebouw = gebouw.ToUpper() , Verdiep = verdiep, Nummer = nummer, Type = type, Capaciteit = capaciteit, Middelen = middelen};
                 db.Room.Add(room);
-                
                 db.SaveChanges();
+                utils.log("Er is een lokaal aangemaakt door: " + User.Identity.Name, new string[] { "Properties", room.Gebouw + room.Verdiep + room.Nummer + ";" + room.Type + ";" + room.Capaciteit + ";" + room.Middelen });
+
             }
             catch (Exception e)
             {

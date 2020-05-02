@@ -1,6 +1,8 @@
 ﻿@model IEnumerable<Gip.Models.Planner>
     <Gip.Models.Planner>
-
+        @{
+            ViewData["Title"] = "Planner";
+        }
 
         <h1>Planner</h1>
         <form action="" method="post">
@@ -28,7 +30,7 @@
             </div>
             <div class="form-group">
                 <label class="text-dark font-weight-bold">Een tweede lokaal toevoegen? (Gelieve de checkbox aan te duiden)</label> <br>
-                <input name="checkbox" id="checkbox" type=checkbox  value="True">
+                <input name="checkbox" id="checkbox" type=checkbox value="True">
             </div>
             <div id="delivery" style="display:none;">
                 <div class="form-group">
@@ -70,10 +72,10 @@
             <div class="form-group">
                 <label for="lessenlijst" class="text-dark font-weight-bold">Lessenlijst</label>
                 <textarea class="form-control" name="lessenlijst" rows="4" cols="50"></textarea>
-                <label class="text-muted font-weight-normal" >Geef een eventuele beschrijving over welke onderdelen u tijdens deze les gaat behandelen, dit is niet verplicht.</label>
+                <label class="text-muted font-weight-normal">Geef een eventuele beschrijving over welke onderdelen u tijdens deze les gaat behandelen, dit is niet verplicht.</label>
 
             </div>
-                <button type="submit" class="btn btn-sm btn-success">Voeg les toe</button>
+            <button type="submit" class="btn btn-sm btn-success">Voeg les toe</button>
         </form>
 
 

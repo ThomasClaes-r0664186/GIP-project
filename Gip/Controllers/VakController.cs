@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using Gip.Models.ViewModels;
 using System.Collections.Generic;
+using NLog;
+using NLog.Fluent;
+using Gip.Utils;
 
 namespace Gip.Controllers
 {
@@ -17,11 +20,13 @@ namespace Gip.Controllers
 
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
+        //private Logger logger;
 
         public VakController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            //this.logger = LogManager.GetCurrentClassLogger();
         }
 
         // GET
@@ -120,6 +125,8 @@ namespace Gip.Controllers
                 Course course = new Course { Vakcode = vakcode.ToUpper(), Titel = titel, Studiepunten = studiepunten};
                 db.Course.Add(course);
                 db.SaveChanges();
+                utils.log("Er is een vak aangemaakt door: " + User.Identity.Name, new string[] { "Properties", course.Vakcode + ";" + course.Titel + ";" + course.Studiepunten });
+
             }
             catch (Exception e)
             {
