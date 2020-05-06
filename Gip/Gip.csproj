@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200502220403_addTyoeToFieldOfStudy.cs" />
+    <Compile Remove="Migrations\20200502220403_addTyoeToFieldOfStudy.Designer.cs" />
+    <Compile Remove="Migrations\20200502222324_addFOSToDbContext.cs" />
+    <Compile Remove="Migrations\20200502222324_addFOSToDbContext.Designer.cs" />
     <Compile Remove="Models\ViewModels\EditStudsInCmViewModel.cs" />
   </ItemGroup>
 

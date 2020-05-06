@@ -20,7 +20,7 @@ namespace Gip.Models
             {
                 if (value.Trim() == "")
                 {
-                    throw new DatabaseException("U heeft een lege vakcode meegegeven.");
+                    throw new DatabaseException("U heeft een lege richtingcode meegegeven.");
                 }
                 else
                 {
@@ -58,6 +58,32 @@ namespace Gip.Models
                     else
                     {
                         richtingTitel = value;
+                    }
+                }
+            }
+        }
+
+        private string type;
+        public string Type
+        {
+            get { return type; }
+            set
+            {
+                if (value.Trim() == "")
+                {
+                    throw new DatabaseException("De titel mag niet leeg zijn.");
+
+                }
+                else
+                {
+                    string pattern = @"[\\\/\<\>\;]";
+                    if (Regex.IsMatch(value, pattern))
+                    {
+                        throw new DatabaseException("U heeft een verboden character ingegeven, gelieve dit niet te doen.");
+                    }
+                    else
+                    {
+                        type = value;
                     }
                 }
             }

@@ -4,13 +4,15 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using Microsoft.AspNetCore.Authorization;
 using Gip.Utils;
+using Gip.Services.Interfaces;
 
 namespace Gip.Controllers
 {
     [Authorize(Roles="Admin,Lector")]
     public class LokaalController : Controller
     {
-        private gipDatabaseContext db = new gipDatabaseContext();
+        private ILokaalService service;
+        public LokaalController(ILokaalService service) { this.service = service; }
         // GET
         [HttpGet]
         [Route("lokaal")]
@@ -18,18 +20,14 @@ namespace Gip.Controllers
         {
             try
             {
-                var qry = from d in db.Room
-                    orderby d.Gebouw, d.Verdiep, d.Nummer
-                    select d;
+                var qry = service.GetLokalen();
 
-                if (TempData["error"] != null) {
+                if (TempData["error"] != null)
+                {
                     ViewBag.error = TempData["error"].ToString();
                     TempData["error"] = null;
                 }
-                if (ViewBag.error == null || !ViewBag.error.Contains("addError") && !ViewBag.error.Contains("addGood") && !ViewBag.error.Contains("deleteError") && !ViewBag.error.Contains("deleteGood") && !ViewBag.error.Contains("editError") && !ViewBag.error.Contains("editGood"))
-                {
-                    ViewBag.error = "indexLokaalGood";
-                }
+
                 return View(qry);
             }
             catch (Exception e)
@@ -47,23 +45,7 @@ namespace Gip.Controllers
         {
             try
             {
-                var rInUse = from d in db.Room
-                             where d.Gebouw == gebouw
-                             where d.Verdiep == verdiep
-                             where d.Nummer == nummer
-                             select d;
-
-                if (rInUse.Any())
-                {
-                    TempData["error"] = "addError" + "/" + "Dit lokaal bestaat reeds.";
-                    return RedirectToAction("Index", "Lokaal");
-                }
-
-                Room room = new Room { Gebouw = gebouw.ToUpper() , Verdiep = verdiep, Nummer = nummer, Type = type, Capaciteit = capaciteit, Middelen = middelen};
-                db.Room.Add(room);
-                db.SaveChanges();
-                utils.log("Er is een lokaal aangemaakt door: " + User.Identity.Name, new string[] { "Properties", room.Gebouw + room.Verdiep + room.Nummer + ";" + room.Type + ";" + room.Capaciteit + ";" + room.Middelen });
-
+                service.AddLokaal(gebouw, verdiep, nummer, type, capaciteit, middelen);
             }
             catch (Exception e)
             {
@@ -87,41 +69,13 @@ namespace Gip.Controllers
         [Route("lokaal/delete")]
         public ActionResult Delete(int lokaalId)
         {
-            if (lokaalId < 0)
-            {
-                TempData["error"] = "deleteError" + "/" + "LokaalId werd verkeerd meegegeven.";
-                return RedirectToAction("Index", "Lokaal");
-            }
-
-            Room room = db.Room.Find(lokaalId);
-
-            if (room == null)
-            {
-                TempData["error"] = "deleteError" + "/" + "Dit lokaal werd niet in de databank gevonden.";
-                return RedirectToAction("Index", "Lokaal");
-            }
-
-            var qryDelR = from cm in db.CourseMoment
-                          where cm.RoomId == room.Id
-                          select cm;
-
-            if (qryDelR.Any())
-            {
-                foreach (var CoUs in qryDelR)
-                {
-                    db.CourseMoment.Remove(CoUs);
-                }
-                db.SaveChanges();
-            }
-
             try
             {
-                db.Room.Remove(room);
-                db.SaveChanges();
+                service.DeleteLokaal(lokaalId);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                TempData["error"] = "deleteError" + "/" + "Dit lokaal is gebruikt in een lesmoment, pas dat eerst aan voordat je dit kan verwijderen.";
+                TempData["error"] = "deleteError" + "/" + e.Message;
                 return RedirectToAction("Index", "Lokaal");
             }
             TempData["error"] = "deleteGood";
@@ -142,35 +96,7 @@ namespace Gip.Controllers
             TempData["error"] = "";
             try
             {
-                if (lokaalId < 0)
-                {
-                    TempData["error"] = "editError" + "/" + "LokaalId werd verkeerd meegegeven.";
-                    return RedirectToAction("Index", "Lokaal");
-                }
-
-                var rInUse = from d in db.Room
-                             where d.Gebouw == gebouw
-                             where d.Verdiep == verdiep
-                             where d.Nummer == nummer
-                             select d;
-
-                if (rInUse.Any()) 
-                {
-                    TempData["error"] = "editError" + "/" + "Dit lokaal bestaat reeds.";
-                    return RedirectToAction("Index", "Lokaal");
-                }
-
-                Room room = db.Room.Find(lokaalId);
-                Room newRoom = new Room { Gebouw = gebouw.Trim(), Verdiep = verdiep , Nummer = nummer, Type = type, Capaciteit = capaciteit, Middelen = middelen};
-
-                room.Gebouw = newRoom.Gebouw;
-                room.Verdiep = newRoom.Verdiep;
-                room.Nummer = newRoom.Nummer;
-                room.Type = newRoom.Type;
-                room.Capaciteit = newRoom.Capaciteit;
-                room.Middelen = newRoom.Middelen;
-
-                db.SaveChanges();
+                service.EditLokaal(lokaalId, gebouw, verdiep, nummer, type, capaciteit, middelen);
             }
             catch (Exception e)
             {

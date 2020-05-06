@@ -7,23 +7,23 @@ using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using Gip.Models.ViewModels;
 using System.Collections.Generic;
-using NLog;
-using NLog.Fluent;
 using Gip.Utils;
+using Gip.Services.Interfaces;
 
 namespace Gip.Controllers
 {
     [Authorize(Roles = "Admin, Lector, Student")]
     public class VakController : Controller
     {
-        private gipDatabaseContext db = new gipDatabaseContext();
+        private IVakService service;
 
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
         //private Logger logger;
 
-        public VakController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public VakController(IVakService service,UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
+            this.service = service;
             this.userManager = userManager;
             this.signInManager = signInManager;
             //this.logger = LogManager.GetCurrentClassLogger();
@@ -35,54 +35,17 @@ namespace Gip.Controllers
         public async Task<ActionResult> Index()
         {
             try{
-                //aflopen databank en alle vakken in een list<Course> qry steken
-                var qry = from d in db.Course
-                          orderby d.Vakcode
-                          select d;
-
-                List<VakViewModel> vakViewModels = new List<VakViewModel>();
-
+                var user = await userManager.FindByNameAsync(User.Identity.Name);
+                List<VakViewModel> vakViewModels;
                 // wanneer je een student bent, moet je het inschrijfgedeelte kunnen zien.
                 if (User.IsInRole("Student"))
                 {
-                    var user = await userManager.GetUserAsync(User);
-
-                    //aflopen databank en alle rijen, waar de student in voorkomt in de tabel CourseUser, in een list<CourseUser> steken.
-
-                    var qry2 = from c in db.CourseUser
-                               where c.ApplicationUserId == user.Id
-                               select c;
-
-                    //alle vakken aflopen
-                    foreach (var vak in qry) 
-                    {
-                        //Als het vak voorkomt in de list<CourseUser> qry2, dan maak je een VakViewModel aan
-                        //      waar ingeschreven == 1 staat voor: de student is geaccepteerd door lector (goedgekeurd == true)
-                        //      en ingeschreven == 2 staat voor: de student heeft aanvraag gedaan maar is nog niet geaccepteerd (goedgekeurd == false)
-                        //      voor een bescrhijving kunnen we dan hieraan toevoegen == 3 waarin je dan bent afgekeurd en je u niet meteen terug kan inschrijven.
-                        var q2 = qry2.Where(cu => cu.CourseId.Equals(vak.Id));
-                        if (q2.Any())
-                        {
-                            var temp = new VakViewModel { courseId = vak.Id, Vakcode = vak.Vakcode, Titel = vak.Titel, Studiepunten = vak.Studiepunten, Ingeschreven = q2.First().GoedGekeurd == true ? 1 : q2.First().GoedGekeurd == false ? 2 : 3, afwijzingBeschrijving = q2.First().AfwijzingBeschr};
-                            vakViewModels.Add(temp);
-                        }
-                        //als het vak daar niet in voorkomt, maak je een VakViewModel aan met ingeschreven op 0, 
-                        //dit betekent dat je geen aanvraag hebt gedaan voor de inschrijving noch ingeschreven bent.
-                        else
-                        {
-                            var temp = new VakViewModel { courseId = vak.Id ,Vakcode = vak.Vakcode, Titel = vak.Titel, Studiepunten = vak.Studiepunten, Ingeschreven = 0 };
-                            vakViewModels.Add(temp);
-                        }
-                    }
+                    vakViewModels = service.GetVakkenStudent(user);
                 }
                 //als je geen student bent, maar wel admin of lector, krijg je gewoon een overzicht van alle vakken. Die kan je dan bewerken of verwijderen.
                 else 
                 {
-                    foreach (var vak in qry)
-                    {
-                        var temp = new VakViewModel { courseId = vak.Id, Vakcode = vak.Vakcode, Titel = vak.Titel, Studiepunten = vak.Studiepunten };
-                        vakViewModels.Add(temp);
-                    }
+                    vakViewModels = service.GetVakkenLectAdm();
                 }
 
                 if (TempData["error"] != null)
@@ -105,28 +68,14 @@ namespace Gip.Controllers
             }
         }
 
-        //fixed, zorg er nog voor dat vak niet kan toegevoegd worden wanneer vakcode reeds in gebruik
         [HttpPost]
         [Route("vak/add")]
         [Authorize(Roles = "Admin, Lector")]
         public ActionResult Add(string vakcode, string titel, int studiepunten)
         {
             try{
-                var cInUse = from c in db.Course
-                             where c.Vakcode == vakcode
-                             select c;
-
-                if (cInUse.Any()) 
-                {
-                    TempData["error"] = "addError" + "/" + "Dit lokaal bestaat reeds.";
-                    return RedirectToAction("Index", "Vak");
-                }
-
-                Course course = new Course { Vakcode = vakcode.ToUpper(), Titel = titel, Studiepunten = studiepunten};
-                db.Course.Add(course);
-                db.SaveChanges();
-                utils.log("Er is een vak aangemaakt door: " + User.Identity.Name, new string[] { "Properties", course.Vakcode + ";" + course.Titel + ";" + course.Studiepunten });
-
+                service.AddVak(vakcode, titel, studiepunten);
+                utils.log("Er is een vak aangemaakt door: " + User.Identity.Name, new string[] { "Properties", vakcode + ";" + titel + ";" + studiepunten });
             }
             catch (Exception e)
             {
@@ -158,29 +107,9 @@ namespace Gip.Controllers
                 return  RedirectToAction("Index", "Vak");
             }
 
-            Course course = db.Course.Find(vakcode);
-
-            if (course == null) {
-                TempData["error"] = "deleteError" + "/" + "Vak niet gevonden in databank";
-                return RedirectToAction("Index", "Vak");
-            }
-
-            var qryDelC = from cu in db.CourseUser
-                          where cu.CourseId == vakcode
-                          select cu;
-
-            if (qryDelC.Any()) {
-                foreach (var CoUs in qryDelC)
-                {
-                    db.CourseUser.Remove(CoUs);
-                }
-                db.SaveChanges();
-            }
-
             try
             {
-                db.Course.Remove(course);
-                db.SaveChanges();
+                service.DeleteVak(vakcode);
             }
             catch (Exception e)
             {
@@ -205,40 +134,7 @@ namespace Gip.Controllers
                 return RedirectToAction("Index", "Vak");
             }
             try{
-
-                Course course = db.Course.Find(vakcodeOld);
-
-                if (course == null) 
-                {
-                    TempData["error"] = "editError" + "/" + "Het oude vak id is niet correct doorgegeven.";
-                    return RedirectToAction("Index", "Vak");
-                }
-
-                var cInUse = from c in db.Course
-                             where c.Vakcode == vakcodeNew
-                             select c;
-
-                if (cInUse.Any())
-                {
-                    foreach (var c in cInUse) 
-                    {
-                        if (c != course)
-                        {
-                            TempData["error"] = "editError" + "/" + "De nieuwe vakcode die u heeft ingegeven, is reeds in gebruik.";
-                            return RedirectToAction("Index", "Vak");
-                        }
-                    }
-                }
-
-                Course newCourse = new Course();
-                newCourse.Vakcode = vakcodeNew.ToUpper();
-                newCourse.Titel = titel;
-                newCourse.Studiepunten = studiepunten;
-
-                course.Vakcode = newCourse.Vakcode.ToUpper();
-                course.Titel = newCourse.Titel;
-                course.Studiepunten = newCourse.Studiepunten;
-                db.SaveChanges();
+                service.EditVak(vakcodeOld, vakcodeNew, titel, studiepunten);
             }
             catch (Exception e) {
                 Console.WriteLine(e.Message);
@@ -255,13 +151,9 @@ namespace Gip.Controllers
         {
             try
             {
-                var vak = db.Course.Find(vakCode);
                 var user = await userManager.GetUserAsync(User);
 
-                CourseUser cu = new CourseUser { CourseId = vak.Id, ApplicationUserId = user.Id, GoedGekeurd = false};
-                db.CourseUser.Add(cu);
-
-                db.SaveChanges();
+                service.Subscribe(vakCode, user);
             }
             catch (Exception e) {
                 ViewBag.error = e.Message + " " + e.InnerException.Message==null?" ": e.InnerException.Message;
@@ -275,39 +167,9 @@ namespace Gip.Controllers
         {
             try
             {
-                var vak = db.Course.Find(vakCode);
                 var user = await userManager.GetUserAsync(User);
 
-                var cu = from cus in db.CourseUser
-                         where cus.ApplicationUserId == user.Id
-                         where cus.CourseId == vak.Id
-                         select cus;
-
-                CourseUser courseUser = cu.FirstOrDefault();
-
-                if (vak == null || user == null || courseUser == null) 
-                {
-                    ViewBag.error = "Het vak of de gebruiker dat werd meegegeven is verkeerd meegegeven.";
-                    return RedirectToAction("Index");
-                }
-
-                var CMUL = from cmus in db.CourseMomentUsers
-                           join cm in db.CourseMoment on cmus.CoursMomentId equals cm.Id
-                           join c in db.Course on cm.CourseId equals c.Id
-                          where cmus.ApplicationUserId == user.Id
-                          where c.Id == vak.Id
-                          select cmus;
-
-                foreach (var cmu in CMUL) 
-                {
-                    db.CourseMomentUsers.Remove(cmu);
-                }
-
-                db.SaveChanges();
-
-                db.CourseUser.Remove(courseUser);
-
-                db.SaveChanges();
+                service.UnSubscribe(vakCode, user);
             }
             catch (Exception e)
             {

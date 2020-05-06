@@ -1,5 +1,6 @@
 ﻿using Gip.Models;
 using Gip.Models.ViewModels;
+using Gip.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -14,14 +15,15 @@ namespace Gip.Controllers
     [Authorize(Roles = "Admin")]
     public class AdministrationController : Controller
     {
-        private gipDatabaseContext db = new gipDatabaseContext();
-
+        private IAdministrationService service;
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly UserManager<ApplicationUser> userManager;
 
-        public AdministrationController(RoleManager<IdentityRole> roleManager,
+        public AdministrationController(IAdministrationService service, 
+                                        RoleManager<IdentityRole> roleManager,
                                         UserManager<ApplicationUser> userManager)
         {
+            this.service = service;
             this.roleManager = roleManager;
             this.userManager = userManager;
         }
@@ -37,9 +39,7 @@ namespace Gip.Controllers
         {
             if (ModelState.IsValid)
             {
-                IdentityRole role = new IdentityRole { Name = model.RoleName };
-
-                IdentityResult result = await roleManager.CreateAsync(role);
+                var result = await service.CreateRole(model);
 
                 if (result.Succeeded)
                 {
@@ -57,75 +57,41 @@ namespace Gip.Controllers
         [HttpGet]
         public ActionResult ListRoles()
         {
-            var roles = roleManager.Roles;
-            return View(roles);
+            return View(service.GetRoles());
         }
 
         [HttpGet]
         public async Task<IActionResult> EditRole(string id)
         {
-            var role = await roleManager.FindByIdAsync(id);
-
-            if (role == null)
+            try {
+                var model = await service.GetEditRole(id);
+                return View(model);
+            }
+            catch (Exception e) 
             {
-                ViewBag.ErrorMessage = $"Role with Id = {id} cannot be found";
+                ViewBag.ErrorMessage = e.Message;
                 return View("NotFound");
             }
-
-            var model = new EditRoleViewModel
-            {
-                Id = role.Id,
-                RoleName = role.Name
-            };
-
-            foreach (var user in userManager.Users)
-            {
-                if (await userManager.IsInRoleAsync(user, role.Name))
-                {
-                    model.Users.Add(user.UserName);
-                }
-            }
-            return View(model);
         }
 
         [HttpGet]
         public ActionResult ListUsers()
         {
-            var users = userManager.Users.OrderBy(u => u.UserName);
-            
-            return View(users);
+            return View(service.GetUsers());
         }
 
         [HttpGet]
         public async Task<IActionResult> EditUser(string id)
         {
-            var user = await userManager.FindByIdAsync(id);
-
-            if (user == null)
-            {
-                ViewBag.ErrorMessage = $"User with Id = {id} cannot be found";
-                return View("NotFound");
-            }
-
-            var userRoles = await userManager.GetRolesAsync(user);
-
             try
             {
-                var model = new EditUserViewModel
-                {
-                    Id = user.Id,
-                    Name = user.VoorNaam,
-                    SurName = user.Naam,
-                    RNum = user.UserName,
-                    Email = user.Email,
-                    Roles = userRoles
-                };
+                var model = await service.GetEditUser(id);
 
                 return View(model);
             }
             catch (Exception e) 
             {
-                ModelState.AddModelError("", e.Message + " " + e.InnerException.Message == null ? " " : e.InnerException.Message);
+                ModelState.AddModelError("", e.Message + " " + (e.InnerException.Message == null ? " " : e.InnerException.Message));
                 return View("../Home/Register");
             }
         }
@@ -134,44 +100,20 @@ namespace Gip.Controllers
         [HttpPost]
         public async Task<IActionResult> EditUser(EditUserViewModel model)
         {
-            var user = await userManager.FindByIdAsync(model.Id);
-
-            if (user == null)
+            try
             {
-                ViewBag.ErrorMessage = $"User with Id = {model.Id} cannot be found";
-                return View("NotFound");
+                var result = await service.EditUser(model);
+
+                if (!result.Succeeded) 
+                {
+                    throw new Exception(result.Errors.ToString());
+                }
+
+                return RedirectToAction("ListUsers");
             }
-            else
+            catch (Exception e) 
             {
-                var emailUser = await userManager.FindByEmailAsync(model.Email);
-                var usernameUser = await userManager.FindByNameAsync(model.RNum);
-
-                if (emailUser != null && user != emailUser)
-                {
-                    ModelState.AddModelError("", "Email " + model.Email + " is already in use.");
-                }
-                if (usernameUser != null && user != usernameUser) 
-                {
-                    ModelState.AddModelError("", "Student number: " + model.RNum + " is already in use.");
-                }
-                else
-                {
-                    user.UserName = model.RNum;
-                    user.Email = model.Email;
-                    user.Naam = model.SurName;
-                    user.VoorNaam = model.Name;
-
-                    var result = await userManager.UpdateAsync(user);
-
-                    if (result.Succeeded)
-                    {
-                        return RedirectToAction("ListUsers");
-                    }
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError("", error.Description);
-                    }
-                }
+                ModelState.AddModelError("", e.Message);
                 return View(model);
             }
         }
@@ -180,53 +122,21 @@ namespace Gip.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteUser(string id)
         {
-            var user = await userManager.FindByIdAsync(id);
-
-            if (user == null)
+            try
             {
-                ViewBag.ErrorMessage = $"User with Id = {id} cannot be found";
-                return View("NotFound");
+                var result = await service.DeleteUser(id);
+
+                if (!result.Succeeded) 
+                {
+                    ModelState.AddModelError("", result.Errors.ToString());
+                    return View("ListUsers");
+                }
+
+                return RedirectToAction("ListUsers");
             }
-            else
+            catch (Exception e) 
             {
-                var qryDelUCMU = from cmu in db.CourseMomentUsers
-                              where cmu.ApplicationUserId == user.Id
-                              select cmu;
-
-                if (qryDelUCMU.Any())
-                {
-                    foreach (var CoUs in qryDelUCMU)
-                    {
-                        db.CourseMomentUsers.Remove(CoUs);
-                    }
-                    db.SaveChanges();
-                }
-
-                var qryDelUCU = from cu in db.CourseUser
-                              where cu.ApplicationUserId == user.Id
-                              select cu;
-
-                if (qryDelUCU.Any())
-                {
-                    foreach (var CoUs in qryDelUCU)
-                    {
-                        db.CourseUser.Remove(CoUs);
-                    }
-                    db.SaveChanges();
-                }
-
-                var result = await userManager.DeleteAsync(user);
-
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("ListUsers");
-                }
-
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError("", error.Description);
-                }
-
+                ModelState.AddModelError("", e.Message);
                 return View("ListUsers");
             }
         }
@@ -234,78 +144,30 @@ namespace Gip.Controllers
         [HttpGet]
         public async Task<IActionResult> EditUsersInRole(string roleId)
         {
-            ViewBag.roleId = roleId;
-
-            var role = await roleManager.FindByIdAsync(roleId);
-
-            if (role == null)
+            try
             {
-                ViewBag.ErrorMessage = $"Role with Id = {roleId} cannot be found";
+                var model = await service.GetEditUsersInRole(roleId);
+
+                return View(model);
+            }
+            catch (Exception e) 
+            {
+                ViewBag.ErrorMessage = e.Message;
                 return View("NotFound");
             }
-
-            var model = new List<UserRoleViewModel>();
-
-            foreach (var user in userManager.Users)
-            {
-                var userRoleViewModel = new UserRoleViewModel
-                {
-                    UserId = user.Id,
-                    UserName = user.UserName
-                };
-
-                if (await userManager.IsInRoleAsync(user, role.Name))
-                {
-                    userRoleViewModel.IsSelected = true;
-                }
-                else
-                {
-                    userRoleViewModel.IsSelected = false;
-                }
-
-                model.Add(userRoleViewModel);
-            }
-
-            return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditUsersInRole(List<UserRoleViewModel> model, string roleId)
+        public IActionResult EditUsersInRole(List<UserRoleViewModel> model, string roleId)
         {
-            var role = await roleManager.FindByIdAsync(roleId);
-
-            if (role == null)
+            try
             {
-                ViewBag.ErrorMessage = $"Role with Id = {roleId} cannot be found";
-                return View("NotFound");
+                service.EditUsersInRole(model, roleId);
             }
-
-            for (int i = 0; i < model.Count; i++)
+            catch (Exception e) 
             {
-                var user = await userManager.FindByIdAsync(model[i].UserId);
-
-                IdentityResult result;
-
-                if (model[i].IsSelected && !(await userManager.IsInRoleAsync(user, role.Name)))
-                {
-                    result = await userManager.AddToRoleAsync(user, role.Name);
-                }
-                else if (!model[i].IsSelected && await userManager.IsInRoleAsync(user, role.Name))
-                {
-                    result = await userManager.RemoveFromRoleAsync(user, role.Name);
-                }
-                else
-                {
-                    continue;
-                }
-
-                if (result.Succeeded)
-                {
-                    if (i < (model.Count - 1))
-                        continue;
-                    else
-                        return RedirectToAction("EditRole", new { Id = roleId });
-                }
+                ViewBag.ErrorMessage = e.Message;
+                return RedirectToAction("EditRole", new { Id = roleId });
             }
 
             return RedirectToAction("EditRole", new { Id = roleId });
@@ -314,78 +176,37 @@ namespace Gip.Controllers
         [HttpGet]
         public async Task<IActionResult> ManageUserRoles(string userId)
         {
-            ViewBag.userId = userId;
-
-            var user = await userManager.FindByIdAsync(userId);
-
-            if (user == null)
+            try
             {
-                ViewBag.ErrorMessage = $"User with Id = {userId} cannot be found";
+                var model = await service.GetUserRoles(userId);
+                return View(model);
+            }
+            catch (Exception e) 
+            {
+                ViewBag.ErrorMessage = e.Message;
                 return View("NotFound");
             }
-
-            var model = new List<UserRolesViewModel>();
-
-            foreach (var role in roleManager.Roles)
-            {
-                var userRolesViewModel = new UserRolesViewModel
-                {
-                    RoleId = role.Id,
-                    RoleName = role.Name
-                };
-
-                if (await userManager.IsInRoleAsync(user, role.Name))
-                {
-                    userRolesViewModel.IsSelected = true;
-                }
-                else
-                {
-                    userRolesViewModel.IsSelected = false;
-                }
-
-                model.Add(userRolesViewModel);
-            }
-
-            return View(model);
         }
 
         [HttpPost]
         public async Task<IActionResult> ManageUserRoles(List<UserRolesViewModel> model, string userId)
         {
-            bool failed = false;
-            var user = await userManager.FindByIdAsync(userId);
-
-            if (user == null)
+            try
             {
-                ViewBag.ErrorMessage = $"User with Id = {userId} cannot be found";
-                return View("NotFound");
-            }
-
-            var roles = await userManager.GetRolesAsync(user);
-            foreach (var role in roles) 
-            {
-                var result = await userManager.RemoveFromRoleAsync(user, role);
+                var result = await service.UpdateUserRoles(model, userId);
 
                 if (!result.Succeeded) 
                 {
-                    failed = true;
-                    ModelState.AddModelError("", "Cannot remove user existing roles");
+                    throw new Exception(result.Errors.ToString());
                 }
+
+                return RedirectToAction("EditUser", new { id = userId });
             }
-            if (failed) 
+            catch (Exception e) 
             {
+                ModelState.AddModelError("", e.Message);
                 return View(model);
             }
-
-            var result1 = await userManager.AddToRolesAsync(user, model.Where(x=>x.IsSelected).Select(y=>y.RoleName));
-
-            if (!result1.Succeeded) 
-            {
-                ModelState.AddModelError("", "Cannot add selected roles to user");
-                return View(model);
-            }
-
-            return RedirectToAction("EditUser", new { id = userId});
         }
 
         [HttpGet]
@@ -394,53 +215,26 @@ namespace Gip.Controllers
             {
                 ViewBag.error = TempData["error"];
             }
-            var userRequests = db.Users.Where(x => !db.UserRoles.Any(y => y.UserId == x.Id) && x.UserName.ToLower().StartsWith("u") || x.UserName.ToLower().StartsWith("x "));
-            return View(userRequests);
+            return View(service.GetRegisterRequests());
         }
 
         [HttpPost]
-        public async Task<ActionResult> AcceptUserRequest(string id, char rol) {
-            var user = await userManager.FindByIdAsync(id);
-            if (user != null)
+        public async Task<ActionResult> AcceptUserRequest(string id, char rol) 
+        {
+            try
             {
-                switch (rol) {
-                    case 'r':
-                        var result = await userManager.AddToRoleAsync(user, "Student");
-                        foreach (var error in result.Errors)
-                        {
-                            ModelState.AddModelError("", error.Description);
-                        }
-                        TempData["error"] = user.UserName + " is succesvol toegevoegd aan de rol student.";
-                        break;
-                    case 'u':
-                        var result1 = await userManager.AddToRoleAsync(user, "Lector");
-                        foreach (var error1 in result1.Errors)
-                        {
-                            ModelState.AddModelError("", error1.Description);
-                        }
+                var result = await service.AcceptUserRequest(id, rol);
 
-                        TempData["error"] = user.UserName + " is succesvol toegevoegd aan de rol lector.";
-                        break;
-                    case 'x':
-                        var result2 = await userManager.AddToRoleAsync(user, "Admin");
-                        foreach (var error2 in result2.Errors)
-                        {
-                            ModelState.AddModelError("", error2.Description);
-                        }
-
-                        TempData["error"] = user.UserName + " is succesvol toegevoegd aan de rol admin.";
-                        break;
-                    default:
-
-                        TempData["error"] = "Error: De rol werd verkeerd meegegeven, " + user.UserName + " is dus nog steeds niet toegewezen aan een rol.";
-                        
-                        break;
+                if (!result.Succeeded) 
+                {
+                    throw new Exception(result.Errors.ToString());
                 }
             }
-            else 
+            catch (Exception e) 
             {
-                TempData["error"] = "Error: er is iets verkeerd gelopen waardoor de user niet gevonden kon worden.";
+                TempData["error"] = e.Message;
             }
+
             return RedirectToAction("ListRegisterRequests");
         }
 
@@ -449,41 +243,7 @@ namespace Gip.Controllers
         {
             try
             {
-                var historDate = DateTime.Now.AddMonths(-1);
-                //var historDate = DateTime.Now.AddDays(-10);
-
-                var schedToDel = from sched in db.Schedule
-                                 where sched.Datum < historDate
-                                 select sched;
-
-                foreach (var sched in schedToDel)
-                {
-                    db.Schedule.Remove(sched);
-
-                    var cmL = db.CourseMoment.Where(e => e.ScheduleId == sched.Id);
-                    if (cmL.Any()) 
-                    {
-                        foreach (var cm in cmL) 
-                        {
-                            var cmuL = db.CourseMomentUsers.Where(e => e.CoursMomentId == cm.Id);
-
-                            if (cmuL.Any()) 
-                            {
-                                foreach (var cmu in cmuL) 
-                                {
-                                    db.CourseMomentUsers.Remove(cmu);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                db.SaveChanges();
-
-                CookieOptions cookies = new CookieOptions();
-                cookies.Expires = DateTime.Now.AddDays(1);
-
-                Response.Cookies.Append("deleteDb", "true", cookies);
+                service.DeleteDbHistory();
 
                 TempData["error"] = "deleteGood";
             }
@@ -493,6 +253,11 @@ namespace Gip.Controllers
 
                 Console.WriteLine(e);
             }
+
+            CookieOptions cookies = new CookieOptions();
+            cookies.Expires = DateTime.Now.AddDays(1);
+
+            Response.Cookies.Append("deleteDb", "true", cookies);
 
             return RedirectToAction("Index", "Home");
         }

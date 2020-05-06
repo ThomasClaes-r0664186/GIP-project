@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Gip.Controllers;
+using Gip.Services.Interfaces;
+using Gip.Services;
 
 namespace Gip
 {
@@ -25,6 +28,15 @@ namespace Gip
             services.AddDbContext<gipDatabaseContext>();
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<gipDatabaseContext>().AddDefaultTokenProviders();
             services.AddControllersWithViews();
+
+            services.AddTransient<MailHandler>();
+
+            services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IAdministrationService, AdministrationService>();
+            services.AddTransient<ILectorService, LectorService>();
+            services.AddTransient<ILokaalService, LokaalService>();
+            services.AddTransient<IPlannerService, PlannerService>();
+            services.AddTransient<IVakService, VakService>();
 
             services.AddMvc(config => {
                 var policy = new AuthorizationPolicyBuilder()

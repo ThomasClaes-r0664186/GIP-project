@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Gip.Models;
 using Gip.Models.ViewModels;
+using Gip.Services.Interfaces;
 using Gip.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -11,17 +12,18 @@ namespace Gip.Controllers
 {
     public class AccountController : Controller
     {
-        private gipDatabaseContext db = new gipDatabaseContext();
+        private IAccountService service;
 
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly MailHandler mailHandler;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountController(IAccountService service, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, MailHandler mailHandler)
         {
+            this.service = service;
             this.userManager = userManager;
             this.signInManager = signInManager;
-            mailHandler = new MailHandler();
+            this.mailHandler = mailHandler;
         }
 
         [AllowAnonymous]
@@ -38,101 +40,19 @@ namespace Gip.Controllers
             {
                 try
                 {
-                    var email = await userManager.FindByEmailAsync(model.Email);
-                    var username = await userManager.FindByNameAsync(model.RNum);
-                    var user = new ApplicationUser
+                    ApplicationUser user = await service.RegisterUser(model);
+
+                    var remoteIp = Request.HttpContext.Connection.RemoteIpAddress;
+                    utils.log("Er is een user aangemaakt van de ip: " + remoteIp.ToString(), new string[] { "Properties", user.UserName + ";" + user.VoorNaam + ";" + user.Naam + ";" + user.Email });
+
+                    if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                     {
-                        UserName = model.RNum,
-                        Email = model.Email,
-                        Naam = model.SurName,
-                        VoorNaam = model.Name
-                    };
-                    if (email != null)
-                    {
-                        ModelState.AddModelError("", "Email " + model.Email + " is already in use.");
-                    }
-                    else if (username != null)
-                    {
-                        ModelState.AddModelError("", "Student number: " + model.RNum + " is already in use.");
+                        return RedirectToAction("ListUsers", "Administration");
                     }
                     else
                     {
-                        var result = await userManager.CreateAsync(user, model.Password);
-                        var remoteIp = Request.HttpContext.Connection.RemoteIpAddress;
-                        utils.log("Er is een user aangemaakt van de ip: " + remoteIp.ToString(), new string[] { "Properties", user.UserName + ";" + user.VoorNaam + ";" + user.Naam + ";" +user.Email});
-
-                        switch (user.UserName.ToLower().ToCharArray()[0])
-                        {
-                            case 'c':
-                                var result1 = await userManager.AddToRoleAsync(user, "Student");
-                                foreach (var error1 in result1.Errors)
-                                {
-                                    ModelState.AddModelError("", error1.Description);
-                                }
-                                break;
-                            case 'r':
-                                var result2 = await userManager.AddToRoleAsync(user, "Student");
-                                foreach (var error2 in result2.Errors)
-                                {
-                                    ModelState.AddModelError("", error2.Description);
-                                }
-                                break;
-                            case 's':
-                                var result3 = await userManager.AddToRoleAsync(user, "Student");
-                                foreach (var error3 in result3.Errors)
-                                {
-                                    ModelState.AddModelError("", error3.Description);
-                                }
-                                break;
-                            case 'm':
-                                var result4 = await userManager.AddToRoleAsync(user, "Student");
-                                foreach (var error4 in result4.Errors)
-                                {
-                                    ModelState.AddModelError("", error4.Description);
-                                }
-                                break;
-                            case 'u':
-                                //voor zowel u als voor x moet er door een admin bevestigt worden dat het account aangemaakt mag worden.
-
-                                //hier kan bijvoorbeeld nog een melding gezet worden dat deze geaccepteerd moet worden door admin.
-
-                                //var result5 = await userManager.AddToRoleAsync(user, "Lector");
-                                //foreach (var error5 in result5.Errors)
-                                //{
-                                //    ModelState.AddModelError("", error5.Description);
-                                //}
-                                break;
-                            case 'x':
-                                //var result6 = await userManager.AddToRoleAsync(user, "Admin");
-                                //foreach (var error6 in result6.Errors)
-                                //{
-                                //    ModelState.AddModelError("", error6.Description);
-                                //}
-                                break;
-                            default: break;
-                        }
-                        if (!result.Succeeded)
-                        {
-                            foreach (var error in result.Errors)
-                            {
-                                ModelState.AddModelError("", error.Description);
-                            }
-                            return View("../Home/Register");
-                        }
-                        else
-                        {
-                            if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
-                            {
-                                return RedirectToAction("ListUsers", "Administration");
-                            }
-                            else
-                            {
-                                await signInManager.SignInAsync(user, isPersistent: false);
-                                //Welcome page
-                                //return RedirectToAction("LoggedIn", "Account");
-                                return RedirectToAction("Index", "Home");
-                            }
-                        }
+                        await signInManager.SignInAsync(user, isPersistent: false);
+                        return RedirectToAction("Index", "Home");
                     }
                 }
                 catch (Exception e) 
@@ -163,7 +83,7 @@ namespace Gip.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await signInManager.PasswordSignInAsync(model.RNum, model.Password, model.RememberMe, false);
+                var result = await service.Login(model);
 
                 if (result.Succeeded)
                 {
@@ -172,8 +92,6 @@ namespace Gip.Controllers
                         return Redirect(returnUrl);
                     }
                     else {
-                        //Welcome page
-                        //return RedirectToAction("LoggedIn", "Account");
                         return RedirectToAction("Index", "Home");
                     }
                 }
@@ -205,8 +123,7 @@ namespace Gip.Controllers
                     return RedirectToAction("Login");
                 }
 
-                var result = await userManager.ChangePasswordAsync(user,
-                    model.CurrentPassword, model.NewPassword);
+                var result = await service.ChangePassword(user, model);
 
                 // The new password did not meet the complexity rules or
                 // the current password is incorrect. Add these errors to
@@ -305,18 +222,5 @@ namespace Gip.Controllers
             // Display validation errors if model state is not valid
             return View(model);
         }
-
-        //Welcome page
-        //[HttpGet]
-        //public async Task<ActionResult> LoggedIn() 
-        //{
-        //    var user = await userManager.FindByNameAsync(User.Identity.Name);
-
-        //    if (user == null) 
-        //    {
-        //        return View("Index", "Home");
-        //    }
-        //    return View("../Home/LoggedIn", user);
-        //}
     }
 }

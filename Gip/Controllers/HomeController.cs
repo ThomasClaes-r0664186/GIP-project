@@ -12,7 +12,6 @@ namespace Gip.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private gipDatabaseContext db = new gipDatabaseContext();
 
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
