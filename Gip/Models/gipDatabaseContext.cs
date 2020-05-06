@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
@@ -6,13 +7,12 @@ namespace Gip.Models
 {
     public partial class gipDatabaseContext : IdentityDbContext<ApplicationUser>
     {
-        public gipDatabaseContext()
-        {
-        }
+        private readonly IConfiguration _configuration;
 
-        public gipDatabaseContext(DbContextOptions<gipDatabaseContext> options)
+        public gipDatabaseContext(DbContextOptions<gipDatabaseContext> options, IConfiguration configuration)
             : base(options)
         {
+            this._configuration = configuration;
         }
 
         public virtual DbSet<Course> Course { get; set; }
@@ -27,7 +27,7 @@ namespace Gip.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=diskstation.desmet.net,32820;Database=gipDatabase;User Id=SA;Password=<Passw0rd*>;MultipleActiveResultSets=true;");
+                optionsBuilder.UseSqlServer(_configuration.GetConnectionString("database"));
             }
         }
 
