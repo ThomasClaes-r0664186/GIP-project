@@ -40,10 +40,12 @@ namespace Gip.Controllers
             {
                 try
                 {
+
+
                     ApplicationUser user = await service.RegisterUser(model);
 
                     var remoteIp = Request.HttpContext.Connection.RemoteIpAddress;
-                    utils.log("Er is een user aangemaakt van de ip: " + remoteIp.ToString(), new string[] { "Properties", user.UserName + ";" + user.VoorNaam + ";" + user.Naam + ";" + user.Email });
+                    utils.log("Er is een user aangemaakt van de ip: " + remoteIp.ToString(), new string[] { "Properties", user.UserName + ";" + user.VoorNaam + ";" + user.Naam + ";" + user.GeboorteDatum +";" + user.Email });
 
                     if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                     {

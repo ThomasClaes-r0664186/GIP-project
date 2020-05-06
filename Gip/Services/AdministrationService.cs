@@ -83,6 +83,7 @@ namespace Gip.Services
                 Name = user.VoorNaam,
                 SurName = user.Naam,
                 RNum = user.UserName,
+                GeboorteDatum = user.GeboorteDatum,
                 Email = user.Email,
                 Roles = userRoles
             };
@@ -118,7 +119,7 @@ namespace Gip.Services
                     user.Email = model.Email;
                     user.Naam = model.SurName;
                     user.VoorNaam = model.Name;
-
+                    user.GeboorteDatum = model.GeboorteDatum;
                     result = await userManager.UpdateAsync(user);
                 }
                 return result;

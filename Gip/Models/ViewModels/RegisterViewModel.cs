@@ -22,6 +22,9 @@ namespace Gip.Models
         public string SurName { get; set; }
 
         [Required]
+        public DateTime GeboorteDatum { get; set; }
+
+        [Required]
         [EmailAddress]
         //[Remote(action:"IsEmailInUse", controller: "Account")]
         public string Email { get; set; }

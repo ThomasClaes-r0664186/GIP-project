@@ -44,7 +44,8 @@ namespace Gip.Services
                     UserName = model.RNum.ToLower(),
                     Email = model.Email,
                     Naam = model.SurName,
-                    VoorNaam = model.Name
+                    VoorNaam = model.Name,
+                    GeboorteDatum = model.GeboorteDatum
                 };
 
                 result = await userManager.CreateAsync(user, model.Password);

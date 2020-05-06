@@ -26,6 +26,9 @@ namespace Gip.Models
         [Required]
         public string SurName { get; set; }
 
+        [Required]
+        public DateTime GeboorteDatum { get; set; }
+
         [Required][EmailAddress]
         public string Email { get; set; }
 
