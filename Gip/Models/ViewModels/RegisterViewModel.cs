@@ -22,6 +22,7 @@ namespace Gip.Models
         public string SurName { get; set; }
 
         [Required]
+        [ValidBirthDate(ErrorMessage = "Geboortedatum mag zich niet in de toekomst bevinden.")]
         public DateTime GeboorteDatum { get; set; }
 
         [Required]
