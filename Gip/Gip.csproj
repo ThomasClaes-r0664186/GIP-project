@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Home\ConfirmMail.cshtml" />
     <Content Remove="Views\Shared\AccesDenied - Copy.cshtml" />
     <Content Remove="Views\Shared\AccesDenied.cshtml" />
   </ItemGroup>

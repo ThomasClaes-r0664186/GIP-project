@@ -41,11 +41,17 @@ namespace Gip.Controllers
                 try
                 {
 
-
                     ApplicationUser user = await service.RegisterUser(model);
 
                     var remoteIp = Request.HttpContext.Connection.RemoteIpAddress;
                     utils.log("Er is een user aangemaakt van de ip: " + remoteIp.ToString(), new string[] { "Properties", user.UserName + ";" + user.VoorNaam + ";" + user.Naam + ";" + user.GeboorteDatum +";" + user.Email });
+
+                    // email confirmation
+                    var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                    
+                    var confirmationLink = "Om uw email te bevestigen, klikt u op volgende link: " + Environment.NewLine + Url.Action("ConfirmEmail", "Account",
+                            new { userId = user.Id, token = token }, Request.Scheme);
+                    mailHandler.SendMail(user, confirmationLink, "Activeer account");
 
                     if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                     {
@@ -53,9 +59,16 @@ namespace Gip.Controllers
                     }
                     else
                     {
+                        ViewBag.ErrorTitle = "Registration successful";
+                        ViewBag.ErrorMessage = "Alvorens u kan inloggen, bevestig uw " +
+                                "email, door te klikken op de bevestigings link die u kreeg toegestuurd";
+                        return View("Error");
+                        /*
                         await signInManager.SignInAsync(user, isPersistent: false);
                         return RedirectToAction("Index", "Home");
+                        */
                     }
+                    
                 }
                 catch (Exception e) 
                 {
@@ -66,7 +79,37 @@ namespace Gip.Controllers
             return View("../Home/Register");
         }
 
-        [HttpPost]
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (userId == null || token == null)
+            {
+                return RedirectToAction("index", "home");
+            }
+
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"The User ID {userId} is invalid";
+                return View("NotFound");
+            }
+
+            var result = await userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+            {
+                return View();
+            }
+
+            ViewBag.ErrorTitle = "Email cannot be confirmed";
+            return View("Error");
+        }
+
+    
+
+
+
+    [HttpPost]
         public async Task<IActionResult> Logout() {
             await signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
@@ -167,8 +210,8 @@ namespace Gip.Controllers
                     var token = await userManager.GeneratePasswordResetTokenAsync(user);
 
                     //bouw password reset link
-                    var passwordResetLink = Url.Action("ResetPassword", "Account", new { email = model.Email, token }, Request.Scheme);
-
+                    var passwordResetLink = "Om uw wachtwoord te herstellen, klikt u op volgende link: "+ Environment.NewLine + Url.Action("ResetPassword", "Account", new { email = model.Email, token }, Request.Scheme);
+                    //verzenden met mailhandler
                     mailHandler.SendMail(user, passwordResetLink, "Password recovery");
                     var remoteIp = Request.HttpContext.Connection.RemoteIpAddress;
                     utils.log("Er werd een password recovery aangevraagd door: " + user.UserName + " van de ip: " + remoteIp.ToString(), new string[] { "Properties", user.UserName + ";" + remoteIp.ToString()});

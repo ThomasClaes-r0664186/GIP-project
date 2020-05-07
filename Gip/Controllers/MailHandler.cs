@@ -23,7 +23,7 @@ namespace Gip.Controllers
             message.Subject = subject;
 
             BodyBuilder bodyBuilder = new BodyBuilder();
-            bodyBuilder.TextBody = "Om uw wachtwoord te herstellen, klikt u op volgende link: "+ Environment.NewLine + body;
+            bodyBuilder.TextBody =  body;
 
             message.Body = bodyBuilder.ToMessageBody();
 
