@@ -46,12 +46,13 @@ namespace Gip.Controllers
                     var remoteIp = Request.HttpContext.Connection.RemoteIpAddress;
                     utils.log("Er is een user aangemaakt van de ip: " + remoteIp.ToString(), new string[] { "Properties", user.UserName + ";" + user.VoorNaam + ";" + user.Naam + ";" + user.GeboorteDatum +";" + user.Email });
 
-                    // email confirmation
+                    // email confirmation, zet dit in comment om geen mail te sturen bij registratie
                     var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
                     
                     var confirmationLink = "Om uw email te bevestigen, klikt u op volgende link: " + Environment.NewLine + Url.Action("ConfirmEmail", "Account",
                             new { userId = user.Id, token = token }, Request.Scheme);
                     mailHandler.SendMail(user, confirmationLink, "Activeer account");
+                    /**/
 
                     if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                     {
@@ -59,10 +60,12 @@ namespace Gip.Controllers
                     }
                     else
                     {
+                        // zet dit in comment en uncomment het andere gedeelte om bij registratie meteen aangemeld te worden.
                         ViewBag.ErrorTitle = "Registration successful";
                         ViewBag.ErrorMessage = "Alvorens u kan inloggen, bevestig uw " +
                                 "email, door te klikken op de bevestigings link die u kreeg toegestuurd";
                         return View("Error");
+
                         /*
                         await signInManager.SignInAsync(user, isPersistent: false);
                         return RedirectToAction("Index", "Home");
@@ -78,7 +81,6 @@ namespace Gip.Controllers
             }
             return View("../Home/Register");
         }
-
 
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
@@ -105,11 +107,7 @@ namespace Gip.Controllers
             return View("Error");
         }
 
-    
-
-
-
-    [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> Logout() {
             await signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");

@@ -26,7 +26,15 @@ namespace Gip
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<gipDatabaseContext>();
-            services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<gipDatabaseContext>().AddDefaultTokenProviders();
+
+            //Zet hieronder in comment om in te login zonder email confirmation (aangeduid met comment)
+            services.AddIdentity<ApplicationUser, IdentityRole>(/**/options => 
+            {
+                options.SignIn.RequireConfirmedEmail = true;
+            }/**/)
+                .AddEntityFrameworkStores<gipDatabaseContext>()
+                .AddDefaultTokenProviders();
+
             services.AddControllersWithViews();
 
             services.AddTransient<MailHandler>();
