@@ -41,6 +41,7 @@ namespace Gip
 
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IAdministrationService, AdministrationService>();
+            services.AddTransient<IFieldOfStudyService, FieldOfStudyService>();
             services.AddTransient<ILectorService, LectorService>();
             services.AddTransient<ILokaalService, LokaalService>();
             services.AddTransient<IPlannerService, PlannerService>();
@@ -52,13 +53,6 @@ namespace Gip
                                 .Build();
                 config.Filters.Add(new AuthorizeFilter(policy));
             });
-
-            //services.AddAuthorization(options => {
-            //    var policy = new AuthorizationPolicyBuilder()
-            //                    .RequireAuthenticatedUser()
-            //                    .Build();
-            //    options.DefaultPolicy = policy;
-            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

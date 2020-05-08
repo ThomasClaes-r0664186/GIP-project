@@ -1,0 +1,271 @@
+﻿@inject SignInManager<ApplicationUser> signInManager;
+@model IQueryable<FieldOfStudy>
+    <Gip.Models.Course>
+        @{
+            ViewData["Title"] = "Inschrijven richting";
+        }
+
+        <h1>Overzicht van de richtingen</h1>
+
+        @if (ViewBag.error == null)
+        {
+            ViewBag.error = " ";
+        }
+        else
+        {
+            @if (ViewBag.error.Contains("addError"))
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@ViewBag.error.Split("/")[1]</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("editError"))
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@ViewBag.error.Split("/")[1]</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("deleteError"))
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@ViewBag.error.Split("/")[1]</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("deleteGood"))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Het vak is correct verwijderd.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("addGood"))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>De richting is correct toegevoegd.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("editGood"))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Het vak is correct gewijzigd.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+        }
+
+        @*Hieronder de code voor toevoegen richting*@
+        @if (signInManager.IsSignedIn(User) && User.IsInRole("Lector") || User.IsInRole("Admin"))
+        {
+
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addRichting" style="float:right">Richting toevoegen</button>
+            <div class="modal fade" id="addRichting" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Een richting toevoegen</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/FieldOfStudy/add" method="post">
+                                <div class="form-group">
+                                    <label for="code" class="col-form-label">Richting code:</label>
+                                    <input required="required" type="text" class="form-control" id="code" placeholder="Bv. MBI,MGP..." name="code">
+                                    <small>Code moet van het formaat "AAA" zijn.</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="titel" class="col-form-label">Titel:</label>
+                                    <input required="required" type="text" class="form-control" id="titel" placeholder="Bv. Graduaat programmeren,..." name="titel">
+                                </div>
+                                <div class="form-group">
+                                    <label for="type" class="col-form-label">Type:</label>
+                                    <select id="type" class="form-control" name="type">
+                                        <option value="bachelor">Bachelor</option>
+                                        <option value="graduaat">Graduaat</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="studiepunten" class="col-form-label">Studiepunten:</label>
+                                    <input required="required" type="number" min="30" max="180" class="form-control" id="studiepunten" placeholder="Bv. 5,7..." name="studiepunten">
+                                </div>
+                                <button type="submit" class="btn  btn-sm btn-success">Voeg richting toe</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (Model.Any())
+        {
+        @*Hier onder de tabel voor zowel student als lector*@
+        <table class="table table-bordered table-hover table-striped table-light">
+            <tr>
+                <th>Code</th>
+                <th>Titel</th>
+                <th>Type</th>
+                <th>Studiepunten</th>
+                @if (signInManager.IsSignedIn(User) && User.IsInRole("Lector") || User.IsInRole("Admin"))
+                {
+                    <th>Delete</th>
+                    <th>Edit</th>
+                }
+                else
+                {
+                    <th>Inschrijven/Uitschrijven</th>
+                }
+            </tr>
+            @foreach (var FieldOfStudy in Model)
+            {
+        <tr>
+            <td>@FieldOfStudy.RichtingCode</td>
+            <td>@FieldOfStudy.RichtingTitel</td>
+            <td>@FieldOfStudy.Type</td>
+            <td>@FieldOfStudy.RichtingStudiepunten</td>
+            @if (signInManager.IsSignedIn(User) && User.IsInRole("Lector") || User.IsInRole("Admin"))
+            {
+                <td>Lector</td>
+                <td>Admin</td>
+                @*<td>
+                    <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteVakModal-@FieldOfStudy">Delete</button>
+                    <div class="modal fade" id="deleteVakModal-@FieldOfStudy" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Vak verwijderen</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="/vak/delete" method="post">
+                                        <div>
+                                            <input type="text" name="vakcode" style="display: none" value="@FieldOfStudy">
+                                        </div>
+                                        Ben je zeker dat je het vak @FieldOfStudy wilt verwijderen?
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-sm btn-danger">Verwijder vak</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-dark" data-toggle="modal" data-target="#editVak-@FieldOfStudy">Edit</button>
+                    <div class="modal fade" id="editVak-@FieldOfStudy" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Vak wijzigen</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="/vak/edit" method="post">
+                                        <div>
+                                            <input type="text" name="vakcodeOld" style="display:none" value="@FieldOfStudy">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="vakcode" class="col-form-label">Vakcode:</label>
+                                            <input required="required" type="text" class="form-control" id="vakcode" name="vakcodeNew" value="@FieldOfStudy">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="titel" class="col-form-label">Titel:</label>
+                                            <input required="required" type="text" class="form-control" id="titel" name="titel" value="@FieldOfStudy">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="studiepunten" class="col-form-label">Studiepunten:</label>
+                                            <input required="required" type="number" max="60" class="form-control" id="studiepunten" name="studiepunten" value="@FieldOfStudy">
+                                        </div>
+                                        <button type="submit" class="btn btn-dark">Wijzig vak</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>*@
+            }
+            else
+            {
+                <td>Student</td>
+                @*
+                switch (FieldOfStudy.Id) // vak.ingeschreven
+                {
+                    case 0:
+
+                        <td>
+                            <form method="post" asp-action="Subscribe">
+                                <input type="hidden" name="vakCode" value="@FieldOfStudy" />
+                                <input type="submit" value="Schrijf in" class="btn btn-success">
+                            </form>
+                        </td>
+
+                        break;
+                    case 1:
+
+                        <td>
+                            <form method="post" asp-action="UnSubscribe">
+                                <input type="hidden" name="vakCode" value="@FieldOfStudy" />
+                                <input type="submit" value="Schrijf uit" class="btn btn-danger">
+                            </form>
+                        </td>
+
+                        break;
+                    case 2:
+
+                        <td>
+                            <form method="post" asp-action="UnSubscribe">
+                                <input type="hidden" name="vakCode" value="@FieldOfStudy" />
+                                <input type="submit" value="Stop aanvraag" class="btn btn-danger">
+                            </form>
+                            <a>Uw aanvraag is in verwerking </a>
+                        </td>
+
+                        break;
+                    case 3:
+
+                        <td>
+                            <form method="post" asp-action="UnSubscribe">
+                                <input type="hidden" name="vakCode" value="@FieldOfStudy" />
+                                <input type="submit" value="Schrijf in" class="btn btn-secondary" disabled>
+                            </form>
+                            <a>@(FieldOfStudy != null ? FieldOfStudy.ToString() : " ")</a> //Afwijzingsbeschrijving
+                        </td>
+
+                        break;
+                    default:
+                        <td><a>Er is iets misgelopen waardoor u dit te zien krijgt.</a></td>
+                        break;
+                }*@
+            }
+        </tr>
+            }
+        </table>
+        }
+        else { 
+            <h2>Er is nog geen enkele richting om te tonen.</h2>
+            @if(User.IsInRole("Lector") || User.IsInRole("Admin")) 
+            { 
+                <h3>U kan er toevoegen door op de knop aan de rechterkant te duwen.</h3>
+            }
+        }

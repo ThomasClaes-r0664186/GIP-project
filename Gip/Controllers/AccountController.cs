@@ -40,7 +40,6 @@ namespace Gip.Controllers
             {
                 try
                 {
-
                     ApplicationUser user = await service.RegisterUser(model);
 
                     var remoteIp = Request.HttpContext.Connection.RemoteIpAddress;
