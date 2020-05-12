@@ -20,16 +20,13 @@ namespace Gip.Controllers
         {
             try
             {
-                var qry = service.GetLokalen();
-
                 if (TempData["error"] != null)
                 {
                     ViewBag.error = TempData["error"].ToString();
                     TempData["error"] = null;
                 }
-
-                return View(qry);
-            }
+                return View();
+            }    
             catch (Exception e)
             {
                 Console.WriteLine(e);

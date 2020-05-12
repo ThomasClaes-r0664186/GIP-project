@@ -8,7 +8,6 @@ namespace Gip.Services.Interfaces
 {
     public interface ILokaalService
     {
-        IOrderedQueryable<Room> GetLokalen();
         void AddLokaal(string gebouw, int verdiep, string nummer, string type, int capaciteit, string middelen);
         void DeleteLokaal(int lokaalId);
         void EditLokaal(int lokaalId, string gebouw, int verdiep, string nummer, string type, int capaciteit, string middelen);

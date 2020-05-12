@@ -1,5 +1,6 @@
-﻿function nulErbij() {
-    var val = document.getElementById('nummer').value;
+﻿function nulErbij(element) {
+    var val = document.getElementById(element).value;
+    console.log(val);
     var numbers = Number(val.replace(/[a-zA-Z]/g, ''));
     var letter = val.replace(/[0-9]/g, '');
     if (val !== "") {

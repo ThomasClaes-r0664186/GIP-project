@@ -36,9 +36,11 @@ namespace Gip
                 .AddDefaultTokenProviders();
 
             services.AddControllersWithViews();
-
+            //datatables
+            services.AddControllers().AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
+            services.AddControllersWithViews().AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
+            
             services.AddTransient<MailHandler>();
-
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IAdministrationService, AdministrationService>();
             services.AddTransient<IFieldOfStudyService, FieldOfStudyService>();
@@ -46,7 +48,7 @@ namespace Gip
             services.AddTransient<ILokaalService, LokaalService>();
             services.AddTransient<IPlannerService, PlannerService>();
             services.AddTransient<IVakService, VakService>();
-
+            services.AddTransient<IDataService, DataService>();
             services.AddMvc(config => {
                 var policy = new AuthorizationPolicyBuilder()
                                 .RequireAuthenticatedUser()

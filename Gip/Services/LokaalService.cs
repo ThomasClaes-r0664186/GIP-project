@@ -3,7 +3,11 @@ using Gip.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Formatting;
 using System.Threading.Tasks;
+using System.Web.Helpers;
+using System.Web.Http;
+using Newtonsoft.Json;
 
 namespace Gip.Services
 {
@@ -15,14 +19,7 @@ namespace Gip.Services
         {
             this.db = db;
         }
-
-        public IOrderedQueryable<Room> GetLokalen()
-        {
-            var qry = from d in db.Room
-                      orderby d.Gebouw, d.Verdiep, d.Nummer
-                      select d;
-            return qry;
-        }
+        
 
         public void AddLokaal(string gebouw, int verdiep, string nummer, string type, int capaciteit, string middelen)
         {
@@ -80,7 +77,7 @@ namespace Gip.Services
             if (rInUse.Any())
             {
                 throw new ArgumentException("Dit lokaal bestaat reeds.");
-            }
+            }    
 
             Room room = db.Room.Find(lokaalId);
             Room newRoom = new Room { Gebouw = gebouw.Trim(), Verdiep = verdiep, Nummer = nummer, Type = type, Capaciteit = capaciteit, Middelen = middelen };

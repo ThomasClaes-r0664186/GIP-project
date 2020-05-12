@@ -6,7 +6,13 @@
         }
 
         <h1>Overzicht van de vakken</h1>
-
+        @if(User.IsInRole("Lector")){
+            <span id="rol" style="display:none">Lector</span>
+        }else if(User.IsInRole("Admin")){
+            <span id="rol" style="display:none">Admin</span>
+        }else if(User.IsInRole("Student")){
+            <span id="rol" style="display:none">Student</span>
+        }     
         @if (ViewBag.error == null)
         {
             ViewBag.error = " ";
@@ -104,152 +110,165 @@
             </div>
         </div>
         }
-        <table class="table table-bordered table-hover table-striped table-light">
+    <table id="custtable" class="table">
+        <thead>
             <tr>
                 <th>Vakcode</th>
                 <th>Titel</th>
                 <th>Studiepunten</th>
                 @if (signInManager.IsSignedIn(User) && User.IsInRole("Lector") || User.IsInRole("Admin"))
                 {
-                    <th>Delete</th>
                     <th>Edit</th>
+                    <th>Delete</th>
                 }
                 else
                 {
                     <th>Inschrijven/Uitschrijven</th>
                 }
             </tr>
-            @foreach (var vak in Model)
-            {
-        <tr>
-            @if (signInManager.IsSignedIn(User) && User.IsInRole("Lector") || User.IsInRole("Admin"))
-            {
-                <td id="vakcodeClick" onclick="window.location = 'planner/ViewCourseUsers?vakcode=@vak.courseId';" class="veranderDatum">@vak.Vakcode</td>
-                <td id="titelClick" onclick="window.location = 'planner/ViewCourseUsers?vakcode=@vak.courseId';" class="veranderDatum">@vak.Titel</td>
-            }
-            else
-            {
-                <td>@vak.Vakcode</td>
-                <td>@vak.Titel</td>
-            }
-            <td>@vak.Studiepunten</td>
-            @if (signInManager.IsSignedIn(User) && User.IsInRole("Lector") || User.IsInRole("Admin"))
-            {
-                <td>
-                    <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteVakModal-@vak.courseId">Delete</button>
-                    <div class="modal fade" id="deleteVakModal-@vak.courseId" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Vak verwijderen</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <form action="/vak/delete" method="post">
-                                        <div>
-                                            <input type="text" name="vakcode" style="display: none" value="@vak.courseId">
-                                        </div>
-                                        Ben je zeker dat je het vak @vak.Titel wilt verwijderen?
-                                        <div class="modal-footer">
-                                            <button type="submit" class="btn btn-sm btn-danger">Verwijder vak</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-sm btn-dark" data-toggle="modal" data-target="#editVak-@vak.courseId">Edit</button>
-                    <div class="modal fade" id="editVak-@vak.courseId" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Vak wijzigen</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <form action="/vak/edit" method="post">
-                                        <div>
-                                            <input type="text" name="vakcodeOld" style="display:none" value="@vak.courseId">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="vakcode" class="col-form-label">Vakcode:</label>
-                                            <input required="required" type="text" class="form-control" id="vakcode" name="vakcodeNew" value="@vak.Vakcode">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="titel" class="col-form-label">Titel:</label>
-                                            <input required="required" type="text" class="form-control" id="titel" name="titel" value="@vak.Titel">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="studiepunten" class="col-form-label">Studiepunten:</label>
-                                            <input required="required" type="number" max="60" class="form-control" id="studiepunten" name="studiepunten" value="@vak.Studiepunten">
-                                        </div>
-                                        <button type="submit" class="btn btn-dark">Wijzig vak</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            }
-            else
-            {
-                switch (@vak.Ingeschreven)
+        </thead>
+        @*
+        @foreach (var vak in Model)
+        {
+            <tr>
+                @if (signInManager.IsSignedIn(User) && User.IsInRole("Lector") || User.IsInRole("Admin"))
                 {
-                    case 0:
+                    <td id="vakcodeClick" onclick="window.location = 'planner/ViewCourseUsers?vakcode=@vak.courseId';" class="veranderDatum">@vak.Vakcode</td>
+                    <td id="titelClick" onclick="window.location = 'planner/ViewCourseUsers?vakcode=@vak.courseId';" class="veranderDatum">@vak.Titel</td>
+                }
+                else
+                {
+                    <td>@vak.Vakcode</td>
+                    <td>@vak.Titel</td>
+                }
+                <td>@vak.Studiepunten</td>
+                @if (signInManager.IsSignedIn(User) && User.IsInRole("Lector") || User.IsInRole("Admin"))
+                {
+                    <td>
+                        <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteVakModal-@vak.courseId">Delete</button>
+                        
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-dark" data-toggle="modal" data-target="#editVak-@vak.courseId">Edit</button>
+                        
+                    </td>
+                }
+                else
+                {
+                    switch (@vak.Ingeschreven)
+                    {
+                        case 0:
 
-                        <td>
-                            <form method="post" asp-action="Subscribe">
-                                <input type="hidden" name="vakCode" value="@vak.courseId" />
-                                <input type="submit" value="Schrijf in" class="btn btn-success">
-                            </form>
-                        </td>
+                            <td>
+                                <form method="post" asp-action="Subscribe">
+                                    <input type="hidden" name="vakCode" value="@vak.courseId"/>
+                                    <input type="submit" value="Schrijf in" class="btn btn-success">
+                                </form>
+                            </td>
 
                         @*get versie<td><a asp-action="Subscribe" asp-route-vakCode="@vak.Vakcode" class="btn btn-success" style="width:auto">Schrijf in</a></td>*@
+        @*
+                            break;
+                        case 1:
 
-                        break;
-                    case 1:
+                            <td>
+                                <form method="post" asp-action="UnSubscribe">
+                                    <input type="hidden" name="vakCode" value="@vak.courseId"/>
+                                    <input type="submit" value="Schrijf uit" class="btn btn-danger">
+                                </form>
+                            </td>
 
-                        <td>
-                            <form method="post" asp-action="UnSubscribe">
-                                <input type="hidden" name="vakCode" value="@vak.courseId" />
-                                <input type="submit" value="Schrijf uit" class="btn btn-danger">
-                            </form>
-                        </td>
+                            break;
+                        case 2:
 
-                        break;
-                    case 2:
+                            <td>
+                                <form method="post" asp-action="UnSubscribe">
+                                    <input type="hidden" name="vakCode" value="@vak.courseId"/>
+                                    <input type="submit" value="Stop aanvraag" class="btn btn-danger">
+                                </form>
+                                <a>Uw aanvraag is in verwerking </a>
+                            </td>
 
-                        <td>
-                            <form method="post" asp-action="UnSubscribe">
-                                <input type="hidden" name="vakCode" value="@vak.courseId" />
-                                <input type="submit" value="Stop aanvraag" class="btn btn-danger">
-                            </form>
-                            <a>Uw aanvraag is in verwerking </a>
-                        </td>
+                            break;
+                        case 3:
 
-                        break;
-                    case 3:
+                            <td>
+                                <form method="post" asp-action="UnSubscribe">
+                                    <input type="hidden" name="vakCode" value="@vak.courseId"/>
+                                    <input type="submit" value="Schrijf in" class="btn btn-secondary" disabled>
+                                </form>
+                                <a>@(vak.afwijzingBeschrijving != null ? vak.afwijzingBeschrijving : " ")</a>
+                            </td>
 
-                        <td>
-                            <form method="post" asp-action="UnSubscribe">
-                                <input type="hidden" name="vakCode" value="@vak.courseId" />
-                                <input type="submit" value="Schrijf in" class="btn btn-secondary" disabled>
-                            </form>
-                            <a>@(vak.afwijzingBeschrijving!=null? vak.afwijzingBeschrijving : " ")</a>
-                        </td>
-
-                        break;
-                    default:
-                        <td><a>Er is iets misgelopen waardoor u dit te zien krijgt.</a></td>
-                        break;
+                            break;
+                        default:
+                            <td><a>Er is iets misgelopen waardoor u dit te zien krijgt.</a></td>
+                            break;
+                    }
                 }
-            }
-        </tr>
-            }
-        </table>
+            </tr>
+        }
+        *@
+    </table>
+    @if (signInManager.IsSignedIn(User) && User.IsInRole("Lector") || User.IsInRole("Admin")){}
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Vak wijzigen</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/vak/edit" method="post">
+                            <div>
+                                <input type="text" id="vakcodeOld" name="vakcodeOld" style="display:none">
+                            </div>
+                            <div class="form-group">
+                                <label for="vakcode" class="col-form-label">Vakcode:</label>
+                                <input required="required" type="text" class="form-control" id="vakcodeNew" name="vakcodeNew">
+                            </div>
+                            <div class="form-group">
+                                <label for="titel" class="col-form-label">Titel:</label>
+                                <input required="required" type="text" class="form-control" id="edit-titel" name="titel" >
+                            </div>
+                            <div class="form-group">
+                                <label for="studiepunten" class="col-form-label">Studiepunten:</label>
+                                <input required="required" type="number" max="60" class="form-control" id="edit-studiepunten" name="studiepunten">
+                            </div>
+                            <button type="submit" class="btn btn-dark">Wijzig vak</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Vak verwijderen</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/vak/delete" method="post">
+                            <div>
+                                <input type="text" name="vakcode" id="delete-vakcode" style="display: none">
+                            </div>
+                            <span id="verwijderText"></span>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-sm btn-danger">Verwijder vak</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+    @section Scripts{
+        <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+        <script src="~/scripts/data/vak.js"></script>
+    }
+    </Gip.Models.Course>
