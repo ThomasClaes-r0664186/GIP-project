@@ -8,15 +8,27 @@
         <div class="card">
             <div class="card-header">
                 <h2>Add or remove users from this role</h2>
+                <input class="form-control" id="myInput" type="text" placeholder="Search..">
+                <br>
             </div>
-            <div class="card-body">
+            <script >
+            $(document).ready(function(){
+              $("#myInput").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#data .idData").filter(function() {
+                  $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+              });
+            });
+            </script>
+            <div class="card-body" id="data">
                 @for (int i = 0; i < Model.Count; i++)
                 {
-                    <div class="form-check m-1">
+                    <div class="idData form-check m-1 ustom-control custom-checkbox mr-sm-2">
                         <input type="hidden" asp-for="@Model[i].UserId" />
                         <input type="hidden" asp-for="@Model[i].UserName" />
-                        <input asp-for="@Model[i].IsSelected" class="form-check-input" />
-                        <label class="form-check-label" asp-for="@Model[i].IsSelected">
+                        <input asp-for="@Model[i].IsSelected" type="checkbox" class="custom-control-input" />
+                        <label class="custom-control-label" asp-for="@Model[i].IsSelected">
                             @Model[i].UserName
                         </label>
                     </div>
