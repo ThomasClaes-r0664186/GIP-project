@@ -20,6 +20,11 @@ a.navbar-brand {
 a {
   color: #0366d6;
 }
+#loginLogoutDropdown{
+  position: absolute;
+  right: 70px;
+  top: 22px;
+}
 
 .btn-primary {
   color: #fff;
