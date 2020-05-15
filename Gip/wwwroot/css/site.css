@@ -6,6 +6,15 @@ a.navbar-brand {
   text-align: center;
   word-break: break-all;
 }
+/*zorgt ervoor dat in vakken tabel als link eruit zien*/
+.veranderDatum{ 
+  text-underline: #000000;
+}
+.veranderDatum:hover{
+  text-underline: #000000;
+  color: #0f6674;
+}
+
 
 /* Provide sufficient contrast against white background */
 a {

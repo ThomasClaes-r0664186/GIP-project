@@ -27,8 +27,7 @@
                             cases[0] = '<div class="formPostDraw"><form method="post"  action="/vak/subscribe"><input type="hidden" name="vakCode" value="'+d.courseId+'"/><input type="submit" value="Schrijf in" class="btn btn-success"></form></div>';
                             cases[1] = '<div class="formPostDraw"><form method="post"  action="/vak/unSubscribe"> <input type="hidden" name="vakCode" value="'+d.courseId+'" /> <input type="submit" value="Schrijf uit" class="btn btn-danger"> </form></div>';
                             cases[2] = '<div class="formPostDraw"><form method="post" action="/vak/unSubscribe"> <input type="hidden" name="vakCode" value="'+d.courseId+'"/> <input type="submit" value="Stop aanvraag" class="btn btn-danger"> </form> <a>Uw aanvraag is in verwerking </a></div>';
-                            cases[3] = '<div class="formPostDraw"><form method="post"  action="/vak/unSubscribe"> <input type="hidden" name="vakCode" value="'+d.courseId+'"/> <input type="submit" value="Schrijf in" class="btn btn-secondary" disabled> </form> </div>';
-                            //<a>@(vak.afwijzingBeschrijving != null ? vak.afwijzingBeschrijving : " ")</a>
+                            cases[3] = '<div class="formPostDraw"><form method="post"  action="/vak/unSubscribe"> <input type="hidden" name="vakCode" value="'+d.courseId+'"/> <input type="submit" value="Schrijf in" class="btn btn-secondary" disabled> </form> '+((d.afwijzingBeschrijving)?d.afwijzingBeschrijving:'')+'</div>';
                             cases[4] = '<a>Er is iets misgelopen waardoor u dit te zien krijgt.</a>';
                             try {
                                 if($('.spinner-border').length !== 0) {
@@ -44,6 +43,25 @@
                         }
                     }
                 });
+            }).then(function(){//veranderDatum
+                $(".veranderDatum").get().forEach(function(entry, index, array) {
+                    for (let i = 0; i < file.length; i++) {
+                        let d = file[i];
+                        let vakcode = String($( entry ).parent().parent().children()[0].innerText);
+                        if(String(d.Vakcode) === vakcode) {
+                            try {
+                                if($('.spinner-border').length !== 0) {
+                                    $(entry).append(cases[d.Ingeschreven]);
+                                    if(index===array.length-1){
+                                        $(".spinner-border").remove();
+                                    }
+                                }
+                            }catch(err){
+                                $(entry).append(cases[4]);
+                            }
+                        }
+                    }
+                });
             });
         }
     });
@@ -52,8 +70,16 @@
         //omdat het kollomen aantal bij lector en student verschilt, gebruiken we deze functie
         //eerst rol zoeken. bij #rol (lijn 8-15)
         let collumns = [
-            { "data" : "Vakcode","name": "Vakcode" },
-            { "data" : "Titel", "name": "Titel" },
+            { "data" : "Vakcode","name": "Vakcode",
+                "render": function ( data, type, row, meta ) {
+                    return '<a id="vakcodeClick" class="veranderDatum" href="planner/ViewCourseUsers?vakcode='+row.Id+'">'+data+'</a>'
+                }
+            },
+            { "data" : "Titel", "name": "Titel",
+                "render": function ( data, type, row, meta ) {
+                    return '<a id="titelClick" class="veranderDatum" href="planner/ViewCourseUsers?vakcode='+row.Id+'">'+data+'</a>'
+                }
+            },
             { "data": "Studiepunten", "name": "Studiepunten" }
         ];
         let rol = $("#rol").text();
@@ -89,6 +115,7 @@
             });
         })
     }
+    //clickables voor buttons
     $('#custtable tbody').on('click', 'button', function(e) {
         e.preventDefault();
         var id = $( this ).parent().parent().children()[0].innerText;
