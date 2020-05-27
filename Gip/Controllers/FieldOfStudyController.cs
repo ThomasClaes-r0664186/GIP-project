@@ -48,5 +48,53 @@ namespace Gip.Controllers
             TempData["error"] = "addGood";
             return RedirectToAction("Index", "FieldOfStudy");
         }
+
+        [HttpPost]
+        [Route("fieldOfStudy/delete")]
+        [Authorize(Roles = "Admin, Lector")]
+        public ActionResult Delete(int Id)
+        {
+            try
+            {
+                service.DeleteRichting(Id);
+            }
+            catch (Exception e)
+            {
+                TempData["error"] = "deleteError" + "/" + e.Message;
+                return RedirectToAction("Index", "FieldOfStudy");
+            }
+            TempData["error"] = "deleteGood";
+            return RedirectToAction("Index", "FieldOfStudy");
+        }
+
+        [HttpGet]
+        [Route("fieldOfStudy/edit")]
+        [Authorize(Roles = "Admin, Lector")]
+        public ActionResult Edit()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Route("fieldOfStudy/edit")]
+        [Authorize(Roles = "Admin, Lector")]
+        public ActionResult Edit(int richtindId, string richtingCode, string richtingTitel, string type, int richtingStudiepunten)
+        {
+            TempData["error"] = "";
+            try
+            {
+                service.EditRichting(richtindId, richtingCode, richtingTitel, type, richtingStudiepunten);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                TempData["error"] = "editError" + "/" + e.Message;
+                
+                return RedirectToAction("Index", "fieldOfStudy");
+
+            }
+            TempData["error"] = "editGood";
+            return RedirectToAction("Index", "fieldOfStudy");
+        }
     }
 }

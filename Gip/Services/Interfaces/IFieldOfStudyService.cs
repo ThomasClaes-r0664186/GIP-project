@@ -10,5 +10,7 @@ namespace Gip.Services.Interfaces
     {
         IQueryable<FieldOfStudy> GetAllFieldOfStudy();
         void AddRichting(string code, string titel, string type, int studiepunten);
+        void DeleteRichting(int richtindId);
+        void EditRichting(int richtindId, string richtingCode, string richtingTitel, string type, int richtingStudiepunten);
     }
 }

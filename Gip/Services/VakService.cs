@@ -86,12 +86,13 @@ namespace Gip.Services
 
             Course course = new Course { Vakcode = vakcode.ToUpper(), Titel = titel, Studiepunten = studiepunten };
 
-            //FieldOfStudy FOS = db.FieldOfStudy.Where(fos => fos.RichtingCode == vakcode.Substring(0, 3)).FirstOrDefault();
+            FieldOfStudy FOS = db.FieldOfStudy.Where(fos => fos.RichtingCode == vakcode.Substring(0, 3)).FirstOrDefault();
+                
 
-            //if (FOS != null) {
-            //    course.FieldOfStudyId = FOS.Id;
-            //}
-
+            if (FOS != null) {
+                course.FieldOfStudyId = FOS.Id;
+            }
+            
             db.Course.Add(course);
             db.SaveChanges();
         }
