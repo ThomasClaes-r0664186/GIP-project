@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Gip.Models;
 using Gip.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gip.Controllers
@@ -12,7 +14,7 @@ namespace Gip.Controllers
     public class FieldOfStudyController : Controller
     {
         private IFieldOfStudyService service;
-
+        private readonly UserManager<ApplicationUser> userManager;
         public FieldOfStudyController(IFieldOfStudyService service) 
         {
             this.service = service;
@@ -92,6 +94,29 @@ namespace Gip.Controllers
                 
                 return RedirectToAction("Index", "fieldOfStudy");
 
+            }
+            TempData["error"] = "editGood";
+            return RedirectToAction("Index", "fieldOfStudy");
+        }
+
+        [HttpPost]
+        [Route("fieldOfStudy/Subscribe")]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult> Subscribe(int fosId)
+        {
+            TempData["error"] = "";
+            try
+            {
+                var user = await userManager.GetUserAsync(User);
+
+                service.SubscribeFos(fosId, user);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                TempData["error"] = "editError" + "/" + e.Message;
+
+                return RedirectToAction("Index", "fieldOfStudy");
             }
             TempData["error"] = "editGood";
             return RedirectToAction("Index", "fieldOfStudy");

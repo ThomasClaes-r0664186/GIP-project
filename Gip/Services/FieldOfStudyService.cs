@@ -76,5 +76,22 @@ namespace Gip.Services
             db.SaveChanges();
             
         }
+
+        public void SubscribeFos(int fosId, ApplicationUser user)
+        {
+            var courseList = db.Course.Where(c => c.FieldOfStudyId == fosId);
+
+            if (courseList == null)
+            {
+                throw new ArgumentException("Deze richting werd niet gevonden in het systeem.");
+            }
+
+            foreach (Course course in courseList)
+            {
+                VakService v = new VakService(db);
+                v.Subscribe(course.Id, user);
+                db.SaveChanges();
+            }
+        }
     }
 }
