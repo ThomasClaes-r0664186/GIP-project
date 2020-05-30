@@ -91,6 +91,7 @@ namespace Gip.Services
 
             if (FOS != null) {
                 course.FieldOfStudyId = FOS.Id;
+                FOS.RichtingStudiepunten += course.Studiepunten;
             }
             
             db.Course.Add(course);

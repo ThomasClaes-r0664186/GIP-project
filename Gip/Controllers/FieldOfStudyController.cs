@@ -15,9 +15,11 @@ namespace Gip.Controllers
     {
         private IFieldOfStudyService service;
         private readonly UserManager<ApplicationUser> userManager;
-        public FieldOfStudyController(IFieldOfStudyService service) 
+
+        public FieldOfStudyController(IFieldOfStudyService service, UserManager<ApplicationUser> userManager) 
         {
             this.service = service;
+            this.userManager = userManager;
         }
 
         [HttpGet]
@@ -35,11 +37,11 @@ namespace Gip.Controllers
         [HttpPost]
         [Route("fieldOfStudy/add")]
         [Authorize(Roles = "Admin, Lector")]
-        public ActionResult Add(string code, string titel, string type,int studiepunten)
+        public ActionResult Add(string code, string titel, string type)
         {
             try
             {
-                service.AddRichting(code, titel, type, studiepunten);
+                service.AddRichting(code, titel, type);
             }
             catch (Exception e)
             {
@@ -72,20 +74,28 @@ namespace Gip.Controllers
         [HttpGet]
         [Route("fieldOfStudy/edit")]
         [Authorize(Roles = "Admin, Lector")]
-        public ActionResult Edit()
+        public ActionResult Edit(int richtingId)
         {
-            return View();
+            try {
+                return View(service.GetRichting(richtingId));
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+                TempData["error"] = "editError" + "/" + e.Message;
+
+                return RedirectToAction("Index", "fieldOfStudy");
+            }
         }
 
         [HttpPost]
         [Route("fieldOfStudy/edit")]
         [Authorize(Roles = "Admin, Lector")]
-        public ActionResult Edit(int richtindId, string richtingCode, string richtingTitel, string type, int richtingStudiepunten)
+        public ActionResult Edit(int richtingId, string richtingCode, string richtingTitel, string type)
         {
             TempData["error"] = "";
             try
             {
-                service.EditRichting(richtindId, richtingCode, richtingTitel, type, richtingStudiepunten);
+                service.EditRichting(richtingId, richtingCode, richtingTitel, type);
             }
             catch (Exception e)
             {
