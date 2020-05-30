@@ -137,15 +137,11 @@
                         @if (signInManager.IsSignedIn(User) && User.IsInRole("Lector") || User.IsInRole("Admin"))
                         {
                             <td>
-                                <form action="/FieldOfStudy/Delite" method="post">
-                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                </form>
+                                <button type="submit" id="show" class="btn btn-dark">Edit</button>
                             </td>
 
                             <td>
-                                <form action="/FieldOfStudyService/Edit" method="post">
-                                    <button type="submit" id="show" class="btn btn-dark">Edit</button>
-                                </form>
+                                <button type="submit" class="btn btn-danger">Delete</button>
                             </td>
                         }
                         else
