@@ -15,6 +15,8 @@ namespace Gip.Models
             this._configuration = configuration;
         }
 
+        public gipDatabaseContext(DbContextOptions<gipDatabaseContext> options) : base(options) {}
+
         public virtual DbSet<Course> Course { get; set; }
         public virtual DbSet<CourseUser> CourseUser { get; set; }
         public virtual DbSet<CourseMoment> CourseMoment { get; set; }
