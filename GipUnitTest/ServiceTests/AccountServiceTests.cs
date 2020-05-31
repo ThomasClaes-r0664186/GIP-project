@@ -1,6 +1,8 @@
 ﻿using Gip.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -25,6 +27,11 @@ namespace GipUnitTest.ServiceTests
                 ctxDb.Database.EnsureDeleted();
                 ctxDb.Database.EnsureCreated();
             }
+            //var mockUserStore = new Mock<IUserStore<ApplicationUser>>();
+            //var userManager = new UserManager<ApplicationUser>(mockUserStore.Object, null, null, null, null, null, null, null, null);
+
+            //var mockAuthMgr = new Mock<AuthenticationManager>();
+            //var signInManager = new Mock<SignInManager<ApplicationUser>>(userManager, mockAuthMgr.Object);
         }
 
         [TestCleanup]
