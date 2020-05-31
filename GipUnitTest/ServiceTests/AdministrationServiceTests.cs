@@ -11,6 +11,7 @@ namespace GipUnitTest.ServiceTests
     {
         private gipDatabaseContext ctxDb;
 
+        //Door complexiteit en minimale testbreedte, is voorlopig besloten dat we accountcontroller niet testen
         // TestInit en TestCleanup worden voor en na elke test gedaan. Dit om ervoor te zorgen dat je geen gekoppelde testen hebt. (Geen waardes hergebruikt)
 
         [TestInitialize]
@@ -19,6 +20,11 @@ namespace GipUnitTest.ServiceTests
             var builder = new DbContextOptionsBuilder<gipDatabaseContext>();
             builder.UseInMemoryDatabase("gipDatabase");
             this.ctxDb = new gipDatabaseContext(builder.Options);
+            if (ctxDb != null)
+            {
+                ctxDb.Database.EnsureDeleted();
+                ctxDb.Database.EnsureCreated();
+            }
         }
 
         [TestCleanup]

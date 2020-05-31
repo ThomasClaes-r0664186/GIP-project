@@ -40,7 +40,6 @@ namespace Gip.Services
             db.SaveChanges();
         }
 
-
         public void DeleteRichting(int richtindId)
         {
             FieldOfStudy field = db.FieldOfStudy.Find(richtindId);

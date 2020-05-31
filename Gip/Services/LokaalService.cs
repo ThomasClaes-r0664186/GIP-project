@@ -19,7 +19,6 @@ namespace Gip.Services
         {
             this.db = db;
         }
-        
 
         public void AddLokaal(string gebouw, int verdiep, string nummer, string type, int capaciteit, string middelen)
         {

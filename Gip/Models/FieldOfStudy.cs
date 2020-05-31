@@ -24,14 +24,14 @@ namespace Gip.Models
                 }
                 else
                 {
-                    string pattern = @"^[a-zA-Z]{0,3}\d\d[a-zA-Z]$";
+                    string pattern = @"^[a-zA-Z]{3,3}$";
                     if (Regex.IsMatch(value, pattern))
                     {
                         richtingCode = value;
                     }
                     else
                     {
-                        throw new DatabaseException("je hebt een foutief formaat van vakcode of een ongeldig character ingegeven. Gelieve een vakcode van het formaat AAA11A in te geven");
+                        throw new DatabaseException("je hebt een foutief formaat van richtingcode of een ongeldig character ingegeven. Gelieve een richtingcode van het formaat AAA in te geven");
                     }
                 }
             }
@@ -96,7 +96,7 @@ namespace Gip.Models
             get { return richtingStudiepunten; }
             set
             {
-                if (value <= 0)
+                if (value < 0)
                 {
                     throw new DatabaseException("Het aantal studiepunten mag niet negatief zijn.");
 
@@ -107,7 +107,7 @@ namespace Gip.Models
                 }
                 else
                 {
-                    string pattern = @"^[1-9]{0,1}\d$";
+                    string pattern = @"^[0-9]{0,3}\d$";
                     if (Regex.IsMatch(value.ToString(), pattern))
                     {
                         richtingStudiepunten = value;

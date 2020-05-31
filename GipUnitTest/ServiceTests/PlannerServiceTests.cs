@@ -19,6 +19,11 @@ namespace GipUnitTest.ServiceTests
             var builder = new DbContextOptionsBuilder<gipDatabaseContext>();
             builder.UseInMemoryDatabase("gipDatabase");
             this.ctxDb = new gipDatabaseContext(builder.Options);
+            if (ctxDb != null)
+            {
+                ctxDb.Database.EnsureDeleted();
+                ctxDb.Database.EnsureCreated();
+            }
         }
 
         [TestCleanup]
