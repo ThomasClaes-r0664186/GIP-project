@@ -39,7 +39,6 @@ namespace GipUnitTest.ServiceTests
         public void GetStudentRequestsTest()
         {
             LectorService service = new LectorService(ctxDb);
-           
             ApplicationUser user1 = new ApplicationUser { UserName = "r0664186", Email = "testemail@hotmail.com", GeboorteDatum = new DateTime(1998, 09, 21), Naam = "Cleas", VoorNaam = "Thomas", EmailConfirmed = true };
             ApplicationUser user2 = new ApplicationUser { UserName = "r1234567", Email = "testemail@hotmail.com", GeboorteDatum = new DateTime(1998, 09, 21), Naam = "Haesevoets", VoorNaam = "Jaimie", EmailConfirmed = true };
             ApplicationUser user3 = new ApplicationUser { UserName = "r2345678", Email = "testemail@hotmail.com", GeboorteDatum = new DateTime(1998, 09, 21), Naam = "VanBeal", VoorNaam = "Rik", EmailConfirmed = true };
@@ -79,7 +78,6 @@ namespace GipUnitTest.ServiceTests
             {
                 Assert.IsTrue(requests[i].RNum == user1.UserName || requests[i].RNum == user3.UserName);
                 //Assert.IsTrue(requests[i].RNum == cu2.ApplicationUserId);
-              //  Assert.IsTrue(requests[i].RNum == cu3.ApplicationUserId);
 
             }
 
@@ -142,6 +140,7 @@ namespace GipUnitTest.ServiceTests
             ctxDb.SaveChanges();
 
             int courseId1 = ctxDb.Course.Where(c => c.Vakcode == "MGP20A").FirstOrDefault().Id;
+
 
 
             CourseUser cu1 = new CourseUser { ApplicationUserId = userId1, CourseId = courseId1, GoedGekeurd = false, AfwijzingBeschr ="mag niet" };
