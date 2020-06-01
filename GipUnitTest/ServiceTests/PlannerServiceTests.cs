@@ -83,11 +83,31 @@ namespace GipUnitTest.ServiceTests
         public void AddPlanningTest() 
         {
             // ARRANGE
+            PlannerService service = new PlannerService(ctxDb);
+            ApplicationUser user = new ApplicationUser { UserName = "r0664186", Email = "testemail@hotmail.com", GeboorteDatum = new DateTime(1998, 09, 21), Naam = "Claes", VoorNaam = "Thomas", EmailConfirmed = true };
+            ctxDb.Users.Add(user);
+
+            Room room = new Room { Gebouw = "A", Verdiep = 1, Nummer = "01", Type = "Lokaal" };
+            ctxDb.Room.Add(room);
+
+            Course course = new Course { Vakcode ="AAA01A", Titel ="testvak", Studiepunten = 4};
+            ctxDb.Course.Add(course);
+            ctxDb.SaveChanges();
+
+            var userFull = ctxDb.Users.Where(u => u.UserName == "r0664186").FirstOrDefault();
+            int roomId = ctxDb.Room.Where(r => r.Type == "Lokaal").FirstOrDefault().Id;
+            int courseId = ctxDb.Course.Where(c => c.Vakcode == "AAA01A").FirstOrDefault().Id;
+
+            DateTime datum = new DateTime(DateTime.Now.Year, DateTime.Now.Month, (DateTime.Now.Day + 1));
+            DateTime start = new DateTime(1800, 1, 1, 11, 0, 0);
+            double duratie = 2.0;
 
             // ACT
-            
+            service.AddPlanning(userFull, datum, start, duratie, roomId, courseId, null, null, 3);
+
             // ASSERT
-            
+            Assert.IsTrue(ctxDb.CourseMoment.Any());
+
         }
 
         [TestMethod]
