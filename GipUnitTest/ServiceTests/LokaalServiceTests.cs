@@ -1,13 +1,16 @@
 ﻿using Gip.Models;
+using Gip.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace GipUnitTest.ServiceTests
 {
-    class LokaalServiceTests
+    [TestClass]
+    public class LokaalServiceTests
     {
         private gipDatabaseContext ctxDb;
 
@@ -32,6 +35,6 @@ namespace GipUnitTest.ServiceTests
             this.ctxDb.Dispose();
         }
 
-        //
+        
     }
 }
