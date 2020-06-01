@@ -23,6 +23,27 @@ namespace Gip.Services
             return list;
         }
 
+        public int GetStudAlreadySubscribed(ApplicationUser user)
+        {
+            // we kijken voor welke vakken de student is ingeschreven
+            var cuL = db.CourseUser.Where(cu => cu.ApplicationUserId == user.Id).Include("Courses");
+
+            //indien deze is ingeschreven in een vak
+            if (cuL.Any())
+            {
+                //gaan we nakijken of dat vak tot een richting behoort en de eerste richting dat we tegenkomen, daarvan returnen we de id.
+                foreach (CourseUser cu in cuL)
+                {
+                    if (cu.Courses.FieldOfStudyId != null)
+                    {
+                        return (int)cu.Courses.FieldOfStudyId;
+                    }
+                }
+            }
+            //anders returnen we dat student niet is ingeschreven. 
+            return -1;
+        }
+
         public void AddRichting(string code, string titel, string type)
         {
             var rInUse = from r in db.FieldOfStudy
