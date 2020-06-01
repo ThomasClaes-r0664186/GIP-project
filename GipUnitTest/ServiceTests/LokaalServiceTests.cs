@@ -7,7 +7,8 @@ using System.Text;
 
 namespace GipUnitTest.ServiceTests
 {
-    class LokaalServiceTests
+    [TestClass]
+    public class LokaalServiceTests
     {
         private gipDatabaseContext ctxDb;
 
@@ -33,5 +34,11 @@ namespace GipUnitTest.ServiceTests
         }
 
         //
+
+        [TestMethod]
+        public void IsTrue()
+        {
+            Assert.IsTrue(true);
+        }
     }
 }
