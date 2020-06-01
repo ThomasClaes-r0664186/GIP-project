@@ -59,6 +59,51 @@ namespace GipUnitTest.ServiceTests
         }
 
         [TestMethod]
+        public void GetStudAlreadySubscribedTest() 
+        {
+            // ARRANGE
+
+            /*the commented area is to check if functions returns -1 when there isn't a fos*/
+            FieldOfStudyService service = new FieldOfStudyService(ctxDb);
+
+            ApplicationUser user = new ApplicationUser { UserName = "r0664186", Email = "testemail@hotmail.com", GeboorteDatum = new DateTime(1998, 09, 21), Naam = "Claes", VoorNaam = "Thomas", EmailConfirmed = true };
+            ctxDb.Users.Add(user);
+            ctxDb.SaveChanges();
+
+            string userId = ctxDb.Users.Where(u => u.UserName == "r0664186").FirstOrDefault().Id;
+
+            FieldOfStudy fos = new FieldOfStudy { RichtingCode = "MGP", RichtingTitel = "model graduaat programmeren", Type = "graduaat"};
+            ctxDb.FieldOfStudy.Add(fos);
+            ctxDb.SaveChanges();
+
+            int fosId = ctxDb.FieldOfStudy.Where(fos => fos.RichtingCode == "MGP").FirstOrDefault().Id;
+
+            Course course = new Course { Vakcode = "MGP01A", Titel = "front end", Studiepunten = 6, FieldOfStudyId = fosId };
+            ctxDb.Course.Add(course);
+
+            //Course course1 = new Course { Vakcode = "MBP01A", Titel = "front end", Studiepunten = 8};
+            //ctxDb.Course.Add(course1);
+
+            ctxDb.SaveChanges();
+
+            int courseId = ctxDb.Course.Where(c => c.Vakcode == "MGP01A").FirstOrDefault().Id;
+            //int course1Id = ctxDb.Course.Where(c => c.Vakcode == "MBP01A").FirstOrDefault().Id;
+
+            CourseUser cu = new CourseUser { ApplicationUserId = userId, CourseId = courseId };
+            ctxDb.CourseUser.Add(cu);
+            //CourseUser cu1 = new CourseUser { ApplicationUserId = userId, CourseId = course1Id};
+            //ctxDb.CourseUser.Add(cu1);
+            ctxDb.SaveChanges();
+
+            // ACT
+            int reqFosId = service.GetStudAlreadySubscribed(ctxDb.Users.Find(userId));
+
+            // ASSERT
+            Assert.AreEqual(fosId, reqFosId);
+
+        }
+
+        [TestMethod]
         public void AddRichtingTest()
         {
             // ARRANGE
