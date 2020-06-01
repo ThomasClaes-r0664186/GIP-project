@@ -35,9 +35,8 @@ namespace GipUnitTest.ServiceTests
             this.ctxDb.Dispose();
         }
 
-<<<<<<< HEAD
-        
-=======
+
+
         //
 
         [TestMethod]
@@ -45,6 +44,5 @@ namespace GipUnitTest.ServiceTests
         {
             Assert.IsTrue(true);
         }
->>>>>>> 3bf81fc91cfd720727f879c7822bd030af2ee64e
     }
 }
