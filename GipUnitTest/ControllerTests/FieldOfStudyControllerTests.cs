@@ -9,10 +9,10 @@ using Gip.Services;
 using Microsoft.Extensions.Logging;
 using GipUnitTest.LoggerUtils;
 
-namespace GipUnitTest.ServiceTests
+namespace GipUnitTest.ControllerTests
 {
     [TestClass]
-    public class AccountServiceTests
+    public class FieldOfStudyControllerTests
     {
         private SqliteConnection sqliteConnection;
         private gipDatabaseContext ctxDb;
@@ -21,8 +21,6 @@ namespace GipUnitTest.ServiceTests
         private RoleManager<IdentityRole> roleManager;
         private SignInManager<ApplicationUser> signInManager;
 
-
-        //Door complexiteit en minimale testbreedte, is voorlopig besloten dat we accountservice niet testen
         // TestInit en TestCleanup worden voor en na elke test gedaan. Dit om ervoor te zorgen dat je geen gekoppelde testen hebt. (Geen waardes hergebruikt)
 
         [TestInitialize]
@@ -32,7 +30,7 @@ namespace GipUnitTest.ServiceTests
 
             sqliteConnection = new SqliteConnection("DataSource=:memory:");
             serviceCol.AddDbContext<gipDatabaseContext>(options => options.UseSqlite(sqliteConnection));
-            
+
             ctxDb = serviceCol.BuildServiceProvider().GetService<gipDatabaseContext>();
             ctxDb.Database.OpenConnection();
             ctxDb.Database.EnsureCreated();
@@ -65,33 +63,10 @@ namespace GipUnitTest.ServiceTests
             sqliteConnection.Close();
         }
 
-        //
-
         [TestMethod]
-        public void CreateUserTest() 
+        public void ShowUpInTestExplorer()
         {
-            // ARRANGE
-            AccountService service = new AccountService(userManager, signInManager);
-            RegisterViewModel model = new RegisterViewModel
-            {
-                RNum = "R0664186",
-                Name = "Thomas",
-                SurName = "Claes",
-                Email = "thomas.claes@student.ucll.be",
-                GeboorteDatum = new DateTime(1998, 9, 21),
-                Password = "Xx*123",
-                ConfirmPassword = "Xx*123"
-            };
-            roleManager.CreateAsync(new IdentityRole { Name = "Student"});
-            roleManager.CreateAsync(new IdentityRole { Name = "Lector"});
-            roleManager.CreateAsync(new IdentityRole { Name = "Admin"});
-
-            // ACT
-            ApplicationUser user = service.RegisterUser(model).Result;
-
-            // ASSERT
-            Assert.IsNotNull(user);
-            Assert.AreEqual(model.Email, user.Email);
+            Assert.IsTrue(true);
         }
     }
 }
