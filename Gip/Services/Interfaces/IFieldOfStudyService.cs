@@ -9,9 +9,10 @@ namespace Gip.Services.Interfaces
     public interface IFieldOfStudyService
     {
         IQueryable<FieldOfStudy> GetAllFieldOfStudy();
-        void AddRichting(string code, string titel, string type, int studiepunten);
+        void AddRichting(string code, string titel, string type);
         void DeleteRichting(int richtindId);
-        void EditRichting(int richtindId, string richtingCode, string richtingTitel, string type, int richtingStudiepunten);
+        void EditRichting(int richtindId, string richtingCode, string richtingTitel, string type);
         void SubscribeFos(int fosId, ApplicationUser user);
+        FieldOfStudy GetRichting(int richtingId);
     }
 }

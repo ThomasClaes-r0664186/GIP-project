@@ -1,5 +1,6 @@
 ﻿using Gip.Models;
 using Gip.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,28 @@ namespace Gip.Services
             return list;
         }
 
-        public void AddRichting(string code, string titel, string type, int studiepunten)
+        public int GetStudAlreadySubscribed(ApplicationUser user)
+        {
+            // we kijken voor welke vakken de student is ingeschreven
+            var cuL = db.CourseUser.Where(cu => cu.ApplicationUserId == user.Id).Include("Courses");
+
+            //indien deze is ingeschreven in een vak
+            if (cuL.Any())
+            {
+                //gaan we nakijken of dat vak tot een richting behoort en de eerste richting dat we tegenkomen, daarvan returnen we de id.
+                foreach (CourseUser cu in cuL)
+                {
+                    if (cu.Courses.FieldOfStudyId != null)
+                    {
+                        return (int)cu.Courses.FieldOfStudyId;
+                    }
+                }
+            }
+            //anders returnen we dat student niet is ingeschreven. 
+            return -1;
+        }
+
+        public void AddRichting(string code, string titel, string type)
         {
             var rInUse = from r in db.FieldOfStudy
                          where r.RichtingCode == code.ToUpper()
@@ -34,12 +56,11 @@ namespace Gip.Services
                 throw new ArgumentException("Richting met deze code bestaat reeds.");
             }
 
-            FieldOfStudy fos = new FieldOfStudy { RichtingCode = code.ToUpper(), RichtingTitel = titel.ToLower(), Type = type.ToLower(), RichtingStudiepunten = studiepunten};
+            FieldOfStudy fos = new FieldOfStudy { RichtingCode = code.ToUpper(), RichtingTitel = titel.ToLower(), Type = type.ToLower(), RichtingStudiepunten = 0};
 
             db.FieldOfStudy.Add(fos);
             db.SaveChanges();
         }
-
 
         public void DeleteRichting(int richtindId)
         {
@@ -56,7 +77,12 @@ namespace Gip.Services
             }
         }
 
-        public void EditRichting(int richtindId, string richtingCode, string richtingTitel, string type, int richtingStudiepunten)
+        public FieldOfStudy GetRichting(int richtingId) 
+        {
+            return db.FieldOfStudy.Find(richtingId);
+        }
+
+        public void EditRichting(int richtindId, string richtingCode, string richtingTitel, string type)
         {
             FieldOfStudy field = db.FieldOfStudy.Find(richtindId);
 
@@ -65,16 +91,19 @@ namespace Gip.Services
                 throw new ArgumentException("Deze richting werd niet gevonden in het systeem.");
             }
 
-            FieldOfStudy newfield = new FieldOfStudy { Id = richtindId, RichtingCode = richtingCode, RichtingTitel = richtingTitel, Type = type, RichtingStudiepunten = richtingStudiepunten };
+            try 
+            {
+                FieldOfStudy newfield = new FieldOfStudy { Id = richtindId, RichtingCode = richtingCode, RichtingTitel = richtingTitel, Type = type, RichtingStudiepunten = 0 };
 
-            field.Id = newfield.Id;
-            field.RichtingCode = newfield.RichtingCode;
-            field.RichtingTitel = newfield.RichtingTitel;
-            field.Type = newfield.Type;
-            field.RichtingStudiepunten = newfield.RichtingStudiepunten;
+                field.Id = newfield.Id;
+                field.RichtingCode = newfield.RichtingCode;
+                field.RichtingTitel = newfield.RichtingTitel;
+                field.Type = newfield.Type;
 
-            db.SaveChanges();
-            
+                db.SaveChanges();
+            }
+            catch (Exception e) 
+            { throw new ArgumentException("Er liep iets mis met het updaten van de data: " + e.Message); }
         }
 
         public void SubscribeFos(int fosId, ApplicationUser user)
@@ -83,14 +112,14 @@ namespace Gip.Services
 
             if (courseList == null)
             {
-                throw new ArgumentException("Deze richting werd niet gevonden in het systeem.");
+                throw new ArgumentException("Deze richting heeft nog geen vakken of bestaat niet.");
             }
+
+            VakService v = new VakService(db);
 
             foreach (Course course in courseList)
             {
-                VakService v = new VakService(db);
                 v.Subscribe(course.Id, user);
-                db.SaveChanges();
             }
         }
     }

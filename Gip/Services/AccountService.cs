@@ -14,12 +14,10 @@ namespace Gip.Services
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
-        private readonly MailHandler mailHandler;
 
-        public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, MailHandler mailHandler) {
+        public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager) {
             this.userManager = userManager;
             this.signInManager = signInManager;
-            this.mailHandler = mailHandler;
         }
 
         public async Task<ApplicationUser> RegisterUser(RegisterViewModel model)

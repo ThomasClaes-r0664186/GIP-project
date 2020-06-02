@@ -91,6 +91,7 @@ namespace Gip.Services
 
             if (FOS != null) {
                 course.FieldOfStudyId = FOS.Id;
+                FOS.RichtingStudiepunten += course.Studiepunten;
             }
             
             db.Course.Add(course);
@@ -125,6 +126,7 @@ namespace Gip.Services
 
         public void EditVak(int vakcodeOld, string vakcodeNew, string titel, int studiepunten)
         {
+            //vakcode in de parameters is eigenlijk CourseId
             Course course = db.Course.Find(vakcodeOld);
 
             if (course == null)
