@@ -9,7 +9,46 @@ $(document).ready(function(){
         "columns":getColums(),
         "serverSide": true,
         "proccessing": true,
-        "order": [[0, "asc"]]
+        "order": [[0, "asc"]],
+        "drawCallback": function(settings, json) {
+            $('.formPostDraw').remove();
+            //Word gecalled nadat de tabel gemaakt is.
+            //buttons worden nu correct gezet.
+            let file;
+            getJson().then(function(data){
+                file = data;
+                console.log("SubscribedId: "+file.subscribedId);
+            }).then(function(){
+                $(".changeMe").get().forEach(function(entry, index, array) {
+                    for(let i = 0; i < file.data.length; i++) {
+                        let d = file.data[i];
+                        let RichtingCode = String($( entry ).parent().parent().children()[0].innerText);
+                        if(String(d.RichtingCode) === RichtingCode){
+                            let cases= [];
+                            cases[0] = '<a class="btn btn-success" href="#" role="button" disabled="">Ingeschreven</a>';
+                            cases[1] = '<a class="btn btn-secondary" href="#" role="button" disabled="">Niet ingeschreven</a>';
+                            cases[2] = '<a class="btn btn-success" href="/fieldOfStudy/Subscribe?fosId='+d.Id+'" role="button" disabled="">Schrijf in</a>';
+                            cases[3] = '<a>Er is iets misgelopen waardoor u dit te zien krijgt.</a>';
+                            try {
+                                if($('.spinner-border').length !== 0) {
+                                    if(file.subscribedId===-1){
+                                        $(entry).append(cases[2]);
+                                    }else if(d.Id===file.subscribedId){
+                                        $(entry).append(cases[0]);
+                                    }
+                                    if(index===array.length-1){
+                                        $(".spinner-border").remove();
+                                    }
+                                }
+                            }catch(err){
+                                $(".spinner-border").remove();
+                                $(entry).append(cases[3]);
+                            }
+                        }
+                    }
+                });
+            })
+        }
     });
     $('#custtable tbody').on('click', 'button', function(e) {
         e.preventDefault();

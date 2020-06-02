@@ -23,10 +23,12 @@ namespace Gip.Controllers
     public class DataController : Controller
     {
         private IDataService service;
+        private IFieldOfStudyService fosService;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
-        public DataController(IDataService service,UserManager<ApplicationUser> userManager,SignInManager<ApplicationUser> signInManager)
+        public DataController(IDataService service,IFieldOfStudyService fosService,UserManager<ApplicationUser> userManager,SignInManager<ApplicationUser> signInManager)
         {
+            this.fosService = fosService;
             this.service = service;
             this.signInManager = signInManager;
             this.userManager = userManager;
@@ -134,10 +136,11 @@ namespace Gip.Controllers
         [HttpPost]
         [Route("data/fieldofstudies")]
         [Produces("application/json")]
-        public IActionResult FieldOfStudies()
+        public async Task<IActionResult> FieldOfStudies()
         {
             try
             {
+                var user = await userManager.FindByNameAsync(User.Identity.Name); 
                 int start = Convert.ToInt32(Request.Form["start"]);
                 int length = Convert.ToInt32(Request.Form["length"]);
                 string searchValue = Request.Form["search[value]"];
@@ -154,7 +157,8 @@ namespace Gip.Controllers
                     recordsTotal = returned.Item2,
                     recordsFiltered =recordsFiltered,
                     draw = draw,
-                    iTotalDisplayRecords= returned.Item3
+                    iTotalDisplayRecords= returned.Item3,
+                    subscribedId = fosService.GetStudAlreadySubscribed(user)
                 });
             }  
             catch (Exception e)
@@ -166,11 +170,13 @@ namespace Gip.Controllers
         [HttpGet]
         [Route("data/fieldofstudiesjson")]
         [Produces("application/json")]
-        public IActionResult FieldOfStudiesJson()
+        public async Task<IActionResult> FieldOfStudiesJson()
         {
+            var user = await userManager.FindByNameAsync(User.Identity.Name); 
             return Json(new
             {
                 data = service.GetFieldOfStudies().ToList<FieldOfStudy>(),
+                subscribedId = fosService.GetStudAlreadySubscribed(user)
             });
         }
     }

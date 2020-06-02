@@ -14,5 +14,6 @@ namespace Gip.Services.Interfaces
         void EditRichting(int richtindId, string richtingCode, string richtingTitel, string type);
         void SubscribeFos(int fosId, ApplicationUser user);
         FieldOfStudy GetRichting(int richtingId);
+        int GetStudAlreadySubscribed(ApplicationUser user);
     }
 }
