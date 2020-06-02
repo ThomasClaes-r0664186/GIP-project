@@ -23,13 +23,11 @@ namespace Gip.Controllers
     public class DataController : Controller
     {
         private IDataService service;
-
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
         public DataController(IDataService service,UserManager<ApplicationUser> userManager,SignInManager<ApplicationUser> signInManager)
         {
             this.service = service;
-            
             this.signInManager = signInManager;
             this.userManager = userManager;
         }
@@ -130,6 +128,49 @@ namespace Gip.Controllers
             return Json(new
             {
                 data = service.GetLokalenAll().ToList<LokaalViewModel>(),
+            });
+        }
+        
+        [HttpPost]
+        [Route("data/fieldofstudies")]
+        [Produces("application/json")]
+        public IActionResult FieldOfStudies()
+        {
+            try
+            {
+                int start = Convert.ToInt32(Request.Form["start"]);
+                int length = Convert.ToInt32(Request.Form["length"]);
+                string searchValue = Request.Form["search[value]"];
+                string sortColumnName = Request.Form["columns["+ HttpContext.Request.Form["order[0][column]"] + "][name]"];
+                string sortDirection = Request.Form["order[0][dir]"];
+                var returned = service.GetFieldOfStudies(start, length,searchValue,sortColumnName,sortDirection);
+                var qry = returned.Item1;
+                int draw;
+                int.TryParse(Request.Form["draw"], out draw);
+                int recordsFiltered = qry.Count();
+                return Json(new
+                {
+                    data = qry.ToList<FieldOfStudy>(),
+                    recordsTotal = returned.Item2,
+                    recordsFiltered =recordsFiltered,
+                    draw = draw,
+                    iTotalDisplayRecords= returned.Item3
+                });
+            }  
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
+        }
+        [HttpGet]
+        [Route("data/fieldofstudiesjson")]
+        [Produces("application/json")]
+        public IActionResult FieldOfStudiesJson()
+        {
+            return Json(new
+            {
+                data = service.GetFieldOfStudies().ToList<FieldOfStudy>(),
             });
         }
     }

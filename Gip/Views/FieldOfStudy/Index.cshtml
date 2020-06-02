@@ -1,12 +1,18 @@
 ﻿@inject SignInManager<ApplicationUser> signInManager;
 @model IQueryable<FieldOfStudy>
-    <Gip.Models.Course>
+    <Gip.Models.FieldOfStudy>
         @{
             ViewData["Title"] = "Inschrijven richting";
         }
 
         <h1>Overzicht van de richtingen</h1>
-
+        @if(User.IsInRole("Lector")){
+            <span id="rol" style="display:none">Lector</span>
+        }else if(User.IsInRole("Admin")){
+            <span id="rol" style="display:none">Admin</span>
+        }else if(User.IsInRole("Student")){
+            <span id="rol" style="display:none">Student</span>
+        }     
         @if (ViewBag.error == null)
         {
             ViewBag.error = " ";
@@ -112,83 +118,87 @@
                 </div>
             </div>
         }
-
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+             <div class="modal-content">
+                 <div class="modal-header">
+                     <h5 class="modal-title" id="exampleModalLabel">Richting aanpassen</h5>
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                         <span aria-hidden="true">&times;</span>
+                     </button>
+                 </div>
+                 <div class="modal-body">
+                     <form action="/FieldOfStudy/Edit" method="post">
+                         <div>
+                             <input type="text" name="richtingId" id="edit-richtingId" style="display: none">
+                         </div>
+                         <div class="form-group">
+                             <label for="RichtingCode" class="col-form-label">Code:</label>
+                             <input required="required" type="text" class="form-control" id="edit-code" name="RichtingCode">
+                         </div>
+                         <div class="form-group">
+                             <label for="RichtingTitel" class="col-form-label">Titel:</label>
+                             <input required="required" type="text" name="titel" class="form-control" id="edit-RichtingTitel">
+                         </div>
+                         <div class="form-group">
+                             <label for="Type" class="col-form-label">Type:</label>
+                             <input required="required" type="text" name="type" class="form-control" id="edit-Type">
+                         </div>
+                         <div class="form-group">
+                             <label for="RichtingStudiepunten" class="col-form-label">Studiepunten:</label>
+                             <input required="required" type="text" name="studiepunten" class="form-control" id="edit-RichtingStudiepunten">
+                         </div>
+                         <button type="submit" class="btn btn-dark">Wijzig richting</button>
+                     </form>
+                 </div>
+                 </div>
+            </div>
+        </div>
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Richting verwijderen</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/fieldOfStudy/delete" method="post">
+                                    <div>
+                                        <input type="text" name="richtingId" id="delete-richtingId" style="display: none">
+                                    </div>
+                                    <span id="verwijderText"></span>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-sm btn-danger">Verwijder richting</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
         @if (Model.Any())
         {
             @*Hier onder de tabel voor zowel student als lector*@
-            <table class="table table-bordered table-hover table-striped table-light">
-                <tr>
-                    <th>Code</th>
-                    <th>Titel</th>
-                    <th>Type</th>
-                    <th>Studiepunten</th>
-                    @if (signInManager.IsSignedIn(User) && User.IsInRole("Lector") || User.IsInRole("Admin"))
-                    {
-                        <th>Delete</th>
-                        <th>Edit</th>
-                    }
-                    else
-                    {
-                        <th>Inschrijven/Uitschrijven</th>
-                    }
-                </tr>
-                @foreach (var FieldOfStudy in Model)
-                {
+            <table id="custtable" class="table">
+                <thead>
                     <tr>
-                        <td>@FieldOfStudy.RichtingCode</td>
-                        <td>@FieldOfStudy.RichtingTitel</td>
-                        <td>@FieldOfStudy.Type</td>
-                        <td>@FieldOfStudy.RichtingStudiepunten</td>
+                        <th>Code</th>
+                        <th>Titel</th>
+                        <th>Type</th>
+                        <th>Studiepunten</th>
                         @if (signInManager.IsSignedIn(User) && User.IsInRole("Lector") || User.IsInRole("Admin"))
                         {
-                            <td>
-                                <form action="/FieldOfStudy/Delite" method="post">
-                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                </form>
-                            </td>
-
-                            <td>
-                                <form action="/FieldOfStudyService/Edit" method="post">
-                                    <button type="submit" id="show" class="btn btn-dark">Edit</button>
-                                </form>
-                            </td>
-
-
+                            <th>Delete</th>
+                            <th>Edit</th>
                         }
                         else
                         {
-                            <td>Student</td>
-
+                            <th>Inschrijven/Uitschrijven</th>
                         }
                     </tr>
-
-                }
+                </thead>
             </table>
-            <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-
-                <div class="modal-body">
-                    <form action="/FieldOfStudy/Edit" method="post">
-
-                        <div class="form-group">
-                            <label for="RichtingCode" class="col-form-label">Code:</label>
-                            <input required="required" type="text" class="form-control" id="edit-code" name="RichtingCode">
-                        </div>
-                        <div class="form-group">
-                            <label for="RichtingTitel" class="col-form-label">Titel:</label>
-                            <input required="required" type="text" name="titel" class="form-control" id="edit-RichtingTitel">
-                        </div>
-                        <div class="form-group">
-                            <label for="Type" class="col-form-label">Type:</label>
-                            <input required="required" type="text" name="type" class="form-control" id="edit-Type">
-                        </div>
-                        <div class="form-group">
-                            <label for="RichtingStudiepunten" class="col-form-label">Studiepunten:</label>
-                            <input required="required" type="text" name="studiepunten" class="form-control" id="edit-RichtingStudiepunten">
-                        </div>
-                        <button type="submit" class="btn btn-dark">Wijzig richting</button>
-                    </form>
-                </div>
-            </div>
         }
         else
         {
@@ -198,12 +208,10 @@
                 <h3>U kan er toevoegen door op de knop aan de rechterkant te duwen.</h3>
             }
         }
-        @*
-               <script>
-            $(document).ready(function () {
-                $("#show").click(function () {
-                    $("editModal").show();
-                });
-        </script>
-        *@
-
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+        @section Scripts{
+            <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+            <script src="~/scripts/data/richting.js"></script>
+        }
+    </Gip.Models.FieldOfStudy>
+    

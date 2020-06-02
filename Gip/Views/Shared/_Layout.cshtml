@@ -138,11 +138,6 @@
                                     <a class="nav-link text-white" asp-area="" asp-controller="Planner" asp-action="Index">Planning</a>
                                 </li>
                             }
-                            @if (!User.IsInRole("Student")||!User.IsInRole("Lector")||!User.IsInRole("Admin")){
-                                <li class="nav-item">
-                                    <span class="nav-link text-white">U hebt momenteel geen rollen </span>
-                                </li>         
-                            }
                         }
                         @if (signInManager.IsSignedIn(User))
                         {

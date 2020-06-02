@@ -112,5 +112,31 @@ namespace Gip.Services
                     };
                 return qry;
         }
+        public Tuple<IQueryable<FieldOfStudy>,int,int> GetFieldOfStudies(int start, int length,string searchValue,string sortColumnName, string sortDirection)
+        {
+            var qry = from d in db.FieldOfStudy select d;
+            int recordsTotal = qry.Count();
+            int filtered = recordsTotal;
+            if (!string.IsNullOrEmpty(searchValue))
+            {
+                qry = from d in db.FieldOfStudy
+                    where d.RichtingCode.ToLower().Contains(searchValue.ToLower()) ||
+                          d.Type.Trim().ToLower().Contains(searchValue.ToLower()) ||
+                          d.RichtingTitel.ToLower().Trim().Contains(searchValue.ToLower())
+                    select d;
+                filtered = qry.Count();
+            }
+            if (!string.IsNullOrEmpty(sortColumnName))
+            {
+                qry = qry.OrderBy(sortColumnName + " "+ sortDirection);    
+            }
+            qry = qry.Skip(start).Take(length);
+            return Tuple.Create(qry,recordsTotal,filtered);
+        }
+
+        public IQueryable<FieldOfStudy> GetFieldOfStudies()
+        {
+            return from d in db.FieldOfStudy select d;
+        }
     }
 }
