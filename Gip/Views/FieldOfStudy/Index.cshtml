@@ -129,19 +129,15 @@
                          </div>
                          <div class="form-group">
                              <label for="RichtingCode" class="col-form-label">Code:</label>
-                             <input required="required" type="text" class="form-control" id="edit-code" name="RichtingCode">
+                             <input required="required" type="text" class="form-control" id="edit-code" name="richtingCode">
                          </div>
                          <div class="form-group">
                              <label for="RichtingTitel" class="col-form-label">Titel:</label>
-                             <input required="required" type="text" name="titel" class="form-control" id="edit-RichtingTitel">
+                             <input required="required" type="text" name="richtingTitel" class="form-control" id="edit-RichtingTitel">
                          </div>
                          <div class="form-group">
                              <label for="Type" class="col-form-label">Type:</label>
                              <input required="required" type="text" name="type" class="form-control" id="edit-Type">
-                         </div>
-                         <div class="form-group">
-                             <label for="RichtingStudiepunten" class="col-form-label">Studiepunten:</label>
-                             <input required="required" type="text" name="studiepunten" class="form-control" id="edit-RichtingStudiepunten">
                          </div>
                          <button type="submit" class="btn btn-dark">Wijzig richting</button>
                      </form>
@@ -161,7 +157,7 @@
                             <div class="modal-body">
                                 <form action="/fieldOfStudy/delete" method="post">
                                     <div>
-                                        <input type="text" name="richtingId" id="delete-richtingId" style="display: none">
+                                        <input type="text" name="Id" id="delete-richtingId" style="display: none">
                                     </div>
                                     <span id="verwijderText"></span>
                                     <div class="modal-footer">
