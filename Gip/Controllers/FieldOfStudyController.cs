@@ -109,7 +109,7 @@ namespace Gip.Controllers
             return RedirectToAction("Index", "fieldOfStudy");
         }
 
-        [HttpPost]
+        
         [Route("fieldOfStudy/Subscribe")]
         [Authorize(Roles = "Student")]
         public async Task<ActionResult> Subscribe(int fosId)
