@@ -108,7 +108,7 @@ namespace Gip.Services
 
         public void SubscribeFos(int fosId, ApplicationUser user)
         {
-            var courseList = db.Course.Where(c => c.FieldOfStudyId == fosId);
+            var courseList = db.Course.Where(c => c.FieldOfStudyId == fosId).ToList<Course>();
 
             if (courseList == null)
             {
@@ -120,6 +120,7 @@ namespace Gip.Services
             foreach (Course course in courseList)
             {
                 v.Subscribe(course.Id, user);
+                db.SaveChanges();
             }
         }
     }

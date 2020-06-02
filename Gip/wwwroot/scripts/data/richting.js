@@ -35,6 +35,8 @@ $(document).ready(function(){
                                         $(entry).append(cases[2]);
                                     }else if(d.Id===file.subscribedId){
                                         $(entry).append(cases[0]);
+                                    }else{
+                                        $(entry).append(cases[1]);
                                     }
                                     if(index===array.length-1){
                                         $(".spinner-border").remove();

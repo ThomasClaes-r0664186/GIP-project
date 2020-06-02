@@ -7,6 +7,10 @@ namespace Gip.Models.ViewModels
 {
     public class FieldOfStudyViewModel
     {
-        public int Temp { get; set; }
+        public int Id { get; set; }
+        public string RichtingCode { get; set; }
+        public string RichtingTitel { get; set; }
+        public string Type { get; set; }
+        public int RichtingStudiepunten { get; set; }
     }
 }

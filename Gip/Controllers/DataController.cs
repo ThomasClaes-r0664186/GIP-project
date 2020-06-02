@@ -153,7 +153,7 @@ namespace Gip.Controllers
                 int recordsFiltered = qry.Count();
                 return Json(new
                 {
-                    data = qry.ToList<FieldOfStudy>(),
+                    data = qry.ToList(),
                     recordsTotal = returned.Item2,
                     recordsFiltered =recordsFiltered,
                     draw = draw,
@@ -172,12 +172,14 @@ namespace Gip.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> FieldOfStudiesJson()
         {
-            var user = await userManager.FindByNameAsync(User.Identity.Name); 
-            return Json(new
+            var user = await userManager.FindByNameAsync(User.Identity.Name);
+            var id = fosService.GetStudAlreadySubscribed(user);
+            var json = Json(new
             {
-                data = service.GetFieldOfStudies().ToList<FieldOfStudy>(),
-                subscribedId = fosService.GetStudAlreadySubscribed(user)
+                data = service.GetFieldOfStudies().ToList(),
+                subscribedId = id
             });
+            return json;
         }
     }
 }

@@ -112,9 +112,16 @@ namespace Gip.Services
                     };
                 return qry;
         }
-        public Tuple<IQueryable<FieldOfStudy>,int,int> GetFieldOfStudies(int start, int length,string searchValue,string sortColumnName, string sortDirection)
+        public Tuple<IQueryable<FieldOfStudyViewModel>,int,int> GetFieldOfStudies(int start, int length,string searchValue,string sortColumnName, string sortDirection)
         {
-            var qry = from d in db.FieldOfStudy select d;
+            var qry = from d in db.FieldOfStudy select new FieldOfStudyViewModel()
+            {
+                Id = d.Id,
+                RichtingCode = d.RichtingCode,
+                RichtingTitel = d.RichtingTitel,
+                Type = d.Type,
+                RichtingStudiepunten = d.RichtingStudiepunten
+            };
             int recordsTotal = qry.Count();
             int filtered = recordsTotal;
             if (!string.IsNullOrEmpty(searchValue))
@@ -123,7 +130,14 @@ namespace Gip.Services
                     where d.RichtingCode.ToLower().Contains(searchValue.ToLower()) ||
                           d.Type.Trim().ToLower().Contains(searchValue.ToLower()) ||
                           d.RichtingTitel.ToLower().Trim().Contains(searchValue.ToLower())
-                    select d;
+                    select new FieldOfStudyViewModel()
+                    {
+                        Id = d.Id,
+                        RichtingCode = d.RichtingCode,
+                        RichtingTitel = d.RichtingTitel,
+                        Type = d.Type,
+                        RichtingStudiepunten = d.RichtingStudiepunten
+                    };
                 filtered = qry.Count();
             }
             if (!string.IsNullOrEmpty(sortColumnName))
@@ -134,9 +148,17 @@ namespace Gip.Services
             return Tuple.Create(qry,recordsTotal,filtered);
         }
 
-        public IQueryable<FieldOfStudy> GetFieldOfStudies()
+        public IQueryable<FieldOfStudyViewModel> GetFieldOfStudies()
         {
-            return from d in db.FieldOfStudy select d;
+            return from d in db.FieldOfStudy
+                select new FieldOfStudyViewModel()
+                {
+                    Id = d.Id,
+                    RichtingCode = d.RichtingCode,
+                    RichtingTitel = d.RichtingTitel,
+                    Type = d.Type,
+                    RichtingStudiepunten = d.RichtingStudiepunten
+                };
         }
     }
 }
