@@ -34,15 +34,16 @@ namespace GipUnitTest.ServiceTests
         {
             this.ctxDb.Dispose();
         }
-
-
-
-        //
-
+        
         [TestMethod]
-        public void IsTrue()
+        public void AddLokaalTest()
         {
-            Assert.IsTrue(true);
+            LokaalService service = new LokaalService(ctxDb);
+            service.AddLokaal("A", 2, "01", "Vergaderlokaal", 5, "Geen middelen");
+
+            Room room = ctxDb.Room.Where(c => c.Gebouw.Equals("A")).FirstOrDefault();
+            Assert.IsTrue(room.Gebouw == "A");
         }
+
     }
 }
