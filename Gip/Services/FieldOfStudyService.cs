@@ -108,7 +108,7 @@ namespace Gip.Services
 
         public void SubscribeFos(int fosId, ApplicationUser user)
         {
-            var courseList = db.Course.Where(c => c.FieldOfStudyId == fosId);
+            var courseList = db.Course.Where(c => c.FieldOfStudyId == fosId).ToList<Course>();
 
             if (courseList == null)
             {
