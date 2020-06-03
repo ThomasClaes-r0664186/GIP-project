@@ -8,6 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Gip.Services;
 using Microsoft.Extensions.Logging;
 using GipUnitTest.LoggerUtils;
+using Gip.Controllers;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace GipUnitTest.ControllerTests
 {
@@ -42,13 +46,11 @@ namespace GipUnitTest.ControllerTests
                 .AddEntityFrameworkStores<gipDatabaseContext>()
                 .AddDefaultTokenProviders();
 
-
             serviceCol.AddSingleton<ILogger<UserManager<ApplicationUser>>>(new UserManagerLogger());
             serviceCol.AddSingleton<ILogger<DataProtectorTokenProvider<ApplicationUser>>>(new DataProtectorLogger());
             serviceCol.AddSingleton<ILogger<RoleManager<ApplicationUser>>>(new RoleManagerUserLogger());
             serviceCol.AddSingleton<ILogger<RoleManager<IdentityRole>>>(new RoleManagerRoleLogger());
             serviceCol.AddSingleton<ILogger<SignInManager<ApplicationUser>>>(new SignInManagerLogger());
-
 
             userManager = serviceCol.BuildServiceProvider().GetService<UserManager<ApplicationUser>>();
             roleManager = serviceCol.BuildServiceProvider().GetService<RoleManager<IdentityRole>>();
@@ -64,9 +66,28 @@ namespace GipUnitTest.ControllerTests
         }
 
         [TestMethod]
-        public void ShowUpInTestExplorer() 
+        public async Task IndexTest() 
         {
-            Assert.IsTrue(true);
+            //// ARRANGE
+            //VakService service = new VakService(ctxDb);
+            //VakController controller = new VakController(service, userManager, signInManager);
+
+            //ctxDb.Roles.Add(new IdentityRole { Name = "Student", NormalizedName = "STUDENT" });
+            //ctxDb.SaveChanges();
+
+            //AccountService accService = new AccountService(userManager, signInManager);
+            //var user = await accService.RegisterUser(new RegisterViewModel { RNum = "r0000001", Email = "r0000001@hotmail.com", Name = "Thomas", SurName = "Claes", Password = "Xx*123", ConfirmPassword = "Xx*123", GeboorteDatum = new DateTime(1998, 9, 21)});
+            //await accService.Login(new LoginViewModel { RNum = "r0000001", Password = "Xx*123", RememberMe = false });
+
+            //// ACT
+            //IActionResult result = (ViewResult)controller.Index().Result;
+
+            //// ASSERT
+            //Assert.IsNotNull(result);
+            //Assert.IsTrue(result is ViewResult);
+            //ViewResult vRes = (ViewResult)result;
+            //Assert.IsTrue(vRes is ViewResult);
+            
         }
     }
 }

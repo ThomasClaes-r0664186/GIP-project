@@ -452,7 +452,7 @@ namespace Gip.Services
                 if (qryCMU.Any() && !model[i].IsSelected)
                 {
                     db.CourseMomentUsers.Remove(db.CourseMomentUsers.Find(qryCMU.FirstOrDefault().Id));
-
+                    counter--;
                     db.SaveChanges();
                 }
                 else if (!qryCMU.Any() && model[i].IsSelected)

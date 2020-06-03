@@ -38,6 +38,7 @@ namespace GipUnitTest.ServiceTests
         [TestMethod]
         public void GetStudentRequestsTest()
         {
+            // ARRANGE
             LectorService service = new LectorService(ctxDb);
             ApplicationUser user1 = new ApplicationUser { UserName = "r0664186", Email = "testemail@hotmail.com", GeboorteDatum = new DateTime(1998, 09, 21), Naam = "Cleas", VoorNaam = "Thomas", EmailConfirmed = true };
             ApplicationUser user2 = new ApplicationUser { UserName = "r1234567", Email = "testemail@hotmail.com", GeboorteDatum = new DateTime(1998, 09, 21), Naam = "Haesevoets", VoorNaam = "Jaimie", EmailConfirmed = true };
@@ -74,11 +75,9 @@ namespace GipUnitTest.ServiceTests
             // ASSERT
             Assert.IsTrue(requests.Count == 3);
 
-            for (int i = 0; i < requests.Count; i++)
+            for (int i = 1; i < requests.Count; i++)
             {
                 Assert.IsTrue(requests[i].RNum == user1.UserName || requests[i].RNum == user3.UserName);
-                //Assert.IsTrue(requests[i].RNum == cu2.ApplicationUserId);
-
             }
 
         }
@@ -86,6 +85,7 @@ namespace GipUnitTest.ServiceTests
         [TestMethod]
         public void ApproveStudentTest()
         {
+            // ARRANGE
             LectorService service = new LectorService(ctxDb);
 
             ApplicationUser user1 = new ApplicationUser { UserName = "r6660800", Email = "testemail@hotmail.com", GeboorteDatum = new DateTime(1998, 09, 21), Naam = "Cleas", VoorNaam = "Thomas", EmailConfirmed = true };
@@ -112,9 +112,11 @@ namespace GipUnitTest.ServiceTests
             ctxDb.CourseUser.Add(cu2);
             ctxDb.SaveChanges();
 
+            // ACT
             service.ApproveStudent(cu1.Id);
             service.ApproveStudent(cu2.Id);
 
+            // ASSERT
             Assert.IsTrue(cu1.GoedGekeurd == true);
             Assert.IsTrue(cu2.GoedGekeurd == true);
         }
@@ -123,6 +125,7 @@ namespace GipUnitTest.ServiceTests
         [TestMethod]
         public void DenyStudentTest()
         {
+            // ARRAGE
             LectorService service = new LectorService(ctxDb);
 
             ApplicationUser user1 = new ApplicationUser { UserName = "r6660800", Email = "testemail@hotmail.com", GeboorteDatum = new DateTime(1998, 09, 21), Naam = "Cleas", VoorNaam = "Thomas", EmailConfirmed = true };
@@ -150,9 +153,11 @@ namespace GipUnitTest.ServiceTests
             ctxDb.CourseUser.Add(cu2);
             ctxDb.SaveChanges();
 
+            // ACT
             service.DenyStudent(cu1.Id, cu1.AfwijzingBeschr);
             service.DenyStudent(cu2.Id, cu2.AfwijzingBeschr);
 
+            // ASSERT
             Assert.IsTrue(cu1.GoedGekeurd == null && cu1.AfwijzingBeschr == "mag niet");
             Assert.IsFalse(cu2.GoedGekeurd == null && cu1.AfwijzingBeschr == "mag wel");
         }
