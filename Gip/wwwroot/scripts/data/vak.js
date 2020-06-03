@@ -72,17 +72,17 @@
         let collumns = [
             { "data" : "Vakcode","name": "Vakcode",
                 "render": function ( data, type, row, meta ) {
-                if($('#role').text==='Lector'||$('#role').text==='Admin'){
+                if($('#rol').text()==='Lector'||$('#rol').text()==='Admin'){
                     return '<a id="vakcodeClick" class="veranderDatum" href="planner/ViewCourseUsers?vakcode='+row.Id+'">'+data+'</a>'
                 }else{
                     return data;
                 }
-                    
+                
                 }
             },
             { "data" : "Titel", "name": "Titel",
                 "render": function ( data, type, row, meta ) {
-                    if($('#role').text==='Lector'||$('#role').text==='Admin'){
+                    if($('#rol').text()==='Lector'||$('#rol').text()==='Admin'){
                         return '<a id="vakcodeClick" class="veranderDatum" href="planner/ViewCourseUsers?vakcode='+row.Id+'">'+data+'</a>'
                     }else{
                         return data;
