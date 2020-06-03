@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Gip.Services;
 using Microsoft.Extensions.Logging;
 using GipUnitTest.LoggerUtils;
+using System.Linq;
 
 namespace GipUnitTest.ServiceTests
 {

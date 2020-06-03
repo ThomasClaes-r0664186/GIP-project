@@ -8,6 +8,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Gip.Services;
 using Microsoft.Extensions.Logging;
 using GipUnitTest.LoggerUtils;
+using System.Threading.Tasks;
+using Gip.Controllers;
+using Microsoft.Extensions.Options;
+using Moq;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using System.Linq;
 
 namespace GipUnitTest.ControllerTests
 {
@@ -64,9 +74,78 @@ namespace GipUnitTest.ControllerTests
         }
 
         [TestMethod]
-        public void ShowUpInTestExplorer()
+        public void AddTest()
         {
-            Assert.IsTrue(true);
+            // ARRANGE
+            LokaalService service = new LokaalService(ctxDb);
+            LokaalController controller = SetupLokaalController(service).Result;
+
+            // ACT
+            var res = controller.Add("A", 1, "01", "Lokaal", 20, "wifi");
+
+            // ASSERT
+            Assert.IsTrue(res is ActionResult);
+            Assert.IsNotNull(ctxDb.Room.Where(r => r.Gebouw == "A" && r.Verdiep == 1 && r.Gebouw == "01"));
+
+        }
+
+        [TestMethod]
+        public void DeleteTest() 
+        {
+            // ARRANGE
+            LokaalService service = new LokaalService(ctxDb);
+            LokaalController controller = SetupLokaalController(service).Result;
+            service.AddLokaal("A", 1, "01", "Lokaal", 20, "wifi");
+            var roomId = ctxDb.Room.Where(r => r.Gebouw == "A" && r.Verdiep == 1 && r.Nummer == "01").FirstOrDefault().Id;
+
+            // ACT
+            var res = controller.Delete(roomId);
+
+            // ASSERT
+            Assert.IsTrue(res is ActionResult);
+            Assert.IsNull(ctxDb.Room.Where(r => r.Gebouw == "A" && r.Verdiep == 1 && r.Nummer == "01").FirstOrDefault());
+
+        }
+
+        [TestMethod]
+        public void EditTest() 
+        {
+            // ARRANGE
+            LokaalService service = new LokaalService(ctxDb);
+            LokaalController controller = SetupLokaalController(service).Result;
+            service.AddLokaal("A", 1, "01", "Lokaal", 20, "wifi");
+            var roomId = ctxDb.Room.Where(r => r.Gebouw == "A" && r.Verdiep == 1 && r.Nummer == "01").FirstOrDefault().Id;
+
+            // ACT
+            var res = controller.Edit(roomId, "B", 1, "02", "Lokaal", 20, "wifi");
+
+            // ASSERT
+            Assert.IsTrue(res is ActionResult);
+            Assert.AreEqual("B", ctxDb.Room.Find(roomId).Gebouw);
+            Assert.AreEqual("02", ctxDb.Room.Find(roomId).Nummer);
+
+        }
+
+        private async Task<LokaalController> SetupLokaalController(LokaalService service)
+        {
+            ctxDb.Roles.Add(new IdentityRole { Name = "Student", NormalizedName = "STUDENT" });
+            ctxDb.SaveChanges();
+
+            AccountService accService = new AccountService(userManager, signInManager);
+            var user = await accService.RegisterUser(new RegisterViewModel { RNum = "r0000001", Email = "r0000001@hotmail.com", Name = "Thomas", SurName = "Claes", Password = "Xx*123", ConfirmPassword = "Xx*123", GeboorteDatum = new DateTime(1998, 9, 21) });
+
+            IOptions<IdentityOptions> options = Options.Create<IdentityOptions>(new IdentityOptions { });
+
+            UserClaimsPrincipalFactory<ApplicationUser> userClaimFactory = new UserClaimsPrincipalFactory<ApplicationUser>(userManager, options);
+
+            var claim = userClaimFactory.CreateAsync(user).Result;
+
+            var httpContext = new Mock<HttpContext>();
+            httpContext.Setup(x => x.User).Returns(claim);
+
+            var context = new ControllerContext(new ActionContext(httpContext.Object, new RouteData(), new ControllerActionDescriptor()));
+
+            return new LokaalController(service) { ControllerContext = context, TempData = new TempDataDictionary(httpContext.Object, Mock.Of<ITempDataProvider>()) };
         }
     }
 }

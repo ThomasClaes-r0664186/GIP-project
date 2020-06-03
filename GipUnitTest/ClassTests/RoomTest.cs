@@ -25,22 +25,22 @@ namespace GipUnitTest
 
         }
 
-        [Test]
-        [ExpectedException(typeof(DatabaseException))]
-        public void TeVeelMiddelen()
-        {
-            Exception ex = Assert.Throws<DatabaseException>(() => new Room("Wifi/projectorsetup/scherm/", "A", 5, "10k", "Computerlokaal", 30));
-            Assert.AreEqual("Het aantal middelen voor het lokaal is te hoog!" + Environment.NewLine + "Probeer opnieuw!", ex.Message);
-        }
+        //[Test]
+        //[ExpectedException(typeof(DatabaseException))]
+        //public void TeVeelMiddelen()
+        //{
+        //    Exception ex = Assert.Throws<DatabaseException>(() => new Room("Wifi/projectorsetup/scherm/", "A", 5, "10k", "Computerlokaal", 30));
+        //    Assert.AreEqual("Het aantal middelen voor het lokaal is te hoog!" + Environment.NewLine + "Probeer opnieuw!", ex.Message);
+        //}
 
 
-        [Test]
-        [ExpectedException(typeof(DatabaseException))]
-        public void FoutMiddel()
-        {
-            Exception ex = Assert.Throws<DatabaseException>(() => new Room("Wifi/projectorsetup/papier", "A", 5, "10k", "Computerlokaal", 30));
-            Assert.AreEqual("De middelen die u heeft aangeduid zijn niet beschikbaar" + Environment.NewLine + "Probeer opnieuw!", ex.Message);
-        }
+        //[Test]
+        //[ExpectedException(typeof(DatabaseException))]
+        //public void FoutMiddel()
+        //{
+        //    Exception ex = Assert.Throws<DatabaseException>(() => new Room("Wifi/projectorsetup/papier", "A", 5, "10k", "Computerlokaal", 30));
+        //    Assert.AreEqual("De middelen die u heeft aangeduid zijn niet beschikbaar" + Environment.NewLine + "Probeer opnieuw!", ex.Message);
+        //}
 
         [Test]
         public void GeenMiddelen()
@@ -114,13 +114,13 @@ namespace GipUnitTest
             Assert.AreEqual("U heeft een verboden character ingegeven, gelieve dit niet te doen.", ex.Message);
         }
 
-        [Test]
-        [ExpectedException(typeof(DatabaseException))]
-        public void TypeFout()
-        {
-            Exception ex = Assert.Throws<DatabaseException>(() => new Room("Wifi/projectorsetup", "a", 1, "10k", "niks", 30));
-            Assert.AreEqual("Het type lokaal bestaat niet!" + Environment.NewLine + "Probeer opnieuw", ex.Message);
-        }
+        //[Test]
+        //[ExpectedException(typeof(DatabaseException))]
+        //public void TypeFout()
+        //{
+        //    Exception ex = Assert.Throws<DatabaseException>(() => new Room("Wifi/projectorsetup", "a", 1, "10k", "niks", 30));
+        //    Assert.AreEqual("Het type lokaal bestaat niet!" + Environment.NewLine + "Probeer opnieuw", ex.Message);
+        //}
 
         [Test]
         [ExpectedException(typeof(DatabaseException))]

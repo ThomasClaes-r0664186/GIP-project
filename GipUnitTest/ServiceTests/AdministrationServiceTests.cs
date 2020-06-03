@@ -1,4 +1,5 @@
 ﻿using Gip.Models;
+using Gip.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -32,7 +33,5 @@ namespace GipUnitTest.ServiceTests
         {
             this.ctxDb.Dispose();
         }
-
-        //
     }
 }
