@@ -74,11 +74,9 @@ namespace GipUnitTest.ServiceTests
             // ASSERT
             Assert.IsTrue(requests.Count == 3);
 
-            for (int i = 0; i < requests.Count; i++)
+            for (int i = 1; i < requests.Count; i++)
             {
                 Assert.IsTrue(requests[i].RNum == user1.UserName || requests[i].RNum == user3.UserName);
-                //Assert.IsTrue(requests[i].RNum == cu2.ApplicationUserId);
-
             }
 
         }
