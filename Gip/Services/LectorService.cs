@@ -34,18 +34,21 @@ namespace Gip.Services
 
             foreach (var vakI in vakL)
             {
-                StudentRequestsViewModel studReq = new StudentRequestsViewModel { cuId = -1, Titel = vakI.Titel, VakCode = vakI.Vakcode };
-                studentRequests.Add(studReq);
+               // StudentRequestsViewModel studReq = new StudentRequestsViewModel { cuId = -1, Titel = vakI.Titel, VakCode = vakI.Vakcode };
+                //studentRequests.Add(studReq);
 
                 var cuL2 = cuL.Where(c => c.cId.Equals(vakI.Id));
-
+                
                 foreach (var res in cuL2)
                 {
-                    studReq = new StudentRequestsViewModel { RNum = res.RNum, cuId = res.cuId, VakCode = res.vakCode, Titel = res.titel, Naam = res.naam, VoorNaam = res.voorNaam };
+                    StudentRequestsViewModel studReq = new StudentRequestsViewModel
+                    {
+                        RNum = res.RNum, cuId = res.cuId, VakCode = res.vakCode, Titel = res.titel, Naam = res.naam,
+                        VoorNaam = res.voorNaam
+                    };
                     studentRequests.Add(studReq);
                 }
             }
-
             return studentRequests;
         }
 

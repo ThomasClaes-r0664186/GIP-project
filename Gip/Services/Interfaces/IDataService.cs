@@ -14,8 +14,9 @@ namespace Gip.Services.Interfaces
         List<VakViewModel> GetVakkenAllLectAdm();
         Tuple<IQueryable<LokaalViewModel>,int,int> GetLokalen(int start,int length,string searchValue, string sortColumnName, string sortDirection);
         IQueryable<LokaalViewModel> GetLokalenAll();
-        Tuple<IQueryable<FieldOfStudyViewModel>, int, int> GetFieldOfStudies(int start, int length, string searchValue,
-            string sortColumnName, string sortDirection);
+        Tuple<IQueryable<FieldOfStudyViewModel>, int, int> GetFieldOfStudies(int start, int length, string searchValue, string sortColumnName, string sortDirection);
         IQueryable<FieldOfStudyViewModel> GetFieldOfStudies();
+        Tuple<IQueryable<StudentRequestsViewModel>, int, int> GetAanvragen(int start, int length, string searchValue, string sortColumnName, string sortDirection);
+        IQueryable<StudentRequestsViewModel> GetAanvragen();
     }
 }

@@ -92,7 +92,7 @@
                             <form action="/FieldOfStudy/add" method="post">
                                 <div class="form-group">
                                     <label for="code" class="col-form-label">Richting code:</label>
-                                    <input required="required" type="text" class="form-control" id="code" placeholder="Bv. MBI,MGP..." name="code">
+                                    <input max-lenght="3" required="required" type="text" class="form-control" id="code" placeholder="Bv. MBI,MGP..." name="code">
                                     <small>Code moet van het formaat "AAA" zijn.</small>
                                 </div>
                                 <div class="form-group">
@@ -129,7 +129,7 @@
                          </div>
                          <div class="form-group">
                              <label for="RichtingCode" class="col-form-label">Code:</label>
-                             <input required="required" type="text" class="form-control" id="edit-code" name="richtingCode">
+                             <input max-lenght="3" required="required" type="text" class="form-control" id="edit-code" name="richtingCode">
                          </div>
                          <div class="form-group">
                              <label for="RichtingTitel" class="col-form-label">Titel:</label>
@@ -171,7 +171,7 @@
         @if (Model.Any())
         {
             @*Hier onder de tabel voor zowel student als lector*@
-            <table id="custtable" class="table">
+            <table id="custtable" class="table table-bordered table-hover table-striped">
                 <thead>
                     <tr>
                         <th>Code</th>
