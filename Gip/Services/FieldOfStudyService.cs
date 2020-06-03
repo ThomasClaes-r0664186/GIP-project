@@ -120,6 +120,7 @@ namespace Gip.Services
             foreach (Course course in courseList)
             {
                 v.Subscribe(course.Id, user);
+                db.SaveChanges();
             }
         }
     }

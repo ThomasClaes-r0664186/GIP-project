@@ -23,7 +23,7 @@ namespace Gip.Controllers
             var studentRequests = service.GetStudentRequests();
             return View(studentRequests);
         }
-
+        [Route("lector/approvestudent")]
         [HttpPost]
         public ActionResult ApproveStudent(int cuId) 
         {
@@ -37,7 +37,7 @@ namespace Gip.Controllers
             }
             return RedirectToAction("Index");
         }
-
+        [Route("lector/denystudent")]
         [HttpPost]
         public ActionResult DenyStudent(int cuId, string beschrijving)
         {

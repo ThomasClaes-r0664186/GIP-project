@@ -15,8 +15,10 @@ namespace Gip.Services
     {
         private gipDatabaseContext db;
         private IVakService service;
-        public DataService(gipDatabaseContext db,IVakService service)
+        private ILectorService lectorService;
+        public DataService(gipDatabaseContext db,IVakService service,ILectorService lectorService)
         {
+            this.lectorService = lectorService;
             this.service = service;
             this.db = db;
         }
@@ -112,9 +114,16 @@ namespace Gip.Services
                     };
                 return qry;
         }
-        public Tuple<IQueryable<FieldOfStudy>,int,int> GetFieldOfStudies(int start, int length,string searchValue,string sortColumnName, string sortDirection)
+        public Tuple<IQueryable<FieldOfStudyViewModel>,int,int> GetFieldOfStudies(int start, int length,string searchValue,string sortColumnName, string sortDirection)
         {
-            var qry = from d in db.FieldOfStudy select d;
+            var qry = from d in db.FieldOfStudy select new FieldOfStudyViewModel()
+            {
+                Id = d.Id,
+                RichtingCode = d.RichtingCode,
+                RichtingTitel = d.RichtingTitel,
+                Type = d.Type,
+                RichtingStudiepunten = d.RichtingStudiepunten
+            };
             int recordsTotal = qry.Count();
             int filtered = recordsTotal;
             if (!string.IsNullOrEmpty(searchValue))
@@ -123,7 +132,14 @@ namespace Gip.Services
                     where d.RichtingCode.ToLower().Contains(searchValue.ToLower()) ||
                           d.Type.Trim().ToLower().Contains(searchValue.ToLower()) ||
                           d.RichtingTitel.ToLower().Trim().Contains(searchValue.ToLower())
-                    select d;
+                    select new FieldOfStudyViewModel()
+                    {
+                        Id = d.Id,
+                        RichtingCode = d.RichtingCode,
+                        RichtingTitel = d.RichtingTitel,
+                        Type = d.Type,
+                        RichtingStudiepunten = d.RichtingStudiepunten
+                    };
                 filtered = qry.Count();
             }
             if (!string.IsNullOrEmpty(sortColumnName))
@@ -134,9 +150,81 @@ namespace Gip.Services
             return Tuple.Create(qry,recordsTotal,filtered);
         }
 
-        public IQueryable<FieldOfStudy> GetFieldOfStudies()
+        public IQueryable<FieldOfStudyViewModel> GetFieldOfStudies()
         {
-            return from d in db.FieldOfStudy select d;
+            return from d in db.FieldOfStudy
+                select new FieldOfStudyViewModel()
+                {
+                    Id = d.Id,
+                    RichtingCode = d.RichtingCode,
+                    RichtingTitel = d.RichtingTitel,
+                    Type = d.Type,
+                    RichtingStudiepunten = d.RichtingStudiepunten
+                };
+        }
+        
+        public Tuple<IQueryable<StudentRequestsViewModel>,int,int> GetAanvragen(int start, int length,string searchValue,string sortColumnName, string sortDirection)
+        {
+            var qry = lectorService.GetStudentRequests().AsQueryable();
+            int recordsTotal = qry.Count();
+            int filtered = recordsTotal;
+            if (!string.IsNullOrEmpty(searchValue))
+            {
+                qry = GetStudentRequestsWithSearch(searchValue).AsQueryable();
+                filtered = qry.Count();
+            }
+            if (!string.IsNullOrEmpty(sortColumnName))
+            {
+                qry = qry.OrderBy(sortColumnName + " "+ sortDirection);    
+            }
+            qry = qry.Skip(start).Take(length);
+            return Tuple.Create(qry,recordsTotal,filtered);
+        }
+
+        public IQueryable<StudentRequestsViewModel> GetAanvragen()
+        {
+            return lectorService.GetStudentRequests().AsQueryable();
+        }
+        public List<StudentRequestsViewModel> GetStudentRequestsWithSearch(string searchValue)
+        {
+            List<StudentRequestsViewModel> studentRequests = new List<StudentRequestsViewModel>();
+
+            var vakL = from course in db.Course
+                orderby course.Vakcode
+                select course;
+
+            var cuL = from cu in db.CourseUser
+                join user in db.Users on cu.ApplicationUserId equals user.Id
+                join vak in db.Course on cu.CourseId equals vak.Id
+                orderby user.UserName
+                where cu.GoedGekeurd == false
+                && (
+                    cu.Courses.Titel.ToLower().Contains(searchValue.ToLower()) ||
+                    cu.Courses.Vakcode.ToLower().Contains(searchValue.ToLower()) ||
+                    cu.ApplicationUsers.Naam.ToLower().Contains(searchValue.ToLower()) ||
+                    cu.ApplicationUsers.VoorNaam.ToLower().Contains(searchValue.ToLower())
+                )
+                select new { cuId = cu.Id, cId = vak.Id, titel = vak.Titel, vakCode = vak.Vakcode, RNum = user.UserName, naam = user.Naam, voorNaam = user.VoorNaam };
+
+            foreach (var vakI in vakL)
+            {
+                //StudentRequestsViewModel studReq = new StudentRequestsViewModel { cuId = -1, Titel = vakI.Titel, VakCode = vakI.Vakcode };
+                //studentRequests.Add(studReq);
+
+                var cuL2 = cuL.Where(c => c.cId.Equals(vakI.Id));
+
+                foreach (var res in cuL2)
+                {
+                    StudentRequestsViewModel studReq = new StudentRequestsViewModel
+                    {
+                        RNum = res.RNum, cuId = res.cuId, VakCode = res.vakCode, Titel = res.titel, Naam = res.naam,
+                        VoorNaam = res.voorNaam
+                    };
+                    studentRequests.Add(studReq);
+                }
+            }
+
+            return studentRequests;
         }
     }
 }

@@ -153,7 +153,7 @@ namespace Gip.Controllers
                 int recordsFiltered = qry.Count();
                 return Json(new
                 {
-                    data = qry.ToList<FieldOfStudy>(),
+                    data = qry.ToList(),
                     recordsTotal = returned.Item2,
                     recordsFiltered =recordsFiltered,
                     draw = draw,
@@ -172,12 +172,60 @@ namespace Gip.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> FieldOfStudiesJson()
         {
-            var user = await userManager.FindByNameAsync(User.Identity.Name); 
-            return Json(new
+            var user = await userManager.FindByNameAsync(User.Identity.Name);
+            var id = fosService.GetStudAlreadySubscribed(user);
+            var json = Json(new
             {
-                data = service.GetFieldOfStudies().ToList<FieldOfStudy>(),
-                subscribedId = fosService.GetStudAlreadySubscribed(user)
+                data = service.GetFieldOfStudies().ToList(),
+                subscribedId = id
             });
+            return json;
+        }
+        
+        [HttpPost]
+        [Route("data/aanvragen")]
+        [Produces("application/json")]
+        public async Task<IActionResult> Aanvragen()
+        {
+            try
+            {
+                int start = Convert.ToInt32(Request.Form["start"]);
+                int length = Convert.ToInt32(Request.Form["length"]);
+                string searchValue = Request.Form["search[value]"];
+                string sortColumnName = Request.Form["columns["+ HttpContext.Request.Form["order[0][column]"] + "][name]"];
+                string sortDirection = Request.Form["order[0][dir]"];
+                var returned = service.GetAanvragen(start, length,searchValue,sortColumnName,sortDirection);
+                var qry = returned.Item1;
+                int draw;
+                int.TryParse(Request.Form["draw"], out draw);
+                int recordsFiltered = qry.Count();
+                return Json(new
+                {
+                    data = qry.ToList(),
+                    recordsTotal = returned.Item2,
+                    recordsFiltered =recordsFiltered,
+                    draw = draw,
+                    iTotalDisplayRecords= returned.Item3
+                });
+            }  
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
+        }
+        [HttpGet]
+        [Route("data/aanvragenJson")]
+        [Produces("application/json")]
+        public async Task<IActionResult> AanvragenJson()
+        {
+            var user = await userManager.FindByNameAsync(User.Identity.Name);
+            var id = fosService.GetStudAlreadySubscribed(user);
+            var json = Json(new
+            {
+                data = service.GetAanvragen().ToList()
+            });
+            return json;
         }
     }
 }

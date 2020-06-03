@@ -118,7 +118,6 @@ namespace Gip.Controllers
             try
             {
                 var user = await userManager.GetUserAsync(User);
-
                 service.SubscribeFos(fosId, user);
             }
             catch (Exception e)
