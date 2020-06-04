@@ -79,7 +79,8 @@ namespace Gip.Controllers
         {
             return View(service.GetUsers());
         }
-
+        
+        [Route("admin/user/edit")]
         [HttpGet]
         public async Task<IActionResult> EditUser(string id)
         {

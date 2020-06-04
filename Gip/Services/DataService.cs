@@ -16,8 +16,10 @@ namespace Gip.Services
         private gipDatabaseContext db;
         private IVakService service;
         private ILectorService lectorService;
-        public DataService(gipDatabaseContext db,IVakService service,ILectorService lectorService)
+        private IAdministrationService adminService;
+        public DataService(gipDatabaseContext db,IVakService service,ILectorService lectorService,IAdministrationService adminService)
         {
+            this.adminService = adminService;
             this.lectorService = lectorService;
             this.service = service;
             this.db = db;
@@ -162,7 +164,29 @@ namespace Gip.Services
                     RichtingStudiepunten = d.RichtingStudiepunten
                 };
         }
-        
+        public Tuple<IQueryable<ApplicationUser>,int,int> GetUsers(int start, int length,string searchValue,string sortColumnName, string sortDirection)
+        {
+            var qry = adminService.GetUsers().AsQueryable();
+            int recordsTotal = qry.Count();
+            int filtered = recordsTotal;
+            if (!string.IsNullOrEmpty(searchValue))
+            {
+                qry = adminService.GetUsers()
+                    .Where(u => u.UserName.Contains(searchValue) || u.VoorNaam.Contains(searchValue) || u.Naam.Contains(searchValue));
+                filtered = qry.Count();
+            }
+            if (!string.IsNullOrEmpty(sortColumnName))
+            {
+                qry = qry.OrderBy(sortColumnName + " "+ sortDirection);
+            }
+            qry = qry.Skip(start).Take(length);
+            return Tuple.Create(qry,recordsTotal,filtered);
+        }
+
+        public IQueryable<ApplicationUser> GetUsers()
+        {
+            return adminService.GetUsers();
+        }
         public Tuple<IQueryable<StudentRequestsViewModel>,int,int> GetAanvragen(int start, int length,string searchValue,string sortColumnName, string sortDirection)
         {
             var qry = lectorService.GetStudentRequests().AsQueryable();

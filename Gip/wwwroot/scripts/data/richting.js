@@ -27,7 +27,9 @@ $(document).ready(function(){
                             let cases= [];
                             cases[0] = '<a class="btn btn-success" href="#" role="button" disabled="">Ingeschreven</a>';
                             cases[1] = '<a class="btn btn-secondary" href="#" role="button" disabled="">Niet ingeschreven</a>';
-                            cases[2] = '<a class="btn btn-success" href="/fieldOfStudy/Subscribe?fosId='+d.Id+'" role="button" disabled="">Schrijf in</a>';
+                            cases[2] = '<form action="/fieldOfStudy/Subscribe?fosId='+d.Id+'" method="post">' +
+                                '<input role="button" class="btn btn-success" type="submit" value="Schrijf in" ></input>'+
+                                '</form>';
                             cases[3] = '<a>Er is iets misgelopen waardoor u dit te zien krijgt.</a>';
                             try {
                                 if($('.spinner-border').length !== 0) {
@@ -63,10 +65,10 @@ $(document).ready(function(){
     });
     function getColums(){
         let columns = [];
-        columns.push({ "data" : "RichtingCode" });
-        columns.push({ "data": "RichtingTitel" });
-        columns.push({ "data": "Type" });
-        columns.push({ "data": "RichtingStudiepunten"});
+        columns.push({ "data" : "RichtingCode" ,"name":"RichtingCode"});
+        columns.push({ "data": "RichtingTitel" ,"name":"RichtingTitel"});
+        columns.push({ "data": "Type" ,"name":"Type"});
+        columns.push({ "data": "RichtingStudiepunten","name":"RichtingStudiepunten"});
         let role = $("#rol").text();
         if(role==='Student') {
             columns.push({

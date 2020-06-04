@@ -18,5 +18,8 @@ namespace Gip.Services.Interfaces
         IQueryable<FieldOfStudyViewModel> GetFieldOfStudies();
         Tuple<IQueryable<StudentRequestsViewModel>, int, int> GetAanvragen(int start, int length, string searchValue, string sortColumnName, string sortDirection);
         IQueryable<StudentRequestsViewModel> GetAanvragen();
+        Tuple<IQueryable<ApplicationUser>, int, int> GetUsers(int start, int length, string searchValue, string sortColumnName, string sortDirection);
+        IQueryable<ApplicationUser> GetUsers();
+        List<StudentRequestsViewModel> GetStudentRequestsWithSearch(string searchValue);
     }
 }

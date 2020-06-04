@@ -227,5 +227,48 @@ namespace Gip.Controllers
             });
             return json;
         }
+        [HttpPost]
+        [Route("data/users")]
+        [Produces("application/json")]
+        public async Task<IActionResult> Users()
+        {
+            try
+            {
+                int start = Convert.ToInt32(Request.Form["start"]);
+                int length = Convert.ToInt32(Request.Form["length"]);
+                string searchValue = Request.Form["search[value]"];
+                string sortColumnName = Request.Form["columns["+ HttpContext.Request.Form["order[0][column]"] + "][name]"];
+                string sortDirection = Request.Form["order[0][dir]"];
+                var returned = service.GetUsers(start, length,searchValue,sortColumnName,sortDirection);
+                var qry = returned.Item1;
+                int draw;
+                int.TryParse(Request.Form["draw"], out draw);
+                int recordsFiltered = qry.Count();
+                return Json(new
+                {
+                    data = qry.ToList(),
+                    recordsTotal = returned.Item2,
+                    recordsFiltered =recordsFiltered,
+                    draw = draw,
+                    iTotalDisplayRecords= returned.Item3
+                });
+            }  
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
+        }
+        [HttpGet]
+        [Route("data/usersjson")]
+        [Produces("application/json")]
+        public async Task<IActionResult> UsersJson()
+        {
+            var json = Json(new
+            {
+                data = service.GetUsers().ToList()
+            });
+            return json;
+        }
     }
 }
