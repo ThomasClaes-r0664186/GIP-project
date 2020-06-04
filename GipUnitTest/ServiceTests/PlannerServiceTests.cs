@@ -153,7 +153,7 @@ namespace GipUnitTest.ServiceTests
             int newCourseId = ctxDb.Course.Where(c => c.Vakcode == "BBB01B").FirstOrDefault().Id;
             int newRoomId = ctxDb.Room.Where(r => r.Gebouw == "B" & r.Verdiep == 0 & r.Nummer == "01").FirstOrDefault().Id;
             var newUser = ctxDb.Users.Find(userId);
-            DateTime newDatum = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day + 2);
+            DateTime newDatum = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
             string newDatumString = newDatum.ToString("yyyy-MM-dd");
             string newStart = "13:00";
             double newDuratie = 1.0;

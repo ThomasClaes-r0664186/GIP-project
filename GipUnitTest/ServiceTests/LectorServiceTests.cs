@@ -57,8 +57,6 @@ namespace GipUnitTest.ServiceTests
             ctxDb.SaveChanges();
 
             int courseId1 = ctxDb.Course.Where(c => c.Vakcode == "MGP01A").FirstOrDefault().Id;
-            //int courseId1 = ctxDb.Course.Where(c => c.Vakcode == "MGP01A").FirstOrDefault().Id;
-
 
             CourseUser cu1 = new CourseUser { ApplicationUserId = userId1, CourseId = courseId1, GoedGekeurd = false };
             CourseUser cu2 = new CourseUser { ApplicationUserId = userId2, CourseId = courseId1, GoedGekeurd = true };
@@ -73,7 +71,7 @@ namespace GipUnitTest.ServiceTests
             var requests = service.GetStudentRequests();
 
             // ASSERT
-            Assert.IsTrue(requests.Count == 3);
+            Assert.IsTrue(requests.Count == 2);
 
             for (int i = 1; i < requests.Count; i++)
             {
