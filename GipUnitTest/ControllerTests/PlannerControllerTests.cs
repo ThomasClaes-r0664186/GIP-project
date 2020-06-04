@@ -160,7 +160,7 @@ namespace GipUnitTest.ControllerTests
 
             int newCourseId = ctxDb.Course.Where(c => c.Vakcode == "BBB01B").FirstOrDefault().Id;
             int newRoomId = ctxDb.Room.Where(r => r.Gebouw == "B" & r.Verdiep == 0 & r.Nummer == "01").FirstOrDefault().Id;
-            DateTime newDatum = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day + 2);
+            DateTime newDatum = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
             string newDatumString = newDatum.ToString("yyyy-MM-dd");
             string newStart = "13:00";
             double newDuratie = 1.0;
@@ -302,28 +302,100 @@ namespace GipUnitTest.ControllerTests
         public void ViewCourseUsersTest() 
         {
             // ARRANGE 
+            PlannerService service = new PlannerService(ctxDb);
+            PlannerController controller = SetupPlannerController(service).Result;
 
+            ctxDb.Users.Add(new ApplicationUser { UserName = "r0000001", Email = "r0000001@hotmail.com", GeboorteDatum = new DateTime(1998, 09, 21), Naam = "Claes", VoorNaam = "Thomas", EmailConfirmed = true });
+            ctxDb.Users.Add(new ApplicationUser { UserName = "r0000002", Email = "r0000002@hotmail.com", GeboorteDatum = new DateTime(1998, 09, 21), Naam = "Claes", VoorNaam = "Thomas", EmailConfirmed = true });
+            ctxDb.Users.Add(new ApplicationUser { UserName = "r0000003", Email = "r0000003@hotmail.com", GeboorteDatum = new DateTime(1998, 09, 21), Naam = "Claes", VoorNaam = "Thomas", EmailConfirmed = true });
+            ctxDb.Course.Add(new Course { Vakcode = "AAA01A", Titel = "testvak 1", Studiepunten = 20 });
+            ctxDb.SaveChanges();
+
+            string user1Id = ctxDb.Users.Where(u => u.UserName == "r0000001").FirstOrDefault().Id;
+            string user2Id = ctxDb.Users.Where(u => u.UserName == "r0000002").FirstOrDefault().Id;
+            string user3Id = ctxDb.Users.Where(u => u.UserName == "r0000003").FirstOrDefault().Id;
+
+            var roleId = ctxDb.Roles.Where(r => r.Name == "Student").FirstOrDefault().Id;
+
+            ctxDb.UserRoles.Add(new IdentityUserRole<string> { UserId = user2Id, RoleId = roleId });
+            ctxDb.UserRoles.Add(new IdentityUserRole<string> { UserId = user3Id, RoleId = roleId });
+            ctxDb.SaveChanges();
+
+            int courseId = ctxDb.Course.Where(c => c.Vakcode == "AAA01A").FirstOrDefault().Id;
+
+            ctxDb.CourseUser.Add(new CourseUser { ApplicationUserId = user1Id, CourseId = courseId, GoedGekeurd = true });
+            ctxDb.CourseUser.Add(new CourseUser { ApplicationUserId = user2Id, CourseId = courseId, GoedGekeurd = false });
+            ctxDb.CourseUser.Add(new CourseUser { ApplicationUserId = user3Id, CourseId = courseId, GoedGekeurd = true });
+            ctxDb.SaveChanges();
+            
+            int cuId = AddTestPlanning(service);
+
+            ctxDb.CourseMomentUsers.Add(new CourseMomentUsers { ApplicationUserId = user1Id, CoursMomentId = cuId});
+            ctxDb.CourseMomentUsers.Add(new CourseMomentUsers { ApplicationUserId = user3Id, CoursMomentId = cuId});
+            ctxDb.SaveChanges();
 
             // ACT
-
+            var res = controller.ViewCourseUsers(courseId);
 
             // ASSERT
-
-
+            Assert.IsTrue(res is ActionResult);
+            var vRes = (ViewResult)res;
+            Assert.IsNotNull(vRes.Model);
+            var cuvm = (CourseUsersViewModel)vRes.Model;
+            Assert.AreEqual(courseId, cuvm.cId);
+            Assert.AreEqual(2, cuvm.users.Count);
         }
 
         [TestMethod]
-        public void AddStudsToEachCmTest() 
+        public async Task AddStudsToEachCmTest() 
         {
             // ARRANGE 
+            PlannerService service = new PlannerService(ctxDb);
+            PlannerController controller = SetupPlannerController(service).Result;
 
+            ctxDb.Users.Add(new ApplicationUser { UserName = "r0000001", Email = "r0000001@hotmail.com", GeboorteDatum = new DateTime(1998, 09, 21), Naam = "Claes", VoorNaam = "Thomas", EmailConfirmed = true });
+            ctxDb.Users.Add(new ApplicationUser { UserName = "r0000002", Email = "r0000002@hotmail.com", GeboorteDatum = new DateTime(1998, 09, 21), Naam = "Claes", VoorNaam = "Thomas", EmailConfirmed = true });
+            ctxDb.Users.Add(new ApplicationUser { UserName = "r0000003", Email = "r0000003@hotmail.com", GeboorteDatum = new DateTime(1998, 09, 21), Naam = "Claes", VoorNaam = "Thomas", EmailConfirmed = true });
+            ctxDb.Course.Add(new Course { Vakcode = "AAA01A", Titel = "testvak 1", Studiepunten = 20 });
+            ctxDb.SaveChanges();
+
+            string user1Id = ctxDb.Users.Where(u => u.UserName == "r0000001").FirstOrDefault().Id;
+            string user2Id = ctxDb.Users.Where(u => u.UserName == "r0000002").FirstOrDefault().Id;
+            string user3Id = ctxDb.Users.Where(u => u.UserName == "r0000003").FirstOrDefault().Id;
+
+            var roleId = ctxDb.Roles.Where(r => r.Name == "Student").FirstOrDefault().Id;
+
+            ctxDb.UserRoles.Add(new IdentityUserRole<string> { UserId = user2Id, RoleId = roleId });
+            ctxDb.UserRoles.Add(new IdentityUserRole<string> { UserId = user3Id, RoleId = roleId });
+            ctxDb.SaveChanges();
+
+            int courseId = ctxDb.Course.Where(c => c.Vakcode == "AAA01A").FirstOrDefault().Id;
+
+            ctxDb.CourseUser.Add(new CourseUser { ApplicationUserId = user1Id, CourseId = courseId, GoedGekeurd = true });
+            ctxDb.CourseUser.Add(new CourseUser { ApplicationUserId = user2Id, CourseId = courseId, GoedGekeurd = true });
+            ctxDb.CourseUser.Add(new CourseUser { ApplicationUserId = user3Id, CourseId = courseId, GoedGekeurd = true });
+            ctxDb.SaveChanges();
+
+            int cuId = AddTestPlanning(service);
+
+            ctxDb.CourseMomentUsers.Add(new CourseMomentUsers { ApplicationUserId = user1Id, CoursMomentId = cuId });
+            ctxDb.CourseMomentUsers.Add(new CourseMomentUsers { ApplicationUserId = user3Id, CoursMomentId = cuId });
+            ctxDb.SaveChanges();
+
+            var model = service.GetStudsInEachCm(courseId);
+
+            foreach (var user in model) 
+            {
+                user.IsSelected = !user.IsSelected;
+            }
 
             // ACT
-
+            var res = await controller.AddStudsToEachCm(model, courseId);
 
             // ASSERT
-
-
+            Assert.IsTrue(res is ActionResult);
+            Assert.IsNotNull(ctxDb.CourseMomentUsers.Where(cmu => cmu.ApplicationUserId == user2Id).FirstOrDefault());
+            Assert.IsNull(ctxDb.CourseMomentUsers.Where(cmu => cmu.ApplicationUserId == user1Id).FirstOrDefault());
         }
 
         private async Task<PlannerController> SetupPlannerController(PlannerService service)
