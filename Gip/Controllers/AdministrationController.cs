@@ -180,6 +180,7 @@ namespace Gip.Controllers
             try
             {
                 var model = await service.GetUserRoles(userId);
+                ViewBag.userId = userId;
                 return View(model);
             }
             catch (Exception e) 
