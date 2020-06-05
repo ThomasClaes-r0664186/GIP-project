@@ -61,7 +61,7 @@
             console.log(mydata);
         }).then(function(){
             console.log('change DOM of modal');
-            $('#delete-username').val(mydata.UserName);
+            $('#delete-id').val(mydata.Id);
             let verwijderText = "Ben je zeker dat je de user met username "+mydata.UserName+" wilt verwijderen?";
             $("#verwijderText").text(verwijderText);
             $('#deleteModal').modal('show');

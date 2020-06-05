@@ -120,6 +120,7 @@ namespace Gip.Controllers
         }
 
         //fixed, nakijken wat er gebeurd wanneer je een user verwijderd gebruikt in coursemoment.
+        [Route("admin/user/delete")]
         [HttpPost]
         public async Task<IActionResult> DeleteUser(string id)
         {
