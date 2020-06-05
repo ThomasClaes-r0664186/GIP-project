@@ -1,0 +1,227 @@
+﻿@model IEnumerable<Gip.Models.Planner>
+    <Gip.Models.Planner>
+        @{
+            ViewData["Title"] = "Planning";
+        }
+        <script src="~/scripts/voegDagToe.js"></script>
+        <script src="https://unpkg.com/feather-icons"></script>
+
+        <h1>Planning van week @ViewBag.maandag tot @ViewBag.vrijdag</h1>
+
+        @if (ViewBag.error == null)
+        {
+            ViewBag.error = " ";
+        }
+        else
+        {
+            @if (ViewBag.error.Contains("addError"))
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@ViewBag.error.Split("/")[1]</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("editError"))
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@ViewBag.error.Split("/")[1]</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("deleteError"))
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@ViewBag.error.Split("/")[1]</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("topicError"))
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@ViewBag.error.Split("/")[1]</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("deleteGood"))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Het lesmoment is correct verwijderd.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("addGood"))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Het lesmoment is correct toegevoegd.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("editGood"))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Het lesmoment is correct gewijzigd.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if ((ViewBag.prevWeek + 1) > 0)
+            {
+                <a role="button" class="btn btn-default btn-lg" asp-area="" asp-controller="Planner" asp-action="Index" asp-route-week="@ViewBag.prevWeek">
+                    <span data-feather="arrow-left"></span>
+                    Vorige week
+                </a>
+            }
+        }
+
+        <a role="button" class="btn btn-default btn-lg" asp-area="" asp-controller="Planner" asp-action="Index" asp-route-week="@ViewBag.nextWeek">
+            Volgende week
+            <span data-feather="arrow-right"></span>
+        </a>
+
+        <table class="table table-bordered table-hover table-striped table-light">
+            <tr>
+                <th>Datum</th>
+                <th>Start/einde</th>
+                <th>Vak</th>
+                <th>Lokaal</th>
+                @if (User.IsInRole("Lector") || User.IsInRole("Admin"))
+                {
+                    <th>Delete</th>
+                    <th>Edit</th>
+                }
+            </tr>
+
+            @foreach (var planner in Model)
+            {
+                @if (planner.Vakcode != null && planner.Gebouw != null)
+                {
+                    <tr>
+                        <td id="datumClick" onclick="window.location = 'planner/viewTopic?cmId=@planner.cmId';" class="veranderDatum">@planner.Datum.ToString("dd/MM/yyyy")</td>
+                        <td>@planner.Startmoment.ToString("HH:mm") / @planner.Eindmoment.ToString("HH:mm")</td>
+                        <td id="vakClick" onclick="window.location = 'planner/viewCourseMoments?vakcode=@planner.cId';">@planner.Titel</td>
+                        <td>@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer</td>
+                        @if (User.IsInRole("Lector") || User.IsInRole("Admin"))
+                        {
+                            <td>
+                                <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deletePlanning-@planner.cmId">Delete</button>
+                                <div class="modal fade" id="deletePlanning-@planner.cmId" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Het lesmoment van de planning verwijderen?</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="/planner/delete" method="post">
+                                                    <div>
+                                                        <input type="text" name="cmId" style="display: none" value="@planner.cmId">
+                                                    </div>
+                                                    Ben je zeker dat je het lesmoment op @planner.Datum.ToString("dd/MM/yyyy") over het vak @planner.Titel met startmoment @planner.Startmoment.ToString("HH:mm") wilt verwijderen?
+                                                    <div class="modal-footer">
+                                                        <button type="submit" class="btn btn-sm btn-danger">Verwijder lesmoment van de planning</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-dark" data-toggle="modal" data-target="#editPlanning-@planner.cmId">Edit</button>
+                                <div class="modal fade" id="editPlanning-@planner.cmId" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Planning wijzigen?</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="/planner/edit" method="post">
+                                                    <div>
+                                                        <input type="text" name="cmId" style="display: none" value="@planner.cmId">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="date" id="dat" class="form-control" name="newDatum" min="@DateTime.Today.ToString("dd/MM/yyyy")" max="" required="required" value="@planner.Datum" />
+                                                        <small>Een datum die hoger gaat dan dit jaar + 1 wordt niet aanvaard.</small>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="uur">Startuur:</label>
+                                                        <input type="time" id="uur" class="form-control" name="newStartmoment" min="06:00" max="22:00" value="12:00" required="required" />
+                                                        <small>Openingstijden van 06:00 tot 22:00</small>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Lokaal:</label>
+                                                        <select class="form-control" name="newLokaalid" required="required">
+                                                            @foreach (var plannerLokaal in Model)
+                                                            {
+                                                                if (@plannerLokaal.Gebouw != null && @plannerLokaal.Vakcode == null)
+                                                                {
+                                                                    <option value="@plannerLokaal.rId">@plannerLokaal.Gebouw.Trim()@plannerLokaal.Verdiep@plannerLokaal.Nummer</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                        <small>Gelieve het lokaal aan te duiden</small>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Vak:</label>
+                                                        <select class="form-control" name="newVakcode" required="required">
+                                                            @foreach (var plannerVak in Model)
+                                                            {
+                                                                if (@plannerVak.Vakcode != null && @plannerVak.Gebouw == null)
+                                                                {
+                                                                    <option value="@plannerVak.cId">@plannerVak.Vakcode @plannerVak.Titel</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                        <small>Gelieve de vakcode aan te duiden</small>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Lesduur:</label>
+                                                        <select class="form-control" name="newDuratie" required="required">
+                                                            <option value="0,5">30 minuten</option>
+                                                            @for (double i = 1.0; i <= 16.0; i += 0.5)
+                                                            {
+                                                                <option value="@i">@i uur</option>
+
+                                                            }
+                                                        </select>
+                                                        <small>Gelieve de gewenste lesduur aan te duiden</small>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="lessenlijst">Beschrijving</label>
+                                                        <textarea class="form-control" name="newLessenlijst" rows="4" cols="50">@planner.LessenLijst</textarea>
+                                                        <small>Geef een eventuele beschrijving</small>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-sm btn-success">Wijzig planning</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        }
+                    </tr>
+                }
+            }
+        </table>
+
+        <p>Als u op de <b>datum klikt</b>, krijgt u het lesoverzicht te zien.</p>
+        <p>Als u op de <b>vakcode klikt</b>, krijgt u alle lesmomenten van dit vak te zien.</p>

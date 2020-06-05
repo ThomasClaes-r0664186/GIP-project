@@ -1,0 +1,125 @@
+﻿@model List<StudentRequestsViewModel>
+
+@{
+    ViewData["Title"] = "Aanvragen";
+}
+
+@if (ViewBag.error == null)
+{
+    ViewBag.error = " ";
+}
+else
+{
+    @if (ViewBag.error.Contains("approveGood"))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>De student is geaccepteerd.</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+    @if (ViewBag.error.Contains("denyGood"))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>De student is afgewezen.</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+    @if (ViewBag.error.Contains("error")) 
+    { 
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>@ViewBag.error.Split("/")[1]</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+}
+
+<h1>Aanvragen</h1>
+@if (Model.Any())
+{
+    <div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Goedkeuring aanvraag</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/lector/approvestudent" method="post">
+                        <input type="text" style="display:none" name="cuId">
+                        <span id="approveText">
+                        </span>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-sm btn-success">Goedkeuren</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="denyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Afwijzen aanvraag</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/lector/denystudent" method="post">
+                        <input type="text" id="deny-cuId" style="display:none" name="cuId">
+                        <span id='denyText'></span>
+                        <input type="text" id="deny-beschrijving" name="beschrijving" style="min-width:100%; height:100px "/>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-sm btn-danger">Afwijzen</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<table id="custtable" class="table table-bordered table-hover table-striped">
+    <thead>
+        <tr>
+            <th>Vakcode</th>
+            <th>Titel</th>
+            <th>R-nummer</th>
+            <th>Naam</th>
+            <th>Voornaam</th>
+            <th>Weiger</th>
+            <th>Accepteer</th>
+        </tr>
+    </thead>
+    </table>
+}
+else
+{
+    <div class="card">
+        <div class="card-header">
+            No courses created yet
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">
+                Use the button below to go to the course page
+            </h5>
+            <a class="btn btn-primary" style="width:auto"
+               asp-controller="Vak" asp-action="Index">
+                Courses
+            </a>
+        </div>
+    </div>
+}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+@section Scripts{
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+    <script src="~/scripts/data/aanvragen.js"></script>
+}

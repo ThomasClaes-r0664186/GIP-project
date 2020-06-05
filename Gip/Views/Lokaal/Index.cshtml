@@ -1,0 +1,257 @@
+﻿@model IEnumerable<Gip.Models.Room>
+    <Gip.Models.Room>
+        @{
+            ViewData["Title"] = "Lokaaloverzicht";
+        }
+        
+        <h1>Overzicht van de lokalen</h1>
+
+        @if (ViewBag.error == null)
+        {
+            ViewBag.error = " ";
+        }
+        else
+        {
+            @if (ViewBag.error.Contains("addError"))
+
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@ViewBag.error.Split("/")[1] Gelieve opnieuw te proberen met een andere combinatie van gebouw, verdiep en nummer.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("editError"))
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@ViewBag.error.Split("/")[1] Gelieve opnieuw te proberen met een andere combinatie van gebouw, verdiep en nummer.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("deleteError"))
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@ViewBag.error.Split("/")[1]</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("deleteGood"))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Het lokaal is correct verwijderd.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("addGood"))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Het lokaal is correct toegevoegd.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("editGood"))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Het lokaal is correct gewijzigd.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+        }
+
+
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModalLong" style="float:right;">Lokaal toevoegen</button>
+
+        <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Een lokaal toevoegen</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/lokaal/add" method="post">
+                            <div class="form-group">
+                                <label for="gebouw" class="col-form-label">Gebouw:</label>
+                                <input type="text" class="form-control" id="gebouw" placeholder="Bv. A,B..." name="gebouw">
+                            </div>
+                            <div class="form-group">
+                                <label for="verdiep" class="col-form-label">Verdieping:</label>
+                                <input required="required" type="number" max="9" class="form-control" id="verdiep" placeholder="Bv. 1,2,3.." name="verdiep">
+                            </div>
+                            <div class="form-group">
+                                <label for="nummer" class="col-form-label">Nummer:</label>
+                                <input required="required" type="text" class="form-control" id="nummer" placeholder="Bv. 01K,25.." name="nummer">
+                            </div>
+                            <div class="form-group">
+                                <label for="type" class="col-form-label">Type:</label>
+                                <select id="type" class="form-control" name="type">
+                                    <option value="Aula">Aula</option>
+                                    <option value="Computerlokaal">Computerlokaal</option>
+                                    <option value="Vergaderlokaal">Vergaderlokaal</option>
+                                    <option value="Lokaal">Lokaal</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="capaciteit" class="col-form-label">Capaciteit:</label>
+                                <input required="required" type="number" max="250" class="form-control" id="capaciteit" placeholder="Bv. 100..." name="capaciteit">
+                            </div>
+                            <div class="form-group">
+                                <label for="middelen" class="col-form-label">Middelen:</label>
+                                <select id="middelen" class="form-control" name="middelen">
+                                    <option value="Wifi/Projectorsetup/Scherm">Wifi/Projectorsetup/Scherm</option>
+                                    <option value="Wifi/Schermen">Wifi/Schermen</option>
+                                    <option value="Wifi/Projectorsetup">Wifi/Projectorsetup</option>
+                                    <option value="Projectorsetup/Scherm">Projectorsetup/Scherm</option>
+                                    <option value="Projectorsetup/Schermen">Projectorsetup/Schermen</option>
+                                    <option value="Wifi/Scherm">Wifi/Scherm</option>
+                                    <option value="Wifi">Wifi</option>
+                                    <option value="Projectorsetup">Projectorsetup</option>
+                                    <option value="Scherm">Scherm</option>
+                                    <option value="Schermen">Schermen</option>
+                                    <option value="Geen middelen">Geen middelen</option>
+
+                                </select>
+                            </div>
+                            <button id="editButton" type="submit" onClick="nulErbij('nummer')" class="btn  btn-sm btn-success">Voeg lokaal toe</button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+        @*class="table table-bordered table-hover table-striped table-light tablesorter"*@
+        <table id="custtable" class="table table-bordered table-hover table-striped">
+            <thead>
+            <tr>
+                <th>
+                    Lokaal
+                </th>
+                <th>
+                   @Html.DisplayNameFor(Model => Model.Type)
+                </th>
+                <th>
+                   @Html.DisplayNameFor(Model => Model.Capaciteit)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(Model => Model.Middelen)
+                </th>
+                <th>
+                     Delete
+                </th>
+                <th>
+                    Edit
+                </th>
+            </tr>
+            </thead>
+        </table>
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Lokaal wijzigen?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/lokaal/edit" method="post">
+                            <div>
+                                <input type="text" name="lokaalId" style="display: none" id="edit-lokaalId">
+                            </div>
+                            <div class="form-group">
+                                <label for="gebouw" class="col-form-label">Gebouw:</label>
+                                <input required="required" type="text" class="form-control" id="edit-gebouw" name="gebouw">
+                            </div>
+                            <div class="form-group">
+                                <label for="verdiep" class="col-form-label">Verdieping:</label>
+                                <input required="required" type="number" max="9" name="verdiep" class="form-control" id="edit-verdiep">
+                            </div>
+                            <div class="form-group">
+                                <label for="nummer" class="col-form-label">Nummer:</label>
+                                <input required="required" type="text" name="nummer" class="form-control" id="edit-nummer">
+                            </div>
+                            <div class="form-group">
+                                <label for="type" class="col-form-label">Type:</label>
+                                <select id="type" class="form-control" name="type">
+                                    <option value="Aula">Aula</option>
+                                    <option value="Computerlokaal">Computerlokaal</option>
+                                    <option value="Vergaderlokaal">Vergaderlokaal</option>
+                                    <option value="Lokaal">Lokaal</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="capaciteit" class="col-form-label">Capaciteit:</label>
+                                <input required="required" type="number" max="250" class="form-control" id="edit-capaciteit" name="capaciteit" value="lokaal.Capaciteit">
+                            </div>
+                            <div class="form-group">
+                                <label for="middelen" class="col-form-label">Middelen:</label>
+                                <select id="middelen" class="form-control" name="middelen">
+                                    <option value="Wifi/Projectorsetup/Scherm">Wifi/Projectorsetup/Scherm</option>
+                                    <option value="Wifi/Schermen">Wifi/Schermen</option>
+                                    <option value="Wifi/Projectorsetup">Wifi/Projectorsetup</option>
+                                    <option value="Projectorsetup/Scherm">Projectorsetup/Scherm</option>
+                                    <option value="Projectorsetup/Schermen">Projectorsetup/Schermen</option>
+                                    <option value="Wifi/Scherm">Wifi/Scherm</option>
+                                    <option value="Wifi">Wifi</option>
+                                    <option value="Projectorsetup">Projectorsetup</option>
+                                    <option value="Scherm">Scherm</option>
+                                    <option value="Schermen">Schermen</option>
+                                    <option value="Geen middelen">Geen middelen</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-dark">Wijzig lokaal</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Een lokaal verwijderen</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/lokaal/delete" method="post">
+                                <p id="verwijderText"></p>
+                                <div>
+                                    <input id="delete-lokaalId" type="text" name="lokaalId" style="display: none">
+                                </div>
+                                <div class="modal-footer">
+                                    <button id="deleteButton" type="submit" class="btn btn-sm btn-danger">Verwijder lokaal</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+        
+        
+        @section Scripts{
+            
+            <script src="~/scripts/NulErbij.js"></script>
+            <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+            <script src="~/scripts/data/lokaal.js"></script>
+        }
+    </Gip.Models.Room>

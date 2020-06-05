@@ -1,0 +1,105 @@
+﻿@model IQueryable<ApplicationUser>
+@{
+    ViewData["Title"] = "View users";
+}
+
+<h1>All users</h1>
+
+@if (Model.Any())
+{
+    <a asp-action="Register" asp-controller="Account"
+       class="btn btn-sm btn-success" style="width:auto">
+        Add new user
+    </a>
+    <br />
+    <table id="custtable" class="table table-bordered table-hover table-striped">
+        <thead>
+        <tr>
+            <th>Nummer</th>
+            <th>Voornaam</th>
+            <th>Naam</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+        </thead>
+    </table>
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">User verwijderen</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/admin/user/delete" method="post">
+                        <span id="verwijderText"></span>
+                        <input type="text" name="id" id="delete-id" style="display: none;">
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete user</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+   @* foreach (var user in Model)
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                Naam: @user.Naam @user.VoorNaam
+
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">@user.UserName</h5>
+            </div>
+            <div class="card-footer">
+                <a asp-action="EditUser" asp-controller="Administration" asp-route-id="@user.Id" class="btn btn-sm btn-dark">Edit</a>
+                <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteUserModal-@user.UserName">Delete</button>
+                <div class="modal fade" id="deleteUserModal-@user.UserName" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">User verwijderen</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form asp-action="DeleteUser" asp-route-id="@user.Id" method="post">
+                                      Ben je zeker dat je de user met username @user.UserName wilt verwijderen?
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-sm btn-danger">Delete user</button>
+                                        </div>
+                                    </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }*@
+}
+else
+{
+    <div class="card">
+        <div class="card-header">
+            No users created yet
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">
+                Use the button below to create a user
+            </h5>
+            <a class="btn btn-primary" style="width:auto"
+               asp-controller="Account" asp-action="Register">
+                Create user
+            </a>
+        </div>
+    </div>
+}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+@section Scripts{
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+    <script src="~/scripts/data/users.js"></script>
+}

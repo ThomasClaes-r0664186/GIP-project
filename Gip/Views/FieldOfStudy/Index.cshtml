@@ -1,0 +1,207 @@
+﻿@inject SignInManager<ApplicationUser> signInManager;
+@model IQueryable<FieldOfStudy>
+    <Gip.Models.FieldOfStudy>
+        @{
+            ViewData["Title"] = "Inschrijven richting";
+        }
+
+        <h1>Overzicht van de richtingen</h1>
+        @if(User.IsInRole("Lector")){
+            <span id="rol" style="display:none">Lector</span>
+        }else if(User.IsInRole("Admin")){
+            <span id="rol" style="display:none">Admin</span>
+        }else if(User.IsInRole("Student")){
+            <span id="rol" style="display:none">Student</span>
+        }     
+        @if (ViewBag.error == null)
+        {
+            ViewBag.error = " ";
+        }
+        else
+        {
+            @if (ViewBag.error.Contains("addError"))
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@ViewBag.error.Split("/")[1]</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("editError"))
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@ViewBag.error.Split("/")[1]</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("deleteError"))
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@ViewBag.error.Split("/")[1]</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("deleteGood"))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Het vak is correct verwijderd.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("addGood"))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>De richting is correct toegevoegd.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("editGood"))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Het vak is correct gewijzigd.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+        }
+
+        @*Hieronder de code voor toevoegen richting*@
+        @if (signInManager.IsSignedIn(User) && User.IsInRole("Lector") || User.IsInRole("Admin"))
+        {
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addRichting" style="float:right">Richting toevoegen</button>
+            <div class="modal fade" id="addRichting" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Een richting toevoegen</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/FieldOfStudy/add" method="post">
+                                <div class="form-group">
+                                    <label for="code" class="col-form-label">Richting code:</label>
+                                    <input max-lenght="3" required="required" type="text" class="form-control" id="code" placeholder="Bv. MBI,MGP..." name="code">
+                                    <small>Code moet van het formaat "AAA" zijn.</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="titel" class="col-form-label">Titel:</label>
+                                    <input required="required" type="text" class="form-control" id="titel" placeholder="Bv. Graduaat programmeren,..." name="titel">
+                                </div>
+                                <div class="form-group">
+                                    <label for="type" class="col-form-label">Type:</label>
+                                    <select id="type" class="form-control" name="type">
+                                        <option value="bachelor">Bachelor</option>
+                                        <option value="graduaat">Graduaat</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn  btn-sm btn-success">Voeg richting toe</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+             <div class="modal-content">
+                 <div class="modal-header">
+                     <h5 class="modal-title" id="exampleModalLabel">Richting aanpassen</h5>
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                         <span aria-hidden="true">&times;</span>
+                     </button>
+                 </div>
+                 <div class="modal-body">
+                     <form action="/FieldOfStudy/Edit" method="post">
+                         <div>
+                             <input type="text" name="richtingId" id="edit-richtingId" style="display: none">
+                         </div>
+                         <div class="form-group">
+                             <label for="RichtingCode" class="col-form-label">Code:</label>
+                             <input max-lenght="3" required="required" type="text" class="form-control" id="edit-code" name="richtingCode">
+                         </div>
+                         <div class="form-group">
+                             <label for="RichtingTitel" class="col-form-label">Titel:</label>
+                             <input required="required" type="text" name="richtingTitel" class="form-control" id="edit-RichtingTitel">
+                         </div>
+                         <div class="form-group">
+                             <label for="Type" class="col-form-label">Type:</label>
+                             <input required="required" type="text" name="type" class="form-control" id="edit-Type">
+                         </div>
+                         <button type="submit" class="btn btn-dark">Wijzig richting</button>
+                     </form>
+                 </div>
+                 </div>
+            </div>
+        </div>
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Richting verwijderen</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/fieldOfStudy/delete" method="post">
+                                    <div>
+                                        <input type="text" name="Id" id="delete-richtingId" style="display: none">
+                                    </div>
+                                    <span id="verwijderText"></span>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-sm btn-danger">Verwijder richting</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        @if (Model.Any())
+        {
+            @*Hier onder de tabel voor zowel student als lector*@
+            <table id="custtable" class="table table-bordered table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Titel</th>
+                        <th>Type</th>
+                        <th>Studiepunten</th>
+                        @if (signInManager.IsSignedIn(User) && User.IsInRole("Lector") || User.IsInRole("Admin"))
+                        {
+                            <th>Delete</th>
+                            <th>Edit</th>
+                        }
+                        else
+                        {
+                            <th>Inschrijven/Uitschrijven</th>
+                        }
+                    </tr>
+                </thead>
+            </table>
+        }
+        else
+        {
+            <h2>Er is nog geen enkele richting om te tonen.</h2>
+            @if (User.IsInRole("Lector") || User.IsInRole("Admin"))
+            {
+                <h3>U kan er toevoegen door op de knop aan de rechterkant te duwen.</h3>
+            }
+        }
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+        @section Scripts{
+            <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+            <script src="~/scripts/data/richting.js"></script>
+        }
+    </Gip.Models.FieldOfStudy>

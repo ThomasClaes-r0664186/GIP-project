@@ -1,0 +1,60 @@
+﻿@model List<EditStudInCmViewModel>
+
+@{
+    var cmId = ViewBag.cmId;
+    ViewBag.cmId = cmId;
+}
+
+<form method="post">
+    <div class="card">
+        <div class="card-header" style="background-color:#e00049;">
+            <h2 class="text-white">Toevoegen of verwijderen studenten van dit lesmoment</h2>
+            <input class="form-control" id="myInput" type="text" placeholder="Search..">
+            <br>
+        </div>
+        @if (Model.Any())
+        {
+            <div  id="data" class="card-body bg-light">
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    <div class="idData form-check m-1">
+                        <input type="hidden" asp-for="@Model[i].userId" />
+                        <input type="hidden" asp-for="@Model[i].RNum" />
+                        <input type="hidden" asp-for="@Model[i].Naam" />
+                        <input type="hidden" asp-for="@Model[i].VoorNaam" />
+                        <input asp-for="@Model[i].IsSelected" type="checkbox" class="custom-control-input" />
+                        <label class="custom-control-label" asp-for="@Model[i].IsSelected">
+                            @Model[i].RNum - @Model[i].Naam @Model[i].VoorNaam
+                        </label>
+                    </div>
+                }
+            </div>
+            <div class="card-footer">
+                <input type="submit" value="Update" class="btn btn-sm btn-success"
+                       style="width:auto" />
+                <a asp-action="ViewTopic" asp-route-cmId="@cmId"
+                   class="btn btn-sm btn-danger" style="width: auto">Cancel</a>
+            </div>
+        }
+        else
+        {
+            <div class="card-body bg-light">Er zijn momenteel geen studenten die geaccepteerd zijn voor dit vak, keur hun aanvragen eerst goed.</div>
+            <div class="card-footer">
+                <a asp-action="ViewTopic" asp-route-cmId="@cmId"
+                   class="btn btn-sm btn-danger" style="width: auto">Cancel</a>
+            </div>
+        }
+    </div>
+</form>
+@section Scripts{
+    <script >
+        $(document).ready(function(){
+          $("#myInput").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#data .idData").filter(function() {
+              $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+          });
+        });
+    </script>
+}

@@ -1,0 +1,103 @@
+﻿@model Gip.Models.Planner
+
+@{
+    ViewData["Title"] = "Lesmoment info";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Overzicht lesmoment</h1>
+
+@if (ViewBag.error == null)
+{
+    ViewBag.error = " ";
+}
+else
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>@ViewBag.error</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+<div>
+    <h4>@Model.Titel</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Vak:
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Vakcode @Model.Titel
+        </dd>
+        <dt class="col-sm-2">
+            Lokaal:
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Gebouw.Trim()@Model.Verdiep@Model.Nummer
+        </dd>
+        <dt class="col-sm-2">
+            Datum:
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Datum.ToString("dd/MM/yyyy")
+        </dd>
+        <dt class="col-sm-2">
+            Van:
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Startmoment.TimeOfDay
+        </dd>
+        <dt class="col-sm-2">
+            Tot:
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Eindmoment.TimeOfDay
+        </dd>
+        <dt class="col-sm-2">
+            Lessen:
+        </dt>
+        <dd class="col-sm-10">
+            @Model.LessenLijst
+        </dd>
+    </dl>
+</div>
+
+@* Hierin krijgt de lector dan een lijst van studenten te zien, die ze kan toewijzen ah coursemoment
+    De implementatie van hoe de lector deze kan toewijzen moet ik nog bedenken, checkboxen/groene knoppen, dit is nog onzeker.*@
+
+@if (User.IsInRole("Lector") && User.Identity.Name == Model.RNummer)
+{
+    if (Model.users.Any())
+    {
+
+        <h3>Studenten die ingeboekt staan voor deze les:</h3>
+            <table class="table table-bordered table-hover table-striped table-light">
+                <tr>
+                    <th>Gebruikersnaam</th>
+                    <th>Voornaam</th>
+                    <th>Naam</th>
+                </tr>
+
+    @foreach (var user in Model.users)
+    {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>@user.VoorNaam</td>
+                    <td>@user.Naam</td>
+                </tr>
+    }
+            </table>
+    }
+
+<div>
+    <a asp-action="EditStudsInCm" asp-controller="Planner" asp-route-cmId="@Model.cmId" class="btn btn-sm  btn-success" style="width:auto;float:right;">Student toevoegen aan of verwijderen van planning</a>
+</div>
+}
+
+<div>
+    <a asp-action="Index" class="btn btn-sm btn-danger">Terug naar de planning</a>
+</div>
+
+

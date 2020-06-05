@@ -6,16 +6,33 @@ a.navbar-brand {
   text-align: center;
   word-break: break-all;
 }
+/*zorgt ervoor dat in vakken tabel als link eruit zien*/
+.veranderDatum{ 
+  text-underline: #000000;
+}
+.veranderDatum:hover{
+  text-underline: #000000;
+  color: #0f6674;
+}
+
 
 /* Provide sufficient contrast against white background */
 a {
   color: #0366d6;
+}
+#loginLogoutDropdown{
+  position: absolute;
+  right: 70px;
+  top: 22px;
 }
 
 .btn-primary {
   color: #fff;
   background-color: #1b6ec2;
   border-color: #1861ac;
+}
+.pb-3{
+  margin-bottom: 60px;
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
@@ -62,6 +79,7 @@ body {
   /* Margin bottom by footer height */
   margin-bottom: 60px;
 }
+
 .footer {
   position: absolute;
   bottom: 0;
@@ -69,5 +87,3 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
-
-/*TEST*/

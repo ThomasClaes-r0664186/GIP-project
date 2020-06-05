@@ -1,0 +1,65 @@
+﻿@model Gip.Models.RegisterViewModel
+@inject SignInManager<ApplicationUser> signInManager;
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card">
+            <div class="card-header text-white" style="background-color:#e00049;">
+                <h5 class="text-uppercase text-center">Registration Form</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Register">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="RNum" class="text-dark font-weight-bold">Studentennummer</label>
+                        <input asp-for="RNum" class="form-control" />
+                        <span asp-validation-for="RNum" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Name" class="text-dark font-weight-bold">Voornaam</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="SurName" class="text-dark font-weight-bold">Achternaam</label>
+                        <input asp-for="SurName" class="form-control" />
+                        <span asp-validation-for="SurName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="GeboorteDatum" class="text-dark font-weight-bold">Geboortedatum</label>
+                        <input asp-for="GeboorteDatum" type="date" class="form-control" />
+                        <span asp-validation-for="GeboorteDatum" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email" class="text-dark font-weight-bold"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Password" class="text-dark font-weight-bold">Wachtwoord</label>
+                        <input asp-for="Password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ConfirmPassword" class="text-dark font-weight-bold">Bevestig wachtwoord</label>
+                        <input asp-for="ConfirmPassword" class="form-control" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    <input type="submit" value="Register" class="btn btn-sm btn-success" />
+                    @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="Administration" asp-action="ListUsers" class="btn btn-sm btn-danger">Cancel</a>
+                    }
+                </form>
+            </div>
+            <div class="card-footer">
+                <div>Reeds een account? <a asp-controller="Account" asp-action="Login">aanmelden</a></div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,48 +1,200 @@
-﻿<!DOCTYPE html>
+﻿@inject SignInManager<ApplicationUser> signInManager;
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Gip</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/tableStyle.css"/>
+    <link rel="icon" href="https://pbs.twimg.com/profile_images/525369285992919040/53mGKhKC_400x400.png">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css">
+    
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    
+    <script src="~/scripts/dropdowntToggle.js"></script>
+    <script src="~/scripts/jquery.tablesorter.js"></script>
+    <script src="~/scripts/messageBasedOnTime.js"></script>
+    <script src="~/scripts/popupFormOnCheckBoxClick.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
 </head>
-<body>
+<body style="background-color:#e9f3f8;" onload="digitalClock()">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3" style="background-color:#e00049;">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Gip</a>
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                    <img src="https://i.imgur.com/aNxQJBI.jpg" style="width:50px;height:50px;">
+                </a>
+                <a class="navbar-brand text-white" asp-controller="Home" asp-action="Index">Intranet V2</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        @if (signInManager.IsSignedIn(User))
+                        {
+
+                            @if (User.IsInRole("Lector"))
+                            {
+                                <li class="nav-item dropdown text-white">
+                                    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Lector panel
+                                    </a>
+                                    <div class="dropdown-menu text-white" aria-labelledby="navbarDropdown">
+                                        <form method="get" asp-action="Index" asp-controller="Vak">
+                                            <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto" id="vakken">
+                                                Vakken
+                                            </button>
+                                        </form>
+                                        <div class="dropdown-divider"></div>
+                                        <form method="get" asp-action="Index" asp-controller="FieldOfStudy">
+                                            <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto" id="richting">
+                                                Richting
+                                            </button>
+                                        </form>
+                                        <div class="dropdown-divider"></div>
+                                        <form method="get" asp-action="Index" asp-controller="Lector">
+                                            <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto">
+                                                Aanvragen
+                                            </button>
+                                        </form>
+                                    </div>
+                                </li>
+                            }
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item dropdown text-white">
+                                    <a class="nav-link dropdown-toggle text-white dropdown-toggle" href="#" id="navbarDropdown"
+                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Admin panel
+                                    </a>
+                                    <div class="dropdown-menu text-white" aria-labelledby="navbarDropdown">
+                                        <form method="get" asp-action="ListUsers" asp-controller="Administration">
+                                            <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto;">
+                                                Users control panel
+                                            </button>
+                                        </form>
+                                        <div class="dropdown-divider"></div>
+                                        <form method="get" asp-action="ListRoles" asp-controller="Administration">
+                                            <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto;">
+                                                Roles control panel
+                                            </button>
+                                        </form>
+                                        <div class="dropdown-divider"></div>
+                                        <form method="get" asp-action="ListRegisterRequests" asp-controller="Administration">
+                                            <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto;">
+                                                User requests
+                                            </button>
+                                        </form>
+                                    </div>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Vak" asp-action="Index" id="vakken">Vakken</a>
+                                </li>
+                            }
+
+                            @if (User.IsInRole("Student")) 
+                            {
+                                <li class="nav-item dropdown text-white">
+                                    <a class="nav-link dropdown-toggle text-white dropdown-toggle" href="#" id="navbarDropdown"
+                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Inschrijven
+                                    </a>
+                                    <div class="dropdown-menu text-white" aria-labelledby="navbarDropdown">
+                                        <form method="get" asp-action="Index" asp-controller="Vak">
+                                            <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto" id="vakken">
+                                                Vak
+                                            </button>
+                                        </form>
+                                        <div class="dropdown-divider"></div>
+                                        <form method="get" asp-action="Index" asp-controller="FieldOfStudy">
+                                            <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto" id="richting">
+                                                Richting
+                                            </button>
+                                        </form>
+                                    </div>
+                                </li>
+                            }
+
+                            @if (User.IsInRole("Lector") || User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Lokaal" asp-action="Index" id="lokalen">Lokalen</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Planner" asp-action="Add">Planner</a>
+                                </li>
+                            }
+                            @if (User.IsInRole("Student") || User.IsInRole("Lector") || User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-area="" asp-controller="Planner" asp-action="Index">Planning</a>
+                                </li>
+                            }
+
+                        }
+                        @if (signInManager.IsSignedIn(User))
+                        {
+                            <li id="loginLogoutDropdown" class="nav-item dropdown text-white" style="position:absolute;right:70px;">
+                                <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    @User.Identity.Name
+                                </a>
+                                <div class="dropdown-menu text-white" aria-labelledby="navbarDropdown">
+                                    <form method="post" asp-action="logout" asp-controller="Account">
+                                        <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto;">
+                                            Logout @User.Identity.Name
+
+                                        </button>
+                                    </form>
+                                    <div class="dropdown-divider"></div>
+                                    <form method="get" asp-action="ChangePassword" asp-controller="Account">
+                                        <button type="submit" class="nav-link btn btn-link py-0 text-dark" style="width:auto;">
+                                            Change password
+                                        </button>
+                                    </form>
+                                </div>
+
+                            </li>
+                        }
+                        else
+                        {
+
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Account" asp-action="Login" style="position:absolute;right:210px;top:19px" id="login">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Account" asp-action="Register" style="position:absolute;right:140px;top:19px" id="register">Register</a>
+                            </li>
+
+                        }
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-white" style="background-color:#003469;">
         <div class="container">
-            &copy; 2020 - Gip - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            © 2020 All rights reserved | Thomas Claes, Joni Timmermans, Tim Kerckx, Karel de Smet & Jaimie Haesevoets
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <img src="https://i.imgur.com/IxxLOxL.png" style="position:absolute;bottom:80px; right:20px;" />
+
     @RenderSection("Scripts", required: false)
 </body>
 </html>
+

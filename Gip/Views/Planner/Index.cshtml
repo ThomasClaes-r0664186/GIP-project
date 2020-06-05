@@ -1,0 +1,86 @@
+﻿@model IEnumerable<Gip.Models.Planner>
+    <Gip.Models.Planner>
+        @{
+            ViewData["Title"] = "Planner";
+        }
+
+        <h1>Planner</h1>
+        <form action="" method="post">
+            <div class="form-group">
+                <label for="dat" class="text-dark font-weight-bold">Datum:</label>
+                <input type="date" id="dat" class="form-control" name="dat" required="required" />
+                <label class="text-muted font-weight-normal">Een datum die hoger gaat dan dit jaar + 1 wordt niet aanvaard. (Zaterdag en Zondag gesloten)</label>
+            </div>
+            <div class="form-group">
+                <label for="uur" class="text-dark font-weight-bold">Startuur:</label>
+                <input type="time" id="uur" class="form-control" name="uur" min="06:00" max="22:00" value="12:00" required="required" />
+                <label class="text-muted font-weight-normal">Openingstijden van 06:00 tot 22:00</label>
+            </div>
+            <div class="form-group">
+                <label class="text-dark font-weight-bold">Lokaal / capaciteit:</label>
+                <select class="form-control" name="lokaalId" required="required">
+                    @foreach (var planner in Model)
+                    {
+                        if (@planner.Gebouw != null)
+                        {
+                            <option value="@planner.rId">@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer / @planner.Capaciteit</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="text-dark font-weight-bold">Een tweede lokaal toevoegen? (Gelieve de checkbox aan te duiden)</label> <br>
+                <input name="checkbox" id="checkbox" type=checkbox value="True">
+            </div>
+            <div id="delivery" style="display:none;">
+                <div class="form-group">
+                    <label class="text-dark font-weight-bold">Lokaal 2 / capaciteit:</label>
+                    <select class="form-control" name="lokaal2Id" required="required">
+                        @foreach (var planner in Model)
+                        {
+                            if (@planner.Gebouw != null)
+                            {
+                                <option value="@planner.rId">@planner.Gebouw.Trim()@planner.Verdiep@planner.Nummer / @planner.Capaciteit</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="text-dark font-weight-bold">Vak:</label>
+                <select class="form-control" name="vakid" required="required">
+                    @foreach (var planner in Model)
+                    {
+                        if (@planner.Vakcode != null)
+                        {
+                            <option value="@planner.cId">@planner.Vakcode @planner.Titel</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="text-dark font-weight-bold">Lesduur:</label>
+                <select class="form-control" name="duratie">
+                    <option value="0,5">30 minuten</option>
+                    @for (double i = 1.0; i <= 16.0; i += 0.5)
+                    {
+                        <option value="@i">@i uur</option>
+
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="lessenlijst" class="text-dark font-weight-bold">Lessenlijst</label>
+                <textarea class="form-control" name="lessenlijst" rows="4" cols="50"></textarea>
+                <label class="text-muted font-weight-normal">Geef een eventuele beschrijving over welke onderdelen u tijdens deze les gaat behandelen, dit is niet verplicht.</label>
+
+            </div>
+            <button type="submit" class="btn btn-sm btn-success">Voeg les toe</button>
+        </form>
+
+
+        <script type="text/javascript">
+            $('.datepicker').datepicker({
+                daysOfWeekDisabled: [0, 6]
+            });
+        </script>

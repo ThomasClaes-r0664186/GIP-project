@@ -1,0 +1,46 @@
+﻿@model List<UserRoleViewModel>
+
+@{ 
+    var roleId = ViewBag.roleId;
+}
+
+<form method="post">
+    <div class="card">
+        <div class="card-header">
+            <h2>Add or remove users from this role</h2>
+            <input class="form-control" id="myInput" type="text" placeholder="Search..">
+            <br>
+        </div>
+        <div class="card-body" id="data">
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <div class="idData form-check m-1 custom-control custom-checkbox mr-sm-2">
+                    <input type="hidden" asp-for="@Model[i].UserId" />
+                    <input type="hidden" asp-for="@Model[i].UserName" />
+                    <input asp-for="@Model[i].IsSelected" type="checkbox" class="custom-control-input" />
+                    <label class="custom-control-label" asp-for="@Model[i].IsSelected">
+                        @Model[i].UserName
+                    </label>
+                </div>
+            }
+        </div>
+        <div class="card-footer">
+            <input type="submit" value="Update" class="btn btn-sm btn-success"
+                   style="width:auto" />    
+            <a asp-action="EditRole" asp-route-id="@roleId"
+               class="btn btn-sm btn-danger" style="width:auto">Cancel</a>
+        </div>
+    </div>
+</form>
+@section Scripts{
+    <script >
+        $(document).ready(function(){
+          $("#myInput").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#data .idData").filter(function() {
+              $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+          });
+        });
+    </script>
+}

@@ -1,0 +1,45 @@
+﻿@model Gip.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<link rel="stylesheet" href="~/css/passwordShow.css" />
+
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card">
+            <div class="card-header text-white" style="background-color:#e00049;">
+                <h5 class="text-uppercase text-center">Login</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Login" asp-controller="Account">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="RNum">Student nummer</label>
+                        <input asp-for="RNum" class="form-control" id="rnum"/>
+                        <span asp-validation-for="RNum" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Password">Wachtwoord</label>
+                        <input asp-for="Password" class="form-control" id="pwd" />
+                        <i class="fa fa-eye" id="eye"></i>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label asp-for="RememberMe">
+                                <input asp-for="RememberMe" />
+                                @Html.DisplayNameFor(m => m.RememberMe)
+                            </label>
+                        </div>
+                        <div><a asp-action="ForgotPassword">Forgot Password?</a></div>
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-success" id="loginButton">Login</button>
+                </form>
+                <div>Nog geen account? <a asp-controller="Account" asp-action="Register">Maak er een</a></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/scripts/passwordShow.js"></script>

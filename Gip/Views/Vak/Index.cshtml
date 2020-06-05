@@ -1,0 +1,192 @@
+﻿@inject SignInManager<ApplicationUser> signInManager;
+@model List<VakViewModel>
+    <Gip.Models.Course>
+        @{
+            ViewData["Title"] = "Vakken";
+        }
+
+        <h1>Overzicht van de vakken</h1>
+        @if(User.IsInRole("Lector")){
+            <span id="rol" style="display:none">Lector</span>
+        }else if(User.IsInRole("Admin")){
+            <span id="rol" style="display:none">Admin</span>
+        }else if(User.IsInRole("Student")){
+            <span id="rol" style="display:none">Student</span>
+        }     
+        @if (ViewBag.error == null)
+        {
+            ViewBag.error = " ";
+        }
+        else
+        {
+            @if (ViewBag.error.Contains("addError"))
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@ViewBag.error.Split("/")[1]</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("editError"))
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@ViewBag.error.Split("/")[1]</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("deleteError"))
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>@ViewBag.error.Split("/")[1]</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("deleteGood"))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Het vak is correct verwijderd.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("addGood"))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Het vak is correct toegevoegd.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.error.Contains("editGood"))
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Het vak is correct gewijzigd.</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+        }
+
+        @if (signInManager.IsSignedIn(User) && User.IsInRole("Lector") || User.IsInRole("Admin"))
+        {
+
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addVak" style="float:right">Vak toevoegen</button>
+        <div class="modal fade" id="addVak" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Een vak toevoegen</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/vak/add" method="post">
+                            <div class="form-group">
+                                <label for="Vakcode" class="col-form-label">Vakcode:</label>
+                                <input required="required" type="text" class="form-control" id="Vakcode" placeholder="Bv. MGP05A..." name="Vakcode">
+                                <small>Vakcode moet van het formaat "AAA11A" zijn.</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="titel" class="col-form-label">Titel:</label>
+                                <input required="required" type="text" class="form-control" id="titel" placeholder="Bv. Java,PHP..." name="titel">
+                            </div>
+                            <div class="form-group">
+                                <label for="studiepunten" class="col-form-label">Studiepunten:</label>
+                                <input required="required" type="number" max="60" class="form-control" id="studiepunten" placeholder="Bv. 5,7..." name="studiepunten">
+                            </div>
+                            <button type="submit" class="btn  btn-sm btn-success">Voeg vak toe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+    <table id="custtable" class="table table-bordered table-hover table-striped">
+        <thead>
+            <tr>
+                <th>Vakcode</th>
+                <th>Titel</th>
+                <th>Studiepunten</th>
+                @if (signInManager.IsSignedIn(User) && User.IsInRole("Lector") || User.IsInRole("Admin"))
+                {
+                    <th>Edit</th>
+                    <th>Delete</th>
+                }
+                else
+                {
+                    <th>Inschrijven/Uitschrijven</th>
+                }
+            </tr>
+        </thead>
+    </table>
+    @if (signInManager.IsSignedIn(User) && User.IsInRole("Lector") || User.IsInRole("Admin")){}
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Vak wijzigen</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/vak/edit" method="post">
+                            <div>
+                                <input type="text" id="vakcodeOld" name="vakcodeOld" style="display:none">
+                            </div>
+                            <div class="form-group">
+                                <label for="vakcode" class="col-form-label">Vakcode:</label>
+                                <input required="required" type="text" class="form-control" id="vakcodeNew" name="vakcodeNew">
+                            </div>
+                            <div class="form-group">
+                                <label for="titel" class="col-form-label">Titel:</label>
+                                <input required="required" type="text" class="form-control" id="edit-titel" name="titel" >
+                            </div>
+                            <div class="form-group">
+                                <label for="studiepunten" class="col-form-label">Studiepunten:</label>
+                                <input required="required" type="number" max="60" class="form-control" id="edit-studiepunten" name="studiepunten">
+                            </div>
+                            <button type="submit" class="btn btn-dark">Wijzig vak</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Vak verwijderen</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/vak/delete" method="post">
+                            <div>
+                                <input type="text" name="vakcode" id="delete-vakcode" style="display: none">
+                            </div>
+                            <span id="verwijderText"></span>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-sm btn-danger">Verwijder vak</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+    @section Scripts{
+        <script type="text/javascript" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+        <script src="~/scripts/data/vak.js"></script>
+    }
+    </Gip.Models.Course>

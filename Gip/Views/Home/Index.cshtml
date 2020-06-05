@@ -1,8 +1,146 @@
-﻿@{
+﻿@model ApplicationUser
+@inject SignInManager<ApplicationUser> signInManager;
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@if (ViewBag.error == null)
+{
+    ViewBag.error = " ";
+}
+else
+{
+    @if (ViewBag.error.Contains("addError"))
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>@ViewBag.error.Split("/")[1]</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+    @if (ViewBag.error.Contains("editError"))
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>@ViewBag.error.Split("/")[1]</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+    @if (ViewBag.error.Contains("deleteError"))
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>@ViewBag.error.Split("/")[1]</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+    @if (ViewBag.error.Contains("topicError"))
+    {
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>@ViewBag.error.Split("/")[1]</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+    @if (ViewBag.error.Contains("deleteGood"))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Het lesmoment is correct verwijderd.</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+    @if (ViewBag.error.Contains("addGood"))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Het lesmoment is correct toegevoegd.</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+    @if (ViewBag.error.Contains("editGood"))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Het lesmoment is correct gewijzigd.</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+    @if ((ViewBag.prevWeek + 1) > 0)
+    {
+        <a role="button" class="btn btn-default btn-lg" asp-area="" asp-controller="Planner" asp-action="Index" asp-route-week="@ViewBag.prevWeek">
+            <span data-feather="arrow-left"></span>
+            Vorige week
+        </a>
+    }
+}
+
+
+<div class="container center">
+    <div class="card border-0 shadow my-5">
+        <div class="card-body p-5">
+            @if (signInManager.IsSignedIn(User))
+            {
+                <div class="font-weight-bold text-dark" style="margin-bottom:20px;top:20px;padding:0px;position:absolute;">
+                    <a id="greeting"></a>
+                    <a id="name">@Model.VoorNaam @Model.Naam</a>
+                </div>
+            }
+            <img src="https://i.imgur.com/HqO78z5.png" style="position:absolute; right:10px; top:5px;" />
+            <h1 class="font-weight-light text-dark font-weight-bolder">GIP Opdracht V2</h1>
+            <p class="text-dark lead">Hieronder vindt u een beschrijving over het gebruik van de applicatie.</p>
+            <div style="height:5px;"></div>
+            <p class="lead font-weight-bold text-dark">Student:</p>
+            <p class="lead text-dark">
+                <strong class="text-dark">Vakken:</strong> Vakken raadplegen en hier een inschrijvings aanvraag voor indienen. <br />
+                <strong class="text-dark">Planning:</strong> De planning raadplegen om te kijken wanneer de student in kwestie les heeft.
+            </p>
+            <p class="lead font-weight-bold text-dark">Lector:</p>
+            <p class="lead text-dark">
+                <strong class="text-dark">Lector panel: </strong>Hierin kan de lector aanvragen goedkeuren van studenten die een aanvraag hebben ingedient, ook kan deze gebruiker de vakken raadplegen en eventueel een vak toevoegen. <br />
+                <strong class="text-dark">Lokalen: </strong>Een lector kan een lokalenlijst raadplegen en beheren.<br />
+                <strong class="text-dark">Vakken: </strong>Een lector kan een vakkenlijst raadplegen en beheren. <br />
+                <strong class="text-dark">Planner/Planning: </strong>Een lector kan via de planner een lesmoment inplannen en dit achteraf raadplegen in de planning.
+            </p>
+            <p class="lead font-weight-bold text-dark">Administrator:</p>
+            <p class="lead text-dark">
+                <strong class="text-dark">Admin panel:</strong> Users toevoegen, verwijderen, wijzigen en een role toekenen aan deze users. <br />
+                <strong class="text-dark">Overige functionaliteiten:</strong> Een administrator kan alle andere functionaliteiten van de applicatie gebruiken en beheren.<br />
+            </p>
+
+            @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+            {
+                if (ViewBag.deletedDb == null) //== "true || ViewBag.deletedDb == null"
+                {
+                    <a asp-action="DeleteDbHistory" asp-controller="Administration" class="btn btn-sm btn-danger">Verwijder geschiedenis</a>
+                }
+                else
+                {
+                    <p>U heeft de databank geschiedenis vandaag reeds verwijderd.</p>
+                }
+            }
+
+        </div>
+    </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
